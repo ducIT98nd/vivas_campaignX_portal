@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/head :: head"></head>
+
+
+<body class="fix-header card-no-border">
+
+<!-- Preloader - style you can find in spinners.css -->
+
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<!-- Main wrapper - style you can find in pages.scss -->
+
+<div id="main-wrapper">
+
+    <div th:replace="common/bodyHeader"></div>
+
+    <!-- Left Sidebar - style you can find in sidebar.scss  -->
+    <div th:insert="common/leftmenu"></div>
+
+    <div class="page-wrapper">
+        <!-- Container fluid  -->
+        <div class="container-fluid">
+        </div>
+        <!-- End Container fluid  -->
+
+        <!-- footer -->
+        <footer class="footer">
+            Bản quyền thuộc về Công ty TNHH Cung cấp Giải pháp Dịch vụ Giá trị gia tăng <span class="red-clr">VIVAS</span>
+        </footer>
+        <!-- End footer -->
+    </div>
+    <!-- End Page wrapper  -->
+    <div th:insert="common/footer" th:remove="tag"></div>
+
+</div>
+</body>
+</html>

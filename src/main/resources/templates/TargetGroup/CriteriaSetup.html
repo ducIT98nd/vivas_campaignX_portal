@@ -1,0 +1,51 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<style>
+    .dropdown-menu.multi-level {
+        transform: unset !important;
+        top: unset !important;
+    }
+
+    .btn-group label {
+        color: #0c0c0c !important;
+    }
+
+    input.form-check-input[type='checkbox'] {
+        vertical-align: -1px;
+        margin-right: 4px;
+    }
+
+    .row_crit > .row > .col-lg-1 {
+        flex: 0 0 9.333333%;
+        max-width: 9.333333%;
+    }
+
+    .row_crit > .row >.col-lg-11 {
+        flex: 0 0 90.666667%;
+        max-width: 90.666667%;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#conditionLevel1').selectpicker({
+            style: 'btn-condition'
+        });
+    });
+</script>
+<body class="fix-header card-no-border">
+<div class="col-md-12 stg_crit_bg">
+    <div class="row" id="SetCriteria" style="margin-bottom: 20px;">
+        <h4 class="col-lg-6 card-title">Thiết lập tiêu chí</h4>
+        <div class="col-lg-6 cdt_slc">
+            <select id="conditionLevel1" class="form-control custom-select selectpicker"  data-live-search="true" tabindex="-98" data-placeholder="Thỏa mãn tất cả điều kiện">
+                <option value="AND">Thỏa mãn tất cả điều kiện</option>
+                <option value="OR">Thỏa mãn một trong số các điều kiện</option>
+            </select>
+        </div>
+    </div>
+    <input type="hidden" id="csrf-input-criteriaSetup" th:name="${_csrf.parameterName}"
+           th:value="${_csrf.token}"/>
+</div>
+</body>
+</html>

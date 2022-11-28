@@ -1,0 +1,77 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div class="add_cp_pages m-t-10 step-component" id="step-component-3-message" style="display: none">
+
+  <div class="row p-t-20">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label">Kênh truyền thông<span class="red-clr">*</span></label>
+        <select class="form-control custom-select" id="channel-marketing_one" name="channel-marketing" data-placeholder="Chọn kênh truyền thông" tabindex="1">
+          <option value="1" th:selected="(${eventCampaign.channel} == 1)">SMS</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label">Tài khoản gửi tin<span class="red-clr">*</span></label>
+        <select class="form-control custom-select selectpicker" id="sending-account_one"  name="sending-account" data-placeholder=""
+                data-live-search="true" data-size="5" data-dropup-auto="false" title="Chọn tài khoản gửi tin" tabindex="1">
+          <option th:each="sendingAccount,loop : ${sendingAccounts}"
+                  th:selected="(${sendingAccount.id == eventCampaign.accountSendingId})"
+                  th:value="${sendingAccount.id}"
+                  th:text="${sendingAccount.senderAccount}">
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label">Gói cước<span class="red-clr">*</span></label>
+        <select class="form-control custom-select selectpicker" id="product-package_one"  data-placeholder=""
+                data-live-search="true" data-size="5" data-dropup-auto="false" title="Chọn gói cước" tabindex="1">
+          <option  th:each="package,loop : ${listPackage}"
+                   th:selected="(${eventCampaign.packageDataId == package.getId()})"
+                   th:value="${package.getId()}"
+                   th:text="${package.getPackageName()}">
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group m-b-20">
+        <label class="control-label">Nội dung <span class="red-clr">*</span></label>
+        <textarea class="form-control fc_area" id="message-content_one" th:text="${smsContent.messageContent}" th:value="${smsContent.messageContent}" th:onkeyup="countMT('one')" onpaste="countMTOnPaste(event)" placeholder="" rows="5"></textarea>
+        <p class="note_area m-b-0" id="mt-count_one" th:text="${smsContent.getMessageLength()} + ' ký tự ' + ${smsContent.countMT} + ' tin nhắn (MT).'" ></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row m-b-20">
+    <div class="col-md-6">
+      <div class="btn-group">
+        <button type="button" class="btn btn-rounded btn-primary"><i class="ti-plus text m-r-10" aria-hidden="true"></i>Thêm nội dung tham biến</button>
+      </div>
+    </div>
+  </div>
+  <div class="btn_main_act">
+    <div class="btn-group">
+      <button type="button" class="btn btn-rounded btn-primary" id="step4-next-one-message" onclick="validateContentMessage('one')">Tiếp tục</button>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-rounded btn-danger cancel-create-campagin">Hủy</button>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-rounded btn-secondary" id="step4-prev-one-message">Quay lại</button>
+    </div>
+  </div>
+  <input type="hidden" id="countMT_one" th:value="${smsContent.countMT}">
+  <input type="hidden" id="unicode_one" th:value="${smsContent.unicode}">
+  <input type="hidden" id="jsonSubMessageContent_one" name="message-content" th:value="${smsContent.getJsonSmsContentDTO()}">
+
+</div>

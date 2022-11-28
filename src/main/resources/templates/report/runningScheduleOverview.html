@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head th:replace="common/head :: head"></head>
+<link type="text/css" th:href="@{/assets/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{/assets/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+
+<style th:inline="text">
+
+    .ui-widget-header {
+        border: none;
+        background: none;
+    }
+
+    .ui-widget.ui-widget-content {
+        border: none;
+    }
+
+    .ui-tabs .ui-tabs-nav li {
+        border-bottom-width: 1px;
+        border-radius: 3px;
+    }
+
+    .report-border {
+    }
+
+    .form-control {
+        width: 50%;
+    }
+
+    .ctn_welcome {
+        width: 90%;
+        margin: auto;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child {
+        margin-top: 38%;
+        transform: translateY(-50%);
+    }
+
+    .ctn_welcome div.col-lg-6:last-child {
+        margin-top: 28%;
+        transform: translateY(-50%);
+    }
+
+    .ctn_welcome div.col-lg-6:first-child h3 {
+        font-size: 50px;
+        font-weight: 500;
+        color: #3d69bd;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child h3 span {
+        color: #af6db6;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child p {
+        font-size: 13px;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child h6 {
+        font-size: 15px;
+        margin-top: 30px;
+        line-height: 20px;
+    }
+
+</style>
+<body class="fix-header card-no-border">
+<div th:insert="common/templates::alertMessage"></div>
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<div id="main-wrapper">
+    <div th:replace="common/bodyHeader"></div>
+    <div th:replace="common/leftmenu"></div>
+
+    <div class="page-wrapper">
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+            <div class="row pd-r-ctn">
+                <div class="col-12">
+                    <!--Data table -->
+                    <form id="reportForm" class="form" method="get">
+                        <div class="card">
+
+                            <div class="card-block">
+                                <div class="row smal_title">
+                                    <h4 class="card-title col-lg-6"><i class="campaign_ic"></i>Lịch chạy tổng quan</h4>
+
+                                </div>
+
+                                <div class="table-responsive m-t-10">
+                                    <input id="supersetUrl" type="hidden" name="supersetUrl" th:value="${supersetUrl}"/>
+                                    <div class="row search_table search_campaign search_acc">
+                                        <div class="col-md-10">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Từ</label>
+                                                        <input class="form-control date-picker" type="text"
+                                                               id="startDate" name="startDate">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Đến</label>
+                                                        <input class="form-control date-picker" type="text"
+                                                               id="endDate" name="endDate">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Loại chiến dịch</label>
+                                                        <select class="form-control custom-select"
+                                                                data-placeholder="Tất cả"
+                                                                tabindex="1" id="status" name="status">
+                                                            <option value="10">Tất cả</option>
+                                                            <option value="0">Đang chạy</option>
+                                                            <option value="6">Tạm dừng</option>
+                                                            <option value="4">Kết thúc</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-2 btn_search_acc">
+                                            <div class="row">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-rounded btn-primary"
+                                                            onclick="search();"> Xem báo cáo
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row form_qldhqc" id="all" style="display: none">
+                                    <div class="col-sm-12 col-xs-12">
+                                        <div class="row justify-content-center m-b-5">
+                                            <div class="col-md-12 report-border"
+                                                 style=" height: 400px;  margin-right: 10px">
+
+                                                <iframe id="slice_45"
+                                                        style="width:100%; height:100%; border: None;"></iframe>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <!-- Row -->
+            <!-- ============================================================== -->
+            <!-- End PAge Content -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+
+            <!-- End Right sidebar -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Container fluid  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+
+        <!-- footer -->
+        <!-- ============================================================== -->
+
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
+
+    </div>
+    <div th:insert="common/footer" th:remove="tag"></div>
+</div>
+
+</body>
+<script th:inline="javascript" th:fragment="contextPath">
+    var contextPath = [[@{/}]];
+</script>
+<script>
+    const supersetUrl = $("#supersetUrl").val();
+    $(document).ready(function () {
+        let query = `1=1`;
+        $("#report-by-channel-tabs").tabs();
+
+    })
+    $("#startDate").datepicker({format: 'dd/mm/yyyy', todayHighlight: true});
+    $("#endDate").datepicker({format: 'dd/mm/yyyy', todayHighlight: true});
+
+
+    function change() {
+        var date = $("#date").val();
+        if (date == 0) {
+            $("#days").show();
+            $("#month").hide();
+        }
+
+        if (date == 1) {
+            $("#days").hide();
+            $("#month").show();
+        }
+    }
+
+    function search() {
+        removeTooltip('startDate');
+        removeTooltip('endDate');
+        var status = $("#status").val();
+        var startDate = $("#startDate").val();
+        var endDate = $("#endDate").val();
+        let query = `1=1`;
+        let check = true;
+        if (status == 10) {
+            status = new Array(0, 1, 2, 3, 4, 5, 6, 7);
+        }
+        if (startDate == "") {
+            showTooltip("Ngày bắt đầu không được để trống!", 'startDate');
+            check = false;
+        }
+        if (endDate == "") {
+            showTooltip("Ngày kết thúc không được để trống!", 'endDate');
+            check = false;
+        }
+        if (check) {
+            var scheStart = $("#startDate").val();
+            scheStart = scheStart.replace(new RegExp("/", 'g'), " ");
+            scheStart = scheStart.split(" ");
+
+            var scheStartDate = new Date(scheStart[2], scheStart[1] - 1, scheStart[0]);
+            console.log("scheStartDate:" + scheStartDate);
+
+            var scheEnd = $("#endDate").val();
+            scheEnd = scheEnd.replace(new RegExp("/", 'g'), " ");
+            scheEnd = scheEnd.split(" ");
+            var scheEndDate = new Date(scheEnd[2], scheEnd[1] - 1, scheEnd[0]);
+            console.log("scheEnd[2]:" + (scheEnd[2]));
+            console.log("(scheEnd[1] - 1)" + (scheEnd[1]))
+            console.log("(scheEnd[0])" + (scheEnd[0]))
+            var dateNow = new Date();
+            console.log("scheEndDate:" + scheEndDate);
+            if (scheEndDate < scheStartDate) {
+                showTooltip("Ngày bắt đầu không được lớn hơn ngày kết thúc!", "startDate");
+                showTooltip("Ngày bắt đầu không được lớn hơn ngày kết thúc!", "endDate");
+                check = false;
+            }
+
+            if ((scheEndDate - scheStartDate) / 86400000 > 180) {
+                showTooltip("Thời gian tra cứu chỉ tối đa 180 ngày!", "startDate");
+                showTooltip("Thời gian tra cứu chỉ tối đa 180 ngày!", "endDate");
+                check = false;
+            }
+
+        }
+        if (check) {
+            $("#all").show();
+            query = query = 'CAMPAIGN_TYPE in (1,2) and CAMPAIGN_STATUS in' + "(" + status + ")" + 'and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'dd/mm/yyyy\') and REPORTED_DATE<= TO_DATE(' + "'" + endDate + "'" + ',\'dd/mm/yyyy\')';
+            console.log("query:", query);
+            reportAll(query);
+
+        }
+    }
+
+    function reportAll(query) {
+        let slice_45 = document.getElementById("slice_45");
+        slice_45_url = supersetUrl + `superset/explore/?form_data={"slice_id":45,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_45.src = slice_45_url;
+    }
+
+
+</script>
+
+</html>
+

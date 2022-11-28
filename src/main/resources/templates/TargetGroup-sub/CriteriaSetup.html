@@ -1,0 +1,31 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<style>
+    .dropdown-menu.multi-level {
+        transform: unset !important;
+        top: unset !important;
+    }
+
+    .btn-group label {
+        color: #0c0c0c !important;
+    }
+
+    input.form-check-input[type='checkbox'] {
+        vertical-align: -1px;
+        margin-right: 4px;
+    }
+
+</style>
+<body class="fix-header card-no-border">
+<div class="col-md-12 stg_crit_bg">
+    <div class="row" th:id="${subSetCriteria}" style="margin-bottom: 20px;">
+        <h4 class="col-lg-6 card-title">Thiết lập tiêu chí bổ sung</h4>
+        <div class="col-lg-6 cdt_slc">
+            <select th:id="${subConditionLevel1}" class="form-control custom-select" data-placeholder="Thỏa mãn tất cả điều kiện" tabindex="1">
+                <option value="AND">Thỏa mãn tất cả điều kiện</option>
+            </select>
+        </div>
+    </div>
+</div>
+</body>
+</html>

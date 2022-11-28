@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head">
+</head>
+
+<body class="fix-header card-no-border">
+
+<script type="text/javascript">
+
+    function update(groupID) {
+        Swal.fire({
+            position: 'top',
+            title: 'Thông báo',
+            text: "Bạn chắc chắn muốn cập nhật nhóm người dùng?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK',
+            cancelButtonText: 'HỦY'
+        }).then((result) => {
+            if (result.value) {
+                window.location.href = '/MMPPortal/UserGroupsController/EditUserGroups?groupID=' + groupID;
+            }
+        });
+    }
+
+    function deleteGroup(id, code) {
+        swal({
+            title: "Campaign X Thông báo",
+            text: "Bạn muốn xóa nhóm người dùng " + code + "?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            cancelButtonText: "Hủy",
+            closeOnConfirm: false
+        }, function () {
+            window.location.href = 'DeleteUserGroups?groupID=' + id;
+        });
+    }
+
+    function cancel() {
+        window.location.href = '/MMPPortal/UserGroupsController/UserGroupsManager';
+    }
+
+
+</script>
+
+
+<div th:insert="common/templates::alertMessage"></div>
+<!-- Main wrapper - style you can find in pages.scss -->
+<div id="main-wrapper">
+    <div th:replace="common/bodyHeader"></div>
+
+
+    <div th:insert="common/leftmenu"></div>
+    <div class="page-wrapper">
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+            <!-- ============================================================== -->
+            <!-- Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <div class="row page-titles">
+                <div class="col-md-12 col-12 align-self-center">
+                    <h3 class="text-themecolor m-b-0 m-t-0">Chi tiết nhóm người dùng</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/MMPPortal/UserGroupsController/UserGroupsManager">Quản lý nhóm người dùng</a></li>
+                        <li class="breadcrumb-item active">Chi tiết nhóm người dùng</li>
+                    </ol>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- Start Page Content -->
+            <!-- ============================================================== -->
+            <!-- Row -->
+
+
+            <div class="row">
+                <div class="col-12">
+                    <!--Data table -->
+                    <div class="card">
+
+                        <div class="card-block">
+                            <h4 class="card-title">Tạo mới khách hàng</h4>
+                            <hr class="hr_style">
+
+                                <div class="table-responsive ">
+                                    <div class="row form_qldhqc form_basic">
+                                        <div class="col-sm-12 col-xs-12">
+                                            <div class="row">
+                                                <div class="form-group m-t-10 col-lg-6">
+                                                    <div class="row">
+                                                        <label class="col-3 font-bold">Tên nhóm người dùng:
+                                                            <font color="#ff0000">(*)</font></label>
+                                                        <div class="col-9">
+
+                                                            <div id="groupName" name="groupName"
+                                                                 class="col-12" th:text="${group.groupName}"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group m-t-10 col-lg-6">
+                                                    <div class="row">
+                                                        <div class="col-3 font-bold">
+                                                            <label >Mô tả:</label>
+                                                        </div>
+                                                        <div class="col-9">
+                                                             <div id="groupDescription"
+                                                                  name="groupDescription" th:text="${group.description}"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group m-t-10 col-lg-6">
+                                                    <div class="row">
+                                                        <label class="col-3 font-bold">Nhóm quyền truy cập:<font color="#ff0000">(*)</font></label>
+                                                        <div class="col-9">
+                                                            <div
+                                                                 name="groupDescription" th:text="${listgroupName}"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group m-t-10 col-lg-6">
+                                                    <div class="row">
+                                                        <label class="col-3 font-bold">Trạng
+                                                            thái:</label>
+                                                        <div class="col-9">
+                                                            <div th:if="${group.status}"
+                                                                 name="groupDescription">Hoạt động</div>
+                                                            <div th:unless="${group.status}"
+                                                                 name="groupDescription">Tạm dừng</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="text-center">
+                                        <button class="btn waves-effect waves-light m-t-20 m-b-20 m-r-10 p-10 p-l-30 btn-inverse btn_back btn_blue"
+                                                type="button" th:onclick="update([[${group.groupID}]]);">Sửa
+                                        </button>
+
+                                        <button class="btn waves-effect waves-light m-t-20 m-b-20 m-r-10 p-10 p-l-30 btn-inverse btn_back btn_blue"
+                                                type="button" th:onclick="deleteGroup([[${group.groupID}]], [[${group.groupName}]])">Xóa
+                                        </button>
+
+                                        <button class="btn waves-effect waves-light m-t-20 m-b-20 m-r-10 p-10 p-l-30 btn-inverse btn_back btn-info"
+                                                type="button" onclick="cancel()">Hủy
+                                        </button>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <footer class="footer">
+        Bản quyền thuộc về Công ty TNHH Cung cấp Giải pháp Dịch vụ Giá trị gia tăng <span class="red-clr">VIVAS</span>
+    </footer>
+    <!-- End Page wrapper  -->
+    <div th:replace="common/footer" th:remove="tag"></div>
+</div>
+</body>
+</html>

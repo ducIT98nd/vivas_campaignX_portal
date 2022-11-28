@@ -1,0 +1,22 @@
+<div class="col-md-6">
+    <div class="form-group">
+        <input type="hidden" th:value="${size}" id="size"
+               name="size">
+        <label class="control-label">Chiến dịch</label>
+        <select class="form-control custom-select selectpicker"
+                data-live-search="true"
+                tabindex="1" id="campaign-name"
+                name="campaign-name" onchange="changeOneCampaign()"
+        >
+            <option value="">Tất cả
+            </option>
+            <option th:each="campaign : ${campaignManagerDtoList}"
+                    th:value="${campaign.getName()}"
+                    th:text="${campaign.getName()}"
+            >
+            </option>
+
+        </select>
+
+    </div>
+</div>

@@ -1,0 +1,99 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div class="add_cp_pages m-t-10 step-component" style="display: none">
+
+    <div class="row p-t-20">
+        <div class="col-md-12">
+            <div class="form-group row_poli">
+                <label class="control-label">Chu kỳ giữa các sự kiện</label>
+                <p>(Trong khoảng thời gian này, chiến dịch không gửi thêm thông điệp mời đến thuê bao, bất kể phát sinh thêm bao nhiêu sự kiện kích hoạt)</p>
+                <div>
+                    <input type="number" min="0" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" id="event-cycle" name="event-cycle" th:value="${eventCampaign.eventCyle}" class="form-control" placeholder="Nhập chu kỳ giữa các sự kiện">
+                    <span>ngày</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row_poli">
+                <label class="control-label">Giới hạn sự kiện</label>
+                <p>(Giới hạn số sự kiện kích hoạt chiến dịch thành công mỗi ngày)</p>
+                <div>
+                    <input type="number" min="0" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" id="event-limit-per-day" name="event-limit-per-day" th:value="${eventCampaign.eventLimitPerDay}" class="form-control"
+                           placeholder="Nhập giới hạn sự kiện mỗi ngày" onpaste="return pastePositiveNumber(event);">
+                    <span>sự kiện</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row_poli">
+                <label class="control-label">Vô hiệu hóa chính sách</label>
+                <p>(Vô hiệu hóa các chính sách chung không bắt buộc của hệ thống)</p>
+                <div class="radio_off_poli">
+                    <ul class="icheck-list">
+                        <li>
+                            <input class="check" data-checkbox="icheckbox_square-purple"
+                                   id="checkbox-disable-sending-time-limit" th:checked="${sendingTimeLimitChannelDTO.checkSendingTimeLimitChannel == true}" type="checkbox">
+                            <label for="checkbox-disable-sending-time-limit">Khung giờ gửi tin từng kênh truyền thông ngoài nhà mạng</label>
+                            <div class="icheck-list chan_soci" style="display: none" id="div-policy-sending-time">
+                                <div class="chan_soci_radio">
+                                    <input class="check checked checkbox-policy-1" data-checkbox="icheckbox_square-purple" value="zalo"
+                                           id="checkbox-sending-time-limit-zalo" type="checkbox" th:checked="${sendingTimeLimitChannelDTO.zalo == true}">
+                                    <label for="checkbox-sending-time-limit-zalo">Zalo</label>
+                                </div>
+                                <div class="chan_soci_radio">
+                                    <input class="check checked checkbox-policy-1" data-checkbox="icheckbox_square-purple" value="digilife"
+                                           id="checkbox-sending-time-limit-digilife" type="checkbox" th:checked="${sendingTimeLimitChannelDTO.digilife == true}">
+                                    <label for="checkbox-sending-time-limit-digilife">DigiLife</label>
+                                </div>
+                                <div class="chan_soci_radio">
+                                    <input class="check checked checkbox-policy-1" data-checkbox="icheckbox_square-purple" value="email"
+                                           id="checkbox-sending-time-limit-email" type="checkbox" th:checked="${sendingTimeLimitChannelDTO.email == true}">
+                                    <label for="checkbox-sending-time-limit-email">Email</label>
+                                </div>
+                                <input type="hidden" id="disable-policy-sending-time-limit" name="disable-policy-sending-time-limit">
+                            </div>
+                        </li>
+                        <li>
+                            <input class="check" data-checkbox="icheckbox_square-purple" value="true" th:checked="${disableMessageLimitDTO.checkDisableMessageLimitChannel}"
+                                   type="checkbox" id="checkbox-disable-message-limit">
+                            <label for="checkbox-disable-message-limit">Giới hạn thông điệp từng kênh truyền thông ngoài nhà mạng</label>
+                            <div class="icheck-list chan_soci" style="display: none" id="div-policy-message">
+                                <div class="chan_soci_radio">
+                                    <input class="check checkbox-policy-2" data-checkbox="icheckbox_square-purple" value="zalo" th:checked="${disableMessageLimitDTO.zalo}"
+                                           id="checkbox-message-limit-zalo" name="checkbox-sending-time-limit-zalo" type="checkbox">
+                                    <label for="checkbox-message-limit-zalo">Zalo</label>
+                                </div>
+                                <div class="chan_soci_radio">
+                                    <input class="check checkbox-policy-2" data-checkbox="icheckbox_square-purple" value="digilife" th:checked="${disableMessageLimitDTO.digilife}"
+                                           id="checkbox-message-limit-digilife" name="checkbox-sending-time-limit-digilife" type="checkbox">
+                                    <label for="checkbox-message-limit-digilife">DigiLife</label>
+                                </div>
+                                <div class="chan_soci_radio">
+                                    <input class="check checkbox-policy-2" data-checkbox="icheckbox_square-purple" value="email" th:checked="${disableMessageLimitDTO.email}"
+                                           id="checkbox-message-limit-email" name="checkbox-sending-time-limit-email" type="checkbox">
+                                    <label for="checkbox-message-limit-email">Email</label>
+                                </div>
+                                <input type="hidden" id="disable-policy-message-limit" name="disable-policy-message-limit">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="btn_main_act">
+        <div class="btn-group">
+            <button class="btn btn-rounded btn-primary" id="step5-next" type="button">Tiếp tục</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-rounded btn-danger cancel-create-campagin" type="button">Hủy</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-rounded btn-secondary" id="step5-prev" type="button">Quay lại</button>
+        </div>
+    </div>
+
+</div>
+

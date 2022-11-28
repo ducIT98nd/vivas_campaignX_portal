@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head th:replace="common/head :: head"></head>
+<body class="fix-header card-no-border">
+<div th:insert="common/templates::alertMessage"></div>
+<div th:insert="common/templates::contextPath"></div>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: '/campaignManager/getHtmlField',
+            traditional: true,
+            dataType: 'JSON',
+            cache: true,
+            async: false,
+            success: function (response) {
+                if (response) {
+                    console.log(response);
+                    if (response.code == 0) {
+                        let data = response.data;
+                        htmlField += "<div class=\"col-lg-3 " + classNameCondition + " \" style=\"padding-left: 0px !important; padding-right: 0px !important;\">\n" +
+                            "                        <select id='mainService_" + currentNodeID + "' name='' class=\"form-control\" >\n";
+                        for (let i = 0; i < data.length; i++) {
+                            htmlField += "                            <option value=\"" + data[i] + "\">" + data[i] + "</option>\n";
+                        }
+                        htmlField += "                        </select>\n" +
+                            "                    </div>";
+                    }
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            },
+        })
+        exportPDF();
+
+        function
+        exportPDF(event) {
+            var name = $("#name").val();
+            let d = new Date();
+            let month = d.getMonth() + 1;
+            if((d.getMonth() + 1) < 10) {
+                month = '0'+(d.getMonth() + 1);
+            }
+            let day = d.getDate();
+            if(d.getDate() < 10) {
+                day = '0'+d.getDate();
+            }
+            let today = day + "" + month + d.getFullYear();
+            let h = d.getHours();
+            if(d.getHours() < 10) {
+                h = '0'+d.getHours();
+            }
+            let m = d.getMinutes();
+            if(d.getMinutes() < 10) {
+                m = '0'+d.getMinutes();
+            }
+            let s = d.getSeconds();
+            if(d.getMinutes() < 10) {
+                s = '0'+d.getMinutes();
+            }
+            let time = h+ "" + m + s;
+            var fileName = name + "_" + today + "_"+ time +".pdf";
+            html2canvas(document.getElementById("export-pdf")).then(function cancas(canvas) {
+                //document.body.appendChild(canvas);
+                var w = 800
+                console.log("w:", w);
+                var h = 800
+                console.log("h:", h);
+                var img = canvas.toDataURL("image/jpeg", 1);
+                var doc = new jsPDF('L', 'px', [w, h]);
+                doc.addImage(img, 'JPEG', 0, 0, w, h);
+                doc.save(fileName);
+                setTimeout("window.close()", 1200)
+            });
+        }
+    })
+</script>
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<div id="main-wrapper">
+    <div th:replace="common/bodyHeader"></div>
+    <div th:replace="common/leftmenu"></div>
+
+    <!-- Page wrapper  -->
+    <div class="page-wrapper" id="export-pdf">
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+
+            <div class="row pd-r-ctn">
+                <div class="col-lg-12 col-xlg-12 col-md-12 L_card">
+                    <!--Data table -->
+                    <div class="card">
+
+                        <div class="card-block">
+                            <div class="row smal_title">
+                                <h4 class="card-title col-lg-6"><img
+                                        th:src="@{/assets/images/iconsvg/ic-campaign.svg}"/> Xem chi tiết chiến dịch
+                                </h4>
+                                <div class="col-lg-6 title_btn">
+                                    <div class="btn-group">
+                                        <button class="btn btn-rounded btn-primary" data-toggle="modal"
+                                                data-target="#history-edit-modal">
+                                            <i class="ti-time"></i>
+                                            Xem lịch sử chỉnh sửa
+                                        </button>
+                                    </div>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="history-edit-modal" tabindex="-1" role="dialog"
+                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Lịch sử chỉnh
+                                                        sửa</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+                                                             xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M8.99981 16.5C13.1248 16.5 16.4998 13.125 16.4998 9C16.4998 4.875 13.1248 1.5 8.99981 1.5C4.87481 1.5 1.49981 4.875 1.49981 9C1.49981 13.125 4.87481 16.5 8.99981 16.5Z"
+                                                                  stroke-width="1.5" stroke-linecap="round"
+                                                                  stroke-linejoin="round"/>
+                                                            <path d="M6.87756 11.1225L11.1226 6.8775" stroke-width="1.5"
+                                                                  stroke-linecap="round" stroke-linejoin="round"/>
+                                                            <path d="M11.1226 11.1225L6.87756 6.8775" stroke-width="1.5"
+                                                                  stroke-linecap="round" stroke-linejoin="round"/>
+                                                        </svg>
+
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="table-responsive tableFixHead">
+                                                        <table class="table">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>Thời gian chỉnh sửa</th>
+                                                                <th>Thông tin chỉnh sửa</th>
+                                                                <th>Tài khoản chỉnh sửa</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td>25/08/2021 15:30:00</td>
+                                                                <td>Tạo mới</td>
+                                                                <td>Tuht</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>25/08/2021 15:30:00</td>
+                                                                <td>Thay đổi thông tin</td>
+                                                                <td>Tuht</td>
+                                                            </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="add_cp_pages campaign-detail"
+                                 style="margin-left: 2px; margin-right: 2px; width: 100% !important;">
+                                <div type="hidden" id="campaignId" name="campaignId" th:value="${campaignId}"></div>
+                                <div type="hidden" id="typeCode" name="typeCode" th:value="${typeCode}"></div>
+                                <input type="hidden" id="name" th:value="${campaign.getCampaignName()}">
+
+                                <div class="row row_overview">
+                                    <span class="badge badge-pill badge-primary label_ov">Chi tiết</span>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>Tên chiến dịch</label>
+                                                <p th:text="${campaign.getCampaignName()}"></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Loại chiến dịch</label>
+                                                <p th:text="${type}"></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Tỷ lệ chấp thuận dự kiến</label>
+                                                <p th:if="(${campaign.getAcceptanceRate() != null && campaign.getAcceptanceRate() > 0})"
+                                                   th:text="${campaign.getAcceptanceRate()} + '%'"></p>
+                                                <p th:if="(${campaign.getAcceptanceRate() == null})">N/A</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>Mục tiêu chiến dịch</label>
+                                                <p th:text="${campaign.getCampaignTarget()}"></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Mô tả</label>
+                                                <p th:text="${campaign.getDescription()}"></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Hiệu lực chiến dịch</label>
+                                                <p th:text="${timeSendCampaign}"></p>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>Khung giờ gửi tin</label>
+                                                <p th:if="${campaign.getTimeRange1Start() != null && campaign.getTimeRange1End() != null && campaign.getTimeRange2Start() == null && campaign.getTimeRange2End() == null}"
+                                                   th:text="'Từ ' +${#strings.substring(campaign.getTimeRange1Start(),0,5)} + ' đến ' + ${#strings.substring(campaign.getTimeRange1End(),0,5)}"></p>
+                                                <p th:if="${campaign.getTimeRange1Start() == null && campaign.getTimeRange1End() == null && campaign.getTimeRange2Start() != null && campaign.getTimeRange2End() != null}"
+                                                   th:text="'Từ ' +${#strings.substring(campaign.getTimeRange2Start(),0,5)} + ' đến ' + ${#strings.substring(campaign.getTimeRange2End(),0,5)}"></p>
+                                                <p th:if="${campaign.getTimeRange1Start() != null && campaign.getTimeRange1End() != null && campaign.getTimeRange2Start() != null && campaign.getTimeRange2End() != null}"
+                                                   th:text="'Từ ' +${#strings.substring(campaign.getTimeRange1Start(),0,5)} + ' đến ' + ${#strings.substring(campaign.getTimeRange1End(),0,5)} + '; ' + 'Từ ' +${#strings.substring(campaign.getTimeRange2Start(),0,5)} + ' đến ' + ${#strings.substring(campaign.getTimeRange2End(),0,5)}"></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Nhóm gói cước</label>
+                                                <p th:if="${campaign.getPackageGroupId() == 1}">Data</p>
+                                                <p th:if="${campaign.getPackageGroupId() == 2}">KMCB</p>
+                                            </div>
+                                            <div class="col-md-4" th:if="${typeCode} == 2">
+                                                <label>Tần suất gửi tin</label>
+                                                <p th:text="${frequency}"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row row_overview" th:if="${typeCode} == 1">
+                                    <span class="badge badge-pill badge-primary label_ov">Sự kiện</span>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Loại sự kiện</label>
+                                                <p th:text="${typeEvent}"></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Thiết lập sự kiện</label>
+                                                <p>
+                                                <div th:each="data,loop : ${listEventToView}">
+                                                    <div th:remove="tag" th:utext="${data}"></div>
+                                                </div>
+                                                </p>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="row row_overview">
+                                    <span class="badge badge-pill badge-primary label_ov">Nhóm đối tượng</span>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label>Phương thức xác định</label>
+                                                <p th:if="${campaign.typeTargetGroup} == 1">Dùng tiêu chí lọc thuê
+                                                    bao</p>
+                                                <p th:if="${campaign.typeTargetGroup} == 3">Dùng danh sách thuê bao</p>
+                                                <p th:if="${campaign.typeTargetGroup} == 4">Dùng Tập giao của Danh sách
+                                                    thuê bao và Tiêu chí</p>
+                                                <p th:if="${campaign.typeTargetGroup} == 6">Dùng Nhóm đối tượng có
+                                                    sẵn</p>
+                                            </div>
+                                            <div class="col-md-5" id="div-overview-criteria">
+                                                <div class="col 8">
+                                                    <div th:if="${campaign.typeTargetGroup} == 1">
+                                                        <label>Tiêu chí lọc: </label>
+                                                        <div th:each="data,loop : ${listMainCriteriaToView}">
+                                                            <div th:remove="tag" th:utext="${data}"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div th:if="${campaign.typeTargetGroup} == 3">
+                                                        <label>Danh sách thuê bao</label>
+                                                        <div>
+                                                            <label style="font-size: 12px"><a
+                                                                    th:href="@{'/campaignManager/exportDataCustomer?id=' + ${campaign.campaignId} + '&type=' + ${typeCode}}"
+                                                                    th:text="${campaign.originalNameFileDataCustomer}"></a></label>
+                                                        </div>
+                                                    </div>
+                                                    <div th:if="${campaign.typeTargetGroup} == 4">
+                                                        <div class="row">
+                                                            <div class="col-md-8">
+                                                                <label>Tiêu chí lọc: </label>
+                                                                <div th:each="data,loop : ${listMainCriteriaToView}">
+                                                                    <div th:remove="tag" th:utext="${data}"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label>Danh sách thuê bao</label>
+                                                                <label><a
+                                                                        th:href="@{'/campaignManager/exportDataCustomer?id=' + ${campaign.campaignId} + '&type=' + ${typeCode}}"
+                                                                        th:text="${campaign.originalNameFileDataCustomer}"></a></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div th:if="${campaign.typeTargetGroup} == 6">
+                                                        <label>Nhóm đối tượng có sẵn</label>
+                                                        <div>
+                                                            <p th:text="${targetGroupOldName}"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col 4">
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <label>Danh sách blacklist</label>
+                                                <p th:if="${typeBlacklist} == 0">N/A</p>
+                                                <p th:if="${typeBlacklist} == 2" style="margin-bottom: 0px !important;">Chọn nhóm đối tượng có sẵn</p>
+                                                <p th:if="${typeBlacklist} == 3" style="margin-bottom: 0px !important;">Tải tập danh sách mới</p>
+                                                <p th:if="${typeBlacklist} == 2" th:text="${groupBlacklistName}"></p>
+                                                <p th:if="${typeBlacklist} == 3"><a
+                                                        th:href="@{'/campaignManager/exportDataBlacklist?id=' + ${campaign.campaignId} + '&type=' + ${typeCode}}"
+                                                        th:text="${campaign.originalNameFileBlacklist}"></a></p>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <p id="div-overview-group-size"
+                                                   th:text="'Quy mô nhóm: ' + ${campaign.getMainGroupSize()} + ' thuê bao'">
+                                                    Quy mô nhóm:</p>
+                                                <p id="div-overview-ratio"
+                                                   th:text="'Tỷ lệ so với toàn mạng: ' + ${campaign.getRatio()} + ' %'">
+                                                    Tỷ lệ so với toàn mạng:</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row_overview" th:if="${subTarget} == 1">
+                                    <span class="badge badge-pill badge-primary label_ov">Phân nhỏ nhóm</span>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label>Gửi thông điệp theo thứ tự ưu tiên nếu trùng lặp thuê bao</label>
+                                                <p th:if="${campaign.isDuplicateMsisdn} == 1">Có</p>
+                                                <p th:if="${campaign.isDuplicateMsisdn} == 0">Không</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label>Nhóm nhỏ</label>
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Tên nhóm</th>
+                                                            <th>Tiêu chí bổ sung</th>
+                                                            <th>Thứ tự ưu tiên</th>
+                                                            <th>Quy mô nhóm</th>
+                                                            <th>Tỷ lệ so với nhóm cha</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody th:each="data,loop : ${listSubGroupToView}">
+                                                        <div th:remove="tag" th:utext="${data}"></div>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row_overview">
+                                    <span class="badge badge-pill badge-primary label_ov">Thông điệp </span>
+                                    <div class="col-md-12">
+                                        <div class="row" th:each="data,loop : ${listContentToView}">
+                                            <div th:remove="tag" th:utext="${data}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row_overview">
+                                    <span class="badge badge-pill badge-primary label_ov">Chính sách</span>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <!--                                            <div class="col-md-12" id="frequency-policy">-->
+                                            <!--                                                <label>Vô hiệu hóa chính sách</label>-->
+                                            <!--                                                <p id="viewSendingLimitFre"></p>-->
+                                            <!--                                                <p id="viewMessageLimitFre"></p>-->
+                                            <!--                                            </div>-->
+                                            <div th:if="${typeCode == '1'}">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <label>Chu kỳ giữa các sự kiện</label>
+                                                            <p th:text="${eventCycle}"></p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label>Giới hạn sự kiện</label>
+                                                            <p th:text="${eventLimitPerday}"></p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label>Vô hiệu hóa chính sách</label>
+                                                            <div th:if="${sendingTimeLimitChannel != null && disableMessageLimit != null}">
+                                                                <p th:text="${sendingLimitChannel}"></p>
+                                                                <p th:text="${messageLimitChannel}"></p>
+                                                            </div>
+                                                            <div th:if="${sendingTimeLimitChannel == null && disableMessageLimit == null}">
+                                                                <p>N/A</p>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div th:if="${typeCode == '2'}">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <label>Vô hiệu hóa chính sách</label>
+                                                            <div th:if="${sendingTimeLimitChannel != null && disableMessageLimit != null}">
+                                                                <p th:text="${sendingLimitChannel}"></p>
+                                                                <p th:text="${messageLimitChannel}"></p>
+                                                            </div>
+                                                            <div th:if="${sendingTimeLimitChannel == null && disableMessageLimit == null}">
+                                                                <p>N/A</p>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- Row -->
+            <!-- ============================================================== -->
+            <!-- End PAge Content -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+
+            <!-- End Right sidebar -->
+            <!-- ============================================================== -->
+        </div>
+
+
+        <footer class="footer">
+            Bản quyền thuộc về Công ty TNHH Cung cấp Giải pháp Dịch vụ Giá trị gia tăng <span
+                class="red-clr">VIVAS</span>
+        </footer>
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
+    </div>
+
+    <div th:insert="common/footer" th:remove="tag"></div>
+</div>
+</body>
+<script>
+
+</script>
+</html>

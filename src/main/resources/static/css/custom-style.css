@@ -1,0 +1,77 @@
+.mini-sidebar .top-navbar .navbar-header img {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.dropdown-item.active.selected {
+    color: white;
+}
+
+.dropdown-item.active {
+    color: white;
+}
+
+.bootstrap-select .dropdown-toggle:focus, .bootstrap-select > select.mobile-device:focus + .dropdown-toggle {
+    outline: 0 !important;
+}
+
+.dropdown-toggle:focus {
+    outline: none !important;
+    outline-offset: 0 !important;
+}
+
+.bootstrap-select .dropdown-menu {
+    max-width: 400px;
+}
+
+.bootstrap-select .btn {
+    line-height: 1.5;
+    border: 1px solid rgba(0, 0, 0, .15);
+}
+
+.bootstrap-select > .dropdown-toggle {
+    background-color: #fff;
+}
+
+.bootstrap-select .dropdown-menu li a {
+    font-size: 14px !important;
+    line-height: 0.9;
+}
+
+#treeCheckbox {
+    list-style: none;
+}
+
+#treeCheckbox ul {
+    list-style: none;
+}
+
+#treeCheckbox .permission {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#treeCheckbox .permission::before {
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+#treeCheckbox .down::before {
+    -ms-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+#treeCheckbox .active {
+    display: none;
+}
+
+#treeCheckbox li {
+    min-width: 105%;
+}
+

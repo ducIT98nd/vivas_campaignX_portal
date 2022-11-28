@@ -1,0 +1,16 @@
+  <div class="form-group">
+    <label class="control-label">Tên chiến dịch</label>
+    <select class="form-control custom-select selectpicker"
+            data-live-search="true"
+            data-placeholder="Tất cả"
+            tabindex="1" id="campaignName" name="campaignName"
+    >
+      <option value="">Tất cả
+      </option>
+      <option th:each="campaign : ${campaignManagerDtoList}"
+              th:value="${campaign.name}"
+              th:text="${campaign.name}">
+      </option>
+
+    </select>
+  </div>

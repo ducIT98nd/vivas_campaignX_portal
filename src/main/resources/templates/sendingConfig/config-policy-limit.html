@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head">
+
+</head>
+<body class="fix-header card-no-border">
+<div th:insert="common/templates::alertMessage"></div>
+<div th:insert="common/templates::contextPath"></div>
+<script type="text/javascript" th:src="@{/js/configPolicy/configPolicy.js}"></script>
+<script type="text/javascript" th:src="@{/js/qcTimepicker/qcTimepicker.min.js}"></script>
+<style>
+    textarea {
+        resize: vertical;
+    }
+
+    #edit-mt-content-modal .btn {
+        padding: 7px 10px !important;
+        font-size: 16px !important;
+    }
+
+    .modal-footer {
+        justify-content: center;
+    }
+
+    #form-edit-content .table thead tr th, .table tbody tr td {
+        border: none;
+    }
+</style>
+<div id="main-wrapper">
+
+    <div th:replace="common/bodyHeader"></div>
+
+    <!-- Left Sidebar - style you can find in sidebar.scss  -->
+    <div th:replace="common/leftmenu"></div>
+
+    <div class="page-wrapper">
+        <!-- Container fluid  -->
+        <div class="container-fluid">
+
+            <div class="row pd-r-ctn">
+                <div class="col-lg-12 col-xlg-12 col-md-12 L_card">
+                    <!--Data table -->
+                    <div class="card">
+
+                        <div class="card-block">
+                            <div class="row smal_title">
+                                <h4 class="card-title col-lg-12"><img src="assets/images/iconsvg/setting.svg"/> Chính
+                                    sách chung</h4>
+                            </div>
+                            <form id="formConfigPolicyLimit"
+                                  th:action="@{/config-policy/update}"
+                                  method="post" onsubmit="return validate()">
+                                <div class="add_cp_pages m-t-10 campaign-policy">
+
+                                    <h4 class="card-title col-lg-12 text-uppercase">Chính sách bắt buộc</h4>
+                                    <div class="row p-t-20">
+                                        <div class="col-md-12">
+                                            <div class="form-group row_poli">
+                                                <label class="control-label">Giới hạn thông điệp gửi đi</label>
+                                                <p>(Số thông điệp tối đa được gửi qua từng kênh truyền thông nhà mạng
+                                                    mỗi
+                                                    ngày)</p>
+                                                <div>
+                                                    <input type="number" id="limitMessagesPerDay"
+                                                           name="limitMessagesPerDay" class="form-control"
+                                                           th:value="${limitMessagesPerDay}"
+                                                           placeholder="Nhập giới hạn thông điệp mỗi ngày" min="0"
+                                                           onkeypress='return blockCharacterByInputNumber(event)'>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group row_poli">
+                                                <label class="control-label">Giới hạn thông điệp từng kênh truyền thông
+                                                    nhà
+                                                    mạng</label>
+                                                <p>(Số thông điệp tối đa được gửi mỗi ngày trên tất cả các kênh)</p>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <span class="t-nm">SMS:</span>
+                                                    <input type="text" id="limitMessagesPerDaySMS"
+                                                           name="limitMessagesPerDaySMS"
+                                                           th:value="${limitMessagesPerDaySMS}" class="form-control"
+                                                           placeholder="Nhập giới hạn thông điệp SMS"
+                                                           onkeypress='return blockCharacterByInputNumber(event)'>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <span class="t-nm">USSD:</span>
+                                                    <input type="text" id="limitMessagesPerDayUSSD"
+                                                           name="limitMessagesPerDayUSSD"
+                                                           th:value="${limitMessagesPerDayUSSD}" class="form-control"
+                                                           placeholder="Nhập giới hạn thông điệp USSD"
+                                                           onkeypress='return blockCharacterByInputNumber(event)'>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="t-nm">IVR:</span>
+                                                    <input type="text" id="limitMessagesPerDayIVR"
+                                                           name="limitMessagesPerDayIVR"
+                                                           th:value="${limitMessagesPerDayIVR}" class="form-control"
+                                                           placeholder="Nhập giới hạn thông điệp IVR"
+                                                           onkeypress='return blockCharacterByInputNumber(event)'>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group row_poli">
+                                                <label class="control-label">Khung giờ gửi tin qua kênh truyền thông nhà
+                                                    mạng</label>
+                                                <p>(Chỉ gửi tin truyền thông qua các kênh nhà mạng trong khung giờ
+                                                    này)</p>
+
+                                                <div class="row d-flex date-policy">
+                                                    <div class="col-md-1 t-mn">SMS:</div>
+                                                    <div class="col-md-11 date_input_cols date_input_rows" id="addSMS">
+                                                        <div class="row" id="SMS_1">
+                                                            <div class="col-md-10" id="alert-time-sms-1">
+                                                                <div class="row time-limit-sms">
+                                                                    <div class="col-md-6 form-group">
+                                                                        <label class="control-label">Từ</label>
+                                                                        <input class="form-control"
+                                                                               id="start-time-limit-sms-1"
+                                                                               name="start-time-limit-sms"
+                                                                               th:value="${startTimeLimitSms1}"
+                                                                               type="text">
+                                                                        <input class="form-control"
+                                                                               id="start-time-limit-sms-view"
+                                                                               name="start-time-limit-sms-view"
+                                                                               th:value="${startTimeLimitSms2}"
+                                                                               type="hidden">
+                                                                    </div>
+                                                                    <div class="col-md-6 form-group">
+                                                                        <label class="control-label">Đến</label>
+                                                                        <input class="form-control" type="text"
+                                                                               id="end-time-limit-sms-1"
+                                                                               name="end-time-limit-sms"
+                                                                               th:value="${endTimeLimitSms1}">
+                                                                        <input class="form-control" type="hidden"
+                                                                               id="end-time-limit-sms-view"
+                                                                               name="end-time-limit-sms-view"
+                                                                               th:value="${endTimeLimitSms2}">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2 act_crit poli_btn">
+                                                                <button type="button"
+                                                                        class="btn btn-rounded btn-danger size_i"
+                                                                        title="Xóa tiêu chí" onclick="deleteSMS(1)" id="delete-time-sms-1">
+                                                                    <i class="ti-close"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn_ksn btn-save"
+                                                                        title="Tạo tiêu chí con" id="add-time-sms-1" onclick="addSMS()">
+                                                                    <i class="ti-plus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row d-flex date-policy">
+                                                    <div class="col-md-1 t-mn">USSD:</div>
+                                                    <div class="col-md-11 date_input_cols date_input_rows" id="addUSSD">
+                                                        <div class="row" id="USSD_1">
+                                                            <div class="col-md-10" id="alert-time-ussd-1">
+                                                                <div class="row">
+                                                                    <div class="col-md-6 form-group">
+                                                                        <label class="control-label">Từ</label>
+                                                                        <input class="form-control"
+                                                                               id="start-time-limit-ussd-1"
+                                                                               name="start-time-limit-ussd"
+                                                                               th:value="${startTimeLimitUssd1}"
+                                                                               type="text">
+                                                                        <input class="form-control"
+                                                                               id="start-time-limit-ussd-view"
+                                                                               name="start-time-limit-ussd-view"
+                                                                               th:value="${startTimeLimitUssd2}"
+                                                                               type="hidden">
+                                                                    </div>
+                                                                    <div class="col-md-6 form-group">
+                                                                        <label class="control-label">Đến</label>
+                                                                        <input class="form-control" type="text"
+                                                                               id="end-time-limit-ussd-1"
+                                                                               name="end-time-limit-ussd"
+                                                                               th:value="${endTimeLimitUssd1}">
+                                                                        <input class="form-control" type="hidden"
+                                                                               id="end-time-limit-ussd-view"
+                                                                               name="end-time-limit-ussd-view"
+                                                                               th:value="${endTimeLimitUssd2}">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2 act_crit poli_btn">
+                                                                <button type="button"
+                                                                        class="btn btn-rounded btn-danger size_i"
+                                                                        title="Xóa tiêu chí" onclick="deleteUSSD(1)" id="delete-time-ussd-1">
+                                                                    <i class="ti-close"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn_ksn btn-save"
+                                                                        title="Tạo tiêu chí con" id="add-time-ussd-1" onclick="addUSSD()">
+                                                                    <i class="ti-plus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row d-flex date-policy bt-n">
+                                                    <div class="col-md-1 t-mn">IVR:</div>
+                                                    <div class="col-md-11 date_input_cols date_input_rows" id="addIVR">
+                                                        <div class="row" id="IVR_1">
+                                                            <div class="col-md-10" id="alert-time-ivr-1">
+                                                                <div class="row">
+                                                                    <div class="col-md-6 form-group">
+                                                                        <label class="control-label">Từ</label>
+                                                                        <input class="form-control"
+                                                                               id="start-time-limit-ivr-1"
+                                                                               name="start-time-limit-ivr"
+                                                                               th:value="${startTimeLimitIvr1}"
+                                                                               type="text">
+                                                                        <input class="form-control"
+                                                                               id="start-time-limit-ivr-view"
+                                                                               name="start-time-limit-ivr-view"
+                                                                               th:value="${startTimeLimitIvr2}"
+                                                                               type="hidden">
+                                                                    </div>
+                                                                    <div class="col-md-6 form-group">
+                                                                        <label class="control-label">Đến</label>
+                                                                        <input class="form-control" type="text"
+                                                                               id="end-time-limit-ivr-1"
+                                                                               name="end-time-limit-ivr"
+                                                                               th:value="${endTimeLimitIvr1}">
+                                                                        <input class="form-control"
+                                                                               id="end-time-limit-ivr-view"
+                                                                               name="end-time-limit-ivr-view"
+                                                                               th:value="${endTimeLimitIvr2}"
+                                                                               type="hidden">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2 act_crit poli_btn">
+                                                                <button type="button"
+                                                                        class="btn btn-rounded btn-danger size_i"
+                                                                        title="Xóa tiêu chí" onclick="deleteIVR(1)" id="delete-time-ivr-1">
+                                                                    <i class="ti-close"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn_ksn btn-save"
+                                                                        title="Tạo tiêu chí con" id="add-time-ivr-1" onclick="addIVR()">
+                                                                    <i class="ti-plus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h4 class="card-title col-lg-12 text-uppercase">Chính sách không bắt buộc</h4>
+                                    <div class="row p-t-20">
+                                        <div class="col-md-12">
+                                            <div class="form-group row_poli">
+                                                <label class="control-label">Giới hạn thông điệp từng kênh truyền thông
+                                                    ngoài nhà mạng</label>
+                                                <p>(Số thông điệp tối đa được gửi qua từng kênh truyền thông ngoài nhà
+                                                    mạng
+                                                    mỗi ngày)</p>
+                                                <label>Hệ thống hiện không kết nối với kênh truyền thông ngoài nhà mạng.</label>
+<!--                                                <div class="d-flex align-items-center mb-2">-->
+<!--                                                    <span class="t-nm">Email:</span>-->
+<!--                                                    <input type="text" id="limitMessagesPerDayEmail"-->
+<!--                                                           class="form-control"-->
+<!--                                                           placeholder="Nhập giới hạn thông điệp Email"-->
+<!--                                                           name="limitMessagesPerDayEmail"-->
+<!--                                                           th:value="${limitMessagesPerDayEmail}"-->
+<!--                                                           onkeypress='return blockCharacterByInputNumber(event)'>-->
+<!--                                                </div>-->
+<!--                                                <div class="d-flex align-items-center mb-2">-->
+<!--                                                    <span class="t-nm">Zalo:</span>-->
+<!--                                                    <input type="text" id="limitMessagesPerDayZalo" class="form-control"-->
+<!--                                                           placeholder="Nhập giới hạn thông điệp Zalo"-->
+<!--                                                           name="limitMessagesPerDayZalo"-->
+<!--                                                           th:value="${limitMessagesPerDayZalo}"-->
+<!--                                                           onkeypress='return blockCharacterByInputNumber(event)'>-->
+<!--                                                </div>-->
+<!--                                                <div class="d-flex align-items-center">-->
+<!--                                                    <span class="t-nm">DigiLife:</span>-->
+<!--                                                    <input type="text" id="limitMessagesPerDayDigiLife"-->
+<!--                                                           class="form-control"-->
+<!--                                                           placeholder="Nhập giới hạn thông điệp DigiLife"-->
+<!--                                                           name="limitMessagesPerDayDigiLife"-->
+<!--                                                           th:value="${limitMessagesPerDayDigilife}"-->
+<!--                                                           onkeypress='return blockCharacterByInputNumber(event)'>-->
+<!--                                                </div>-->
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group row_poli">
+                                                <label class="control-label">Khung giờ gửi tin qua kênh truyền thông
+                                                    ngoài
+                                                    nhà mạng</label>
+                                                <p>(Chỉ gửi tin truyền thông qua các kênh ngoài nhà mạng trong khung giờ
+                                                    này)</p>
+                                                <label>Hệ thống hiện không kết nối với kênh truyền thông ngoài nhà mạng.</label>
+<!--                                                <div class="row d-flex date-policy">-->
+<!--                                                    <div class="col-md-1 t-mn">Email:</div>-->
+<!--                                                    <div class="col-md-11 date_input_cols date_input_rows">-->
+<!--                                                        <div class="row">-->
+<!--                                                            <div class="col-md-10" id="alert-time-email-1">-->
+<!--                                                                <div class="row">-->
+<!--                                                                    <div class="col-md-6 form-group">-->
+<!--                                                                        <label class="control-label">Từ</label>-->
+<!--                                                                        <input class="form-control"-->
+<!--                                                                               id="start-time-limit-email-1"-->
+<!--                                                                               type="text"-->
+<!--                                                                               name="start-time-limit-email-1"-->
+<!--                                                                               th:value="${startTimeLimitEmail1}">-->
+<!--                                                                    </div>-->
+<!--                                                                    <div class="col-md-6 form-group">-->
+<!--                                                                        <label class="control-label">Đến</label>-->
+<!--                                                                        <input class="form-control" type="text"-->
+<!--                                                                               id="end-time-limit-email-1"-->
+<!--                                                                               name="end-time-limit-email-1"-->
+<!--                                                                               th:value="${endTimeLimitEmail1}">-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="col-md-2 act_crit poli_btn">-->
+<!--                                                                <button type="button"-->
+<!--                                                                        class="btn btn-rounded btn-danger size_i"-->
+<!--                                                                        data-toggle="tooltip" data-placement="top"-->
+<!--                                                                        title="Xóa tiêu chí">-->
+<!--                                                                    <i class="ti-close"></i>-->
+<!--                                                                </button>-->
+<!--                                                                <button type="button" class="btn btn_ksn btn-save"-->
+<!--                                                                        data-toggle="tooltip" data-placement="top"-->
+<!--                                                                        title="Tạo tiêu chí con" id="add-time-email-2">-->
+<!--                                                                    <i class="ti-plus"></i>-->
+<!--                                                                </button>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+
+<!--                                                <div class="row d-flex date-policy">-->
+<!--                                                    <div class="col-md-1 t-mn">Zalo:</div>-->
+<!--                                                    <div class="col-md-11 date_input_cols date_input_rows">-->
+<!--                                                        <div class="row">-->
+<!--                                                            <div class="col-md-10" id="alert-time-zalo-1">-->
+<!--                                                                <div class="row">-->
+<!--                                                                    <div class="col-md-6 form-group">-->
+<!--                                                                        <label class="control-label">Từ</label>-->
+<!--                                                                        <input class="form-control"-->
+<!--                                                                               id="start-time-limit-zalo-1"-->
+<!--                                                                               name="start-time-limit-zalo-1"-->
+<!--                                                                               th:value="${startTimeLimitZalo1}"-->
+<!--                                                                               type="text">-->
+<!--                                                                    </div>-->
+<!--                                                                    <div class="col-md-6 form-group">-->
+<!--                                                                        <label class="control-label">Đến</label>-->
+<!--                                                                        <input class="form-control" type="text"-->
+<!--                                                                               id="end-time-limit-zalo-1"-->
+<!--                                                                               name="end-time-limit-zalo-1"-->
+<!--                                                                               th:value="${endTimeLimitZalo1}">-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="col-md-2 act_crit poli_btn">-->
+<!--                                                                <button type="button"-->
+<!--                                                                        class="btn btn-rounded btn-danger size_i"-->
+<!--                                                                        data-toggle="tooltip" data-placement="top"-->
+<!--                                                                        title="Xóa tiêu chí">-->
+<!--                                                                    <i class="ti-close"></i>-->
+<!--                                                                </button>-->
+<!--                                                                <button type="button" class="btn btn_ksn btn-save"-->
+<!--                                                                        data-toggle="tooltip" data-placement="top"-->
+<!--                                                                        title="Tạo tiêu chí con" id="add-time-zalo-2">-->
+<!--                                                                    <i class="ti-plus"></i>-->
+<!--                                                                </button>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+
+<!--                                                        <div class="row" id="time-zalo-2" style="display: none">-->
+<!--                                                            <div class="col-md-10" id="alert-time-zalo-2">-->
+<!--                                                                <div class="row">-->
+<!--                                                                    <div class="col-md-6 form-group">-->
+<!--                                                                        <label class="control-label">Từ</label>-->
+<!--                                                                        <input class="form-control"-->
+<!--                                                                               id="start-time-limit-zalo-2"-->
+<!--                                                                               name="start-time-limit-zalo-2"-->
+<!--                                                                               th:value="${startTimeLimitZalo2}"-->
+<!--                                                                               type="text">-->
+<!--                                                                    </div>-->
+<!--                                                                    <div class="col-md-6 form-group">-->
+<!--                                                                        <label class="control-label">Đến</label>-->
+<!--                                                                        <input class="form-control" type="text"-->
+<!--                                                                               id="end-time-limit-zalo-2"-->
+<!--                                                                               name="end-time-limit-zalo-2"-->
+<!--                                                                               th:value="${endTimeLimitZalo2}">-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="col-md-2 act_crit poli_btn">-->
+<!--                                                                <button type="button"-->
+<!--                                                                        class="btn btn-rounded btn-danger size_i"-->
+<!--                                                                        data-toggle="tooltip" data-placement="top"-->
+<!--                                                                        title="Xóa tiêu chí" id="remove-time-zalo-2">-->
+<!--                                                                    <i class="ti-close"></i>-->
+<!--                                                                </button>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="row d-flex date-policy bt-n">-->
+<!--                                                    <div class="col-md-1 t-mn">DigiLife:</div>-->
+<!--                                                    <div class="col-md-11 date_input_cols date_input_rows">-->
+<!--                                                        <div class="row">-->
+<!--                                                            <div class="col-md-10" id="alert-time-digilife-1">-->
+<!--                                                                <div class="row">-->
+<!--                                                                    <div class="col-md-6 form-group">-->
+<!--                                                                        <label class="control-label">Từ</label>-->
+<!--                                                                        <input class="form-control"-->
+<!--                                                                               id="start-time-limit-digilife-1"-->
+<!--                                                                               name="start-time-limit-digilife-1"-->
+<!--                                                                               th:value="${startTimeLimitDigilife1}"-->
+<!--                                                                               type="text">-->
+<!--                                                                    </div>-->
+<!--                                                                    <div class="col-md-6 form-group">-->
+<!--                                                                        <label class="control-label">Đến</label>-->
+<!--                                                                        <input class="form-control" type="text"-->
+<!--                                                                               id="end-time-limit-digilife-1"-->
+<!--                                                                               name="end-time-limit-digilife-1"-->
+<!--                                                                               th:value="${endTimeLimitDigilife1}">-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="col-md-2 act_crit poli_btn">-->
+<!--                                                                <button type="button"-->
+<!--                                                                        class="btn btn-rounded btn-danger size_i"-->
+<!--                                                                        data-toggle="tooltip" data-placement="top"-->
+<!--                                                                        title="Xóa tiêu chí">-->
+<!--                                                                    <i class="ti-close"></i>-->
+<!--                                                                </button>-->
+<!--                                                                <button type="button" class="btn btn_ksn btn-save"-->
+<!--                                                                        data-toggle="tooltip" data-placement="top"-->
+<!--                                                                        title="Tạo tiêu chí con"-->
+<!--                                                                        id="add-time-digilife-2">-->
+<!--                                                                    <i class="ti-plus"></i>-->
+<!--                                                                </button>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+
+<!--                                                        <div class="row" id="time-digilife-2" style="display: none">-->
+<!--                                                            <div class="col-md-10" id="alert-time-digilife-2">-->
+<!--                                                                <div class="row">-->
+<!--                                                                    <div class="col-md-6 form-group">-->
+<!--                                                                        <label class="control-label">Từ</label>-->
+<!--                                                                        <input class="form-control"-->
+<!--                                                                               id="start-time-limit-digilife-2"-->
+<!--                                                                               name="start-time-limit-digilife-2"-->
+<!--                                                                               th:value="${startTimeLimitDigilife2}"-->
+<!--                                                                               type="text">-->
+<!--                                                                    </div>-->
+<!--                                                                    <div class="col-md-6 form-group">-->
+<!--                                                                        <label class="control-label">Đến</label>-->
+<!--                                                                        <input class="form-control" type="text"-->
+<!--                                                                               id="end-time-limit-digilife-2"-->
+<!--                                                                               name="end-time-limit-digilife-2"-->
+<!--                                                                               th:value="${endTimeLimitDigilife2}">-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="col-md-2 act_crit poli_btn">-->
+<!--                                                                <button type="button"-->
+<!--                                                                        class="btn btn-rounded btn-danger size_i"-->
+<!--                                                                        data-toggle="tooltip" data-placement="top"-->
+<!--                                                                        title="Xóa tiêu chí"-->
+<!--                                                                        id="remove-time-digilife-2">-->
+<!--                                                                    <i class="ti-close"></i>-->
+<!--                                                                </button>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+
+<!--                                                    </div>-->
+<!--                                                </div>-->
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="btn_main_act btn_R">
+                                        <div class="btn-group">
+                                            <button type="submit" class="btn btn-rounded btn-primary"
+                                                    >Lưu
+                                            </button>
+                                        </div>
+                                        <div class="btn-group cancel">
+                                            <button type="button" class="btn btn-rounded btn-danger" onclick="cancelPolicy()">Hủy</button>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- Row -->
+            <!-- ============================================================== -->
+            <!-- End PAge Content -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+
+            <!-- End Right sidebar -->
+            <!-- ============================================================== -->
+        </div>
+
+        <!-- footer -->
+        <footer class="footer">
+            Bản quyền thuộc về Công ty TNHH Cung cấp Giải pháp Dịch vụ Giá trị gia tăng <span
+                class="red-clr">VIVAS</span>
+        </footer>
+        <input id="csrf-input" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <!-- End footer -->
+        <!-- End Page wrapper  -->
+        <div th:insert="common/footer" th:remove="tag"></div>
+    </div>
+</div>
+</body>
+
+</html>

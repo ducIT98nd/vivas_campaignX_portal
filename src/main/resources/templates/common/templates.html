@@ -1,0 +1,91 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<script th:inline="javascript"  th:fragment="alertMessage">
+	$( document ).ready(function() {
+		var result = /*[[${result}]]*/ 'default';
+		if(result != null && result !="") {
+			var obj = JSON.parse(result);
+			if(obj.code == "1") {
+				Swal.fire({
+					position: 'top',
+					type: 'success',
+					title: 'Thông báo',
+					text: obj.message,
+					showConfirmButton: false,
+					timer: 3000
+				})
+			} else if(obj.code == "0") {
+				Swal.fire({
+					position: 'top',
+					type: 'error',
+					title: 'Thông báo',
+					text: obj.message,
+					showConfirmButton: true,
+					// timer: 3000
+				})
+			} else if(obj.code == "2"){
+				 $.toast({
+			            heading: 'Thông báo:',
+			            text: '<span style=\'font-size: 15px;\'>' + obj.message + '</span>',
+			            position: 'top-center',
+			            icon: 'error',
+			            hideAfter: 3000,
+			            stack: false
+			        })
+			}else if(obj.code == "3"){
+				$.toast({
+		            heading: 'Thông báo:',
+		            text: '<span style=\'font-size: 15px;\'>' + obj.message + '</span>',
+		            position: 'top-center',
+		            icon: 'success',
+		            hideAfter: 3000,
+		            stack: false
+		        })
+			}else if(obj.code == "5"){
+				console.log(obj);
+				let data = obj.data;
+				Swal.fire({
+					position: 'top',
+					title: 'Thông báo',
+					text: obj.message,
+					icon: 'info',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'CÓ',
+					cancelButtonText: 'KHÔNG'
+				}).then((result) => {
+					if (result.value) {
+						window.location.href = "/campaignManager/changeStatus?id="+data.split("_")[0] + "&status=2&type="+data.split("_")[1];
+					}
+				});
+			}
+		}
+
+		function alertErrorMessage (message) {
+			Swal.fire({
+				position: 'top',
+				icon: 'error',
+				title: 'Thông báo',
+				text: message
+			});
+
+		}
+	})
+</script>
+
+<script th:inline="javascript" th:fragment="pagination">
+	$(function () {
+		window.pagObj = $('#pagination').twbsPagination({
+			totalPages: [[${totalPages}]],
+			visiblePages: 5,
+			startPage: [[${currentPage}]],
+			href: true,
+			pageVariable: 'currentPage'
+		})
+	});
+</script>
+
+<script th:inline="javascript" th:fragment="contextPath">
+    var contextPath = [[@{/}]];
+</script>

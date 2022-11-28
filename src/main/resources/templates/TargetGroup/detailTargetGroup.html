@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head th:replace="common/head :: head"></head>
+<style>
+    .onoffswitch-inner:before {
+        content: "";
+    }
+
+    .onoffswitch-inner:after {
+        content: "";
+    }
+
+    #permissions {
+        margin-left: -38px;
+    }
+</style>
+
+<body class="fix-header card-no-border">
+<div th:insert="common/templates::alertMessage"></div>
+<!-- Preloader - style you can find in spinners.css -->
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<!-- Main wrapper - style you can find in pages.scss -->
+<div id="main-wrapper">
+    <div th:replace="common/bodyHeader"></div>
+
+    <!-- Left Sidebar - style you can find in sidebar.scss  -->
+    <div th:replace="common/leftmenu"></div>
+
+    <div class="page-wrapper">
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+
+            <div class="row pd-r-ctn">
+                <div class="col-lg-9 col-xlg-10 col-md-7 L_card">
+                    <!--Data table -->
+                    <div class="card">
+
+                        <div class="card-block">
+                            <div class="row smal_title">
+                                <h4 class="card-title col-lg-12"><i class="detail_obj_ic"></i>Xem chi tiết nhóm đối tượng</h4>
+                            </div>
+
+                            <div class="ctn_add_obj">
+
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-6 dt_obj_col">
+                                        <div class="ic_dt">
+                                            <i class="objs_dt_ic"></i>
+                                        </div>
+                                        <label>Tên nhóm đối tượng</label>
+                                        <p class="text-active" th:text="${tagetGroup.getName()}"></p>
+                                    </div>
+                                    <div class="col-md-6 col-xs-6 dt_obj_col">
+                                        <div class="ic_dt">
+                                            <i class="filter_dt_ic"></i>
+                                        </div>
+                                        <label>Phương thức xác định nhóm đối tượng </label>
+                                        <p class="text-active" id = "channelObject"></p>
+                                        <input type="hidden" id="hiddenChannel" th:value="${tagetGroup.getChannel()}">
+                                        <input type="hidden" id="hiddenId" th:value="${tagetGroup.getId()}">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12 col-xs-12 dt_obj_col">
+                                        <div class="ic_dt">
+                                            <i class="des_dt_ic"></i>
+                                        </div>
+                                        <label>Mô tả</label>
+                                        <p class="text-active" th:text="${description}"></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row" id="viewListMsisdn">
+                                    <div class="col-md-12 col-xs-12 dt_obj_col">
+                                        <div class="ic_dt">
+                                            <i class="des_dt_ic"></i>
+                                        </div>
+                                        <label>Danh sách thuê bao</label>
+                                        <p class="text-active">Tải danh sách thuê bao nhóm đối tượng tại <a th:href="@{'/TagetGroupManagerController/DownloadFileUpload/'+ ${tagetGroup.id}}" style="text-decoration: underline;">đây</a></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row" id="viewListCriteria">
+                                    <div class="col-md-12 col-xs-12 dt_obj_col">
+                                        <div class="ic_dt">
+                                            <i class="des_dt_ic"></i>
+                                        </div>
+                                        <label>Chi tiết tiêu chí:</label>
+                                        <p class="text-active" id="typeLv1"></p>
+                                        <input type="hidden" id="typeLevel1" th:value="${typeLevel1}">
+                                        <div class="dk-full">
+                                            <ul id="appendHTML">
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="btn_main_act">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn-more dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-more-alt"></i></button>
+                                        <div class="dropdown-menu" style="width: 210px">
+                                            <a class="dropdown-item" href="#"><i class="ti-stats-up"></i> Phân tích</a>
+                                            <a class="dropdown-item" href="#"><i class="ti-search"></i> So sánh</a>
+                                            <a class="dropdown-item" th:onclick="exportFileMSISDN([[${tagetGroup.getId()}]], [[${tagetGroup.getName()}]])"><i class="icon-share-alt"></i> Xuất danh sách thuê bao</a>
+                                            <a class="dropdown-item" id="viewPdf" th:onclick="exportPdf([[${tagetGroup.getId()}]])"><i class="ti-file"></i> Xuất chi tiết</a>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button"
+                                                th:onclick="copyTargetGroup([[${tagetGroup.getId()}]])"
+                                                class="btn btn-rounded btn-primary"><i class="ti-files"></i> Sao chép</button>
+                                    </div>
+                                    <div class="btn-group btn_delete">
+                                        <button type="button"
+                                                th:onclick="deleteTargetGroup([[${tagetGroup.getId()}]],[[${tagetGroup.getName()}]],[[${tagetGroup.getChannel()}]])"
+                                                class="btn btn-rounded btn-outline-danger"><i class="ti-trash"></i> Xóa</button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-rounded btn-outline-primary"
+                                                th:if="${roleName == 'Quản trị' || roleName == 'Super Admin'  || tagetGroup.getCreatedUser() == currentUser}"
+                                                th:onclick="viewEdit([[${tagetGroup.getId()}]])">
+                                            <i class="ti-marker-alt"></i> Chỉnh sửa
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" onclick="cancel()" class="btn btn-rounded btn-secondary">Quay lại</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xlg-2 col-md-4 R_card">
+                    <div class="card card-inverse card-primary top_R_card first_R_card">
+                        <div class="card-block">
+                            <div class="d-flex">
+                                <div>
+                                    <h3 class="card-title titleDate">Quy mô nhóm</h3>
+                                </div>
+                            </div>
+                            <div class="row d-flex align-self-center">
+                                <div class="col-6">
+                                    <p class="display-6 text-white text-center sltb titleDate" th:id="'groupSize_'+${tagetGroup.getId()}" th:text="${tagetGroup.getQuantityMsisdn()}"></p>
+                                    <p class="text-center titleDate">Thuê bao</p>
+                                </div>
+                                <div class="col-6  text-center">
+                                    <i class="total_group_ic"></i>
+                                </div>
+                                <div class="col-12">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-rounded btn-primary update_total_group_btn titleDate" th:onclick="countMSISDN([[${tagetGroup.getId()}]],[[${tagetGroup.getChannel()}]])"
+                                        style="font-size:0.8vw;">
+                                            <i class="update_total_group_ic"></i>
+                                            Cập nhật quy mô nhóm
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-inverse card-primary top_R_card second_R_card">
+                        <div class="card-block">
+                            <div class="d-flex">
+                                <div>
+                                    <h3 class="card-title titleDate">Tỷ lệ so với toàn mạng</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="display-6 text-white text-center sltb titleDate" th:if="${tagetGroup.getWholeNetwork() != null}" th:id="'wholeNetwork_'+${tagetGroup.getId()}" th:text="${tagetGroup.getWholeNetwork()+'%'}"></p>
+                                    <p class="display-6 text-white text-center sltb titleDate" th:if="${tagetGroup.getWholeNetwork() == null}" th:id="'wholeNetwork_'+${tagetGroup.getId()}" >0.00%</p>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <i class="graph_ic"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Row -->
+            <!-- ============================================================== -->
+            <!-- End PAge Content -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+
+            <!-- End Right sidebar -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Container fluid  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+
+        <!-- footer -->
+        <!-- ============================================================== -->
+
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
+
+    </div>
+    <!-- End Page wrapper  -->
+    <div th:insert="common/footer" th:remove="tag"></div>
+
+</div>
+</body>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        var typeLevel1 = $("#typeLevel1").val();
+        if(typeLevel1 == 1){
+            $("#typeLv1").text("Thỏa mãn tất cả các điều kiện sau đây:");
+        }else if(typeLevel1 == 2){
+            $("#typeLv1").text("Thỏa mãn một trong số các điều kiện sau đây:");
+        }
+        var channel = $("#hiddenChannel").val();
+        if(channel == 3){
+            $("#channelObject").text("Dùng danh sách lọc thuê bao");
+            $("#viewListCriteria").hide();
+            $("#viewListMsisdn").show();
+        }else if(channel == 1){
+            $("#channelObject").text("Dùng tiêu chí lọc thuê bao");
+            $("#viewListCriteria").show();
+            $("#viewListMsisdn").hide();
+            var id = $("#hiddenId").val();
+            axios.get('/TagetGroupManagerController/getHtmlField?id='+id)
+                .then(function (response) {
+                    $("#appendHTML").append(response.data);
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }else if(channel == 4){
+            $("#channelObject").text("Dùng tập giao của danh sách thuê bao và tiêu chí");
+            $("#viewListCriteria").show();
+            $("#viewListMsisdn").show();
+            var id = $("#hiddenId").val();
+            axios.get('/TagetGroupManagerController/getHtmlField?id='+id)
+                .then(function (response) {
+                    $("#appendHTML").append(response.data);
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    });
+
+    function cancel() {
+        window.location.href = '/TagetGroupManagerController/targetGroupManager';
+    }
+    function viewEdit(id) {
+        window.location.href = '/TargetGroupController/viewEditDetail/' + id;
+    }
+    function deleteTargetGroup(id,name,channel){
+        swal({
+            title: "CampaignX  Thông báo",
+            text: "Bạn muốn xóa nhóm đối tượng " + name + "?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            cancelButtonText: "Hủy",
+            closeOnConfirm: false
+        }, function () {
+            window.location.href = 'delete?id=' + id +'&channel=' + channel;
+        });
+    }
+    function copyTargetGroup(id){
+        window.location.href = '/TargetGroupController/copyTargetGroup/' + id;
+    }
+    function exportPdf(id){
+        var linkPdf = '/TagetGroupManagerController/exportPdf?id=' + id;
+        $("#viewPdf").attr("href", linkPdf);
+        $("#viewPdf").attr("target", "_blank");
+    }
+
+    function showErrorMessage(message) {
+        Swal.fire({
+            position: 'top',
+            type: 'error',
+            icon: 'error',
+            title: 'Thông báo',
+            text: message
+        });
+    }
+
+    function exportFileMSISDN(id, name){
+        $.ajax({
+            url: '/BigdataController/checkIsProcessTargetGroupByUserId?targetGroupID=' + id,
+            type: 'get',
+            async: false,
+            success: function (response) {
+                let obj = JSON.parse(response);
+                if(obj.code == 0){
+                    axios.get('/BigdataController/queryMSISDNAndExport?targetGroupID='+id)
+                        .then(function (response) {
+                            showToastMessageInfo(response.data.message);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }else {
+                     swal({
+                        title: "CampaignX  Thông báo",
+                        text: "Hệ thống đang xử lý yêu cầu xuất danh sách thuê bao của bạn cho nhóm đối tượng "+name+". Bạn muốn xuất thêm danh sách thuê bao mới?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "OK",
+                        cancelButtonText: "Hủy",
+                        closeOnConfirm: true
+                    }, function () {
+                        axios.get('/BigdataController/queryMSISDNAndExport?targetGroupID='+id)
+                            .then(function (response) {
+                                showToastMessageInfo(response.data.message);
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    });
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+
+
+    }
+    function countMSISDN(id,channel){
+        showToastMessageInfo("Hệ thống đang cập nhật số lượng thuê bao của nhóm đối tượng. Vui lòng chờ trong ít phút.");
+        axios.get('/TagetGroupManagerController/getGroupSizeAndWholeNetwork?id='+id+ '&channel=' + channel)
+            .then(function (response){
+                if(channel == 3){
+                    console.log("---- response data: "+response.data)
+                    console.log("---- response: "+response)
+                    $("#groupSize_" + id).text(response.data.groupSize);
+                    $("#wholeNetwork_" + id).text(response.data.wholeNetWork+'%');
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        let today1 = new Date();
+        let today = new Date();
+        let dd = String(today.getDate()).padStart(2, '0');
+        let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        let yyyy = today.getFullYear();
+        today = dd + '/' + mm + '/' + yyyy;
+        let h = today1.getHours();
+        let m = today1.getMinutes();
+        let s = today1.getSeconds();
+        let time = h +":"+ m+":"+s;
+        $('#groupSize_' + id).prop('title', 'Cập nhật cuối: ' + today +" "+time);
+        $('#wholeNetwork_' + id).prop('title', 'Cập nhật cuối: ' + today +" "+time);
+    }
+</script>
+</html>

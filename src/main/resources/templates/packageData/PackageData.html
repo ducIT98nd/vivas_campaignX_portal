@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head th:replace="common/head :: head"></head>
+<style>
+    .modal-table td {
+        vertical-align: middle !important;
+        border: none !important;;
+    }
+
+    .btn {
+        padding: 8px 12px !important;
+        font-size: 16px !important;
+    }
+
+    .modal-content {
+        min-width: 670px;
+    }
+
+    .modal-body p {
+        word-wrap: break-word;
+    }
+
+    .custom-select {
+        background-color: #fff;
+    }
+
+    .card-title .fa-send {
+        display: block;
+        width: 24px;
+        height: 24px;
+        transform: translateY(3px);
+    }
+
+    /*select_tag*/
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: 30px;
+        font-size: 14px;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: 20px;
+        font-size: 14px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background: #6160dc;
+        border-radius: 30px;
+        color: #fff;
+        border: 1px solid #6160dc;
+        font-size: 14px;
+    }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        font-size: 14px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: #fff;
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background: #6160dc
+    }
+
+    .detail_pack .bootstrap-tagsinput, .edit_pack .bootstrap-tagsinput {
+        display: none;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        margin: 2.5px;
+    }
+
+    .has-danger .select2-container--default .select2-selection--multiple {
+        border-color: #F14F95 !important;
+    }
+
+</style>
+<body class="fix-header card-no-border">
+<div th:insert="common/templates::alertMessage"></div>
+<div th:insert="common/templates::pagination"></div>
+<div th:insert="common/templates::contextPath"></div>
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<div id="main-wrapper">
+    <div th:replace="common/bodyHeader"></div>
+
+    <div th:replace="common/leftmenu"></div>
+
+    <div class="page-wrapper">
+        <div class="container-fluid">
+            <div class="row pd-r-ctn">
+                <div class="col-12">
+                    <!--Data table -->
+                    <form id="packageDataForm" class="form" method="get">
+                        <div class="card">
+
+                            <div class="card-block">
+                                <div class="row smal_title">
+                                    <h4 class="card-title col-lg-6 d-flex"><i class="fa fa-briefcase"></i>Danh sách gói cước</h4>
+                                    <div class="title_btn col-1g-6">
+                                        <div class="btn-group">
+                                            <button type="button" onclick="handleShowModalAddPackageData()"
+                                                    data-toggle="modal" data-target=".add_pack"
+                                                    class="btn btn-rounded btn-primary"><i class="ti-plus text"
+                                                                                           aria-hidden="true"></i>Thêm
+                                                gói cước
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="table-responsive m-t-10">
+                                    <div class="row search_table search_campaign search_acc">
+                                        <div class="col-md-10">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Mã gói</label>
+                                                        <input type="text" id="packageCodeName" name="packageCodeName"
+                                                               th:value="${packageCodeName}" class="form-control"
+                                                               placeholder="Tìm kiếm mã gói">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Tên gói</label>
+                                                        <input type="text" id="packageDataName" name="packageDataName"
+                                                               th:value="${packageDataName}" class="form-control"
+                                                               placeholder="Tìm kiếm tên gói">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Nhóm gói cước</label>
+                                                        <select class="custom-select col-9 form-control"
+                                                                name="packageGroup">
+                                                            <option value="" th:selected="${packageGroup} == null">
+                                                                Tất cả
+                                                            </option>
+                                                            <option value="1" th:selected="${packageGroup} == 1">
+                                                                DATA
+                                                            </option>
+                                                            <option value="2" th:selected="${packageGroup} == 2">
+                                                                KMCB
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Trạng thái</label>
+                                                        <select class="custom-select col-9 form-control" name="status">
+                                                            <option value="" th:selected="${status} == null">Tất cả
+                                                            </option>
+                                                            <option value="1" th:selected="${status} == 1">Hoạt động
+                                                            </option>
+                                                            <option value="0" th:selected="${status} == 0">Tạm dừng
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-2 btn_search_acc">
+                                            <div class="row">
+                                                <div class="btn-group">
+                                                    <button type="submit" class="btn btn-rounded btn-primary"
+                                                            onclick="searchPackageData()"><i class="ti-search"></i> Tìm
+                                                        kiếm
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="row form_qldhqc">
+                                        <div class="col-sm-12 col-xs-12">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="text-align: center">#</th>
+                                                        <th style="text-align: center">Tên gói</th>
+                                                        <th style="text-align: center">Nhóm gói cước</th>
+                                                        <th style="text-align: center">Mã gói</th>
+                                                        <th style="text-align: center">Giá gói (VNĐ/chu kỳ)</th>
+                                                        <th style="text-align: center">Chu kỳ</th>
+                                                        <th style="text-align: center">Cú pháp đăng ký</th>
+                                                        <th style="text-align: center">Trạng thái</th>
+                                                        <th style="text-align: center">Thao tác</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:if="${totalPages == 0}">
+                                                        <td th:if="${totalPages == 0}" colspan="15"
+                                                            class="font-bold text-center">Không tìm thấy gói cước phù
+                                                            hợp
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="text-right" th:each="packageData,loop : ${packageDatas}">
+                                                        <td th:text="${loop.index+1+(currentPage-1)*pageSize}" style="text-align: left"></td>
+                                                        <td>
+                                                            <div class="scroll-inline " style="text-align: left"
+                                                                 th:text="${packageData.getPackageName()}"></div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="scroll-inline" style="text-align: left"
+                                                                 th:text="${packageData.getPackageGroup()}"></div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="scroll-inline" style="text-align: left"
+                                                                 th:text="${packageData.getPackageCodeName()}"></div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="scroll-inline" style="text-align: left"
+                                                                 th:text="${mmpUtils.formatDefaultVnNumber(packageData.getPackagePrice())}"></div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="scroll-inline" style="text-align: left"
+                                                                 th:text="${packageData.getCycle() + ' Ngày'}"></div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="scroll-inline" style="text-align: left"
+                                                                 th:text="${packageData.getRegistrationSyntax()}"></div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="scroll-inline" style="text-align: left"
+                                                                 th:text="${packageData.getStatus()}"></div>
+                                                        </td>
+                                                        <td class="act_ksn">
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn_ksn btn_ksn_delete"
+                                                                        title="Xem chi tiết"
+                                                                        th:onclick="handleShowModalDetailPackageData([[${packageData.getId()}]])">
+                                                                    <i class="eye_ic"></i>
+                                                                </button>
+                                                                <button type="button"
+                                                                        class="btn btn_ksn btn_ksn_delete btn_cl_black"
+                                                                        title="Chỉnh sửa"
+                                                                        th:onclick="handleShowModalEditPackageData([[${packageData.getId()}]])">
+                                                                    <i class="edit_ic"></i>
+                                                                </button>
+                                                                <button type="button"
+                                                                        class="btn btn_ksn btn_ksn_delete btn_cl_black"
+                                                                        title="Xóa"
+                                                                        th:onclick="handleDeletePackageData([[${packageData.getId()}]])">
+                                                                    <i class="trash_ic"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <div class="float-right m-t-20">
+                                                    <nav aria-label="Page navigation">
+                                                        <ul class="pagination-sm" id="pagination"></ul>
+                                                    </nav>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+            <!-- Row -->
+            <!-- ============================================================== -->
+            <!-- End PAge Content -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+
+            <!-- End Right sidebar -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Container fluid  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+
+        <!-- footer -->
+        <!-- ============================================================== -->
+
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
+
+    </div>
+    <!-- End Page wrapper  -->
+    <div th:insert="common/footer" th:remove="tag"></div>
+    <input type="hidden" id="csrfToken" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+    <!-- Add Package Data -->
+    <div id="modalAddPackageData" data-backdrop="static" data-keyboard="false"
+         class="modal fade pop_mlg change_pass add_pack" tabindex="-1" role="dialog"
+         aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Thêm mới gói cước</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <form id="AddPackageDataForm" method="post">
+                    <div class="row modal-body p-t-30">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Tên gói <span class="red-clr">*</span></label>
+                                <input type="text" id="addPackageName" class="form-control" maxlength="100"
+                                       placeholder="Nhập tên gói">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Nhóm gói cước <span class="red-clr">*</span></label>
+                                <select id="addPackageGroup" class="form-control custom-select">
+                                    <option value="" hidden="hidden" selected>Chọn nhóm gói cước</option>
+                                    <option value="1">DATA</option>
+                                    <option value="2">KMCB</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Mã gói CDR<span class="red-clr">*</span></label>
+                                <select id="addPackageCodeName"
+                                        name="addPackageCodeName"
+                                        class="form-control select2 select2-multiple tag_slc"
+                                        style="width: 100%"
+                                        multiple="multiple"
+                                        data-placeholder="Chọn mã gói"
+                                        autocomplete="off">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Mã gói <span class="red-clr">*</span></label>
+                                <input type="text" id="addPackageCode" class="form-control"
+                                       placeholder="Nhập mã gói" maxlength="100">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Giá gói (VNĐ/chu kỳ) <span class="red-clr">*</span></label>
+                                <input type="text" id="addPackagePrice" class="form-control" placeholder="Nhập giá gói">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Chu kỳ (ngày) <span class="red-clr">*</span></label>
+                                <input type="text" id="addCycle" class="form-control" placeholder="Nhập chu kỳ gói">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Cú pháp đăng ký <span class="red-clr">*</span></label>
+                                <input type="text" id="addRegistrationSyntax" class="form-control"
+                                       placeholder="Nhập cú pháp đăng ký" maxlength="100">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Cú pháp hủy <span class="red-clr">*</span></label>
+                                <input type="text" id="addCancelSyntax" class="form-control"
+                                       placeholder="Nhập cú pháp hủy" maxlength="100">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Nội dung gói <span class="red-clr">*</span></label>
+                                <input type="text" id="addPackageContent" class="form-control"
+                                       placeholder="Nhập nội dung gói" maxlength="300">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Trạng thái</label>
+                                <input type="checkbox" id="addStatus" checked class="js-switch" data-size="small"
+                                       data-color="#7460ee"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+
+                        </div>
+                        <div class="btn_main_act btn_R">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-rounded btn-primary"
+                                        onclick="handleAddPackageData(event)">Lưu
+                                </button>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-rounded btn-danger"
+                                        onclick="closeModel('modalAddPackageData','Bạn muốn hủy thêm mới gói cước?')">
+                                    Hủy
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <input type="hidden" id="is-valid-info-add" value="0">
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+
+    <!-- Edit Package Data -->
+    <div id="modalEditPackageData" data-backdrop="static" data-keyboard="false" class="modal fade bd-example-modal-lg"
+         tabindex="-1" role="dialog"
+         aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Chỉnh sửa gói cước</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <form id="editPackageDataForm" method="post">
+                    <div class="row modal-body p-t-30">
+                        <input type="hidden" id="editId"/>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Tên gói <span class="red-clr">*</span></label>
+                                <input type="text" id="editPackageName" class="form-control" placeholder="Nhập tên gói"
+                                       maxlength="100">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Nhóm gói cước <span class="red-clr">*</span></label>
+                                <select id="editPackageGroup" class="form-control custom-select">
+                                    <option value="1">DATA</option>
+                                    <option value="2">KMCB</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Mã gói CDR<span class="red-clr">*</span></label>
+                                <select id="editPackageCodeName"
+                                        class="form-control select2 select2-multiple tag_slc"
+                                        style="width: 100%"
+                                        multiple="multiple"
+                                        data-placeholder="Chọn mã gói">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Mã gói <span class="red-clr">*</span></label>
+                                <input type="text" id="editPackageCode" class="form-control"
+                                       placeholder="Nhập mã gói" maxlength="100">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Giá gói (VNĐ/chu kỳ) <span class="red-clr">*</span></label>
+                                <input type="text" id="editPackagePrice" class="form-control"
+                                       placeholder="Nhập giá gói">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Chu kỳ (ngày) <span class="red-clr">*</span></label>
+                                <input type="text" id="editCycle" class="form-control" placeholder="Nhập chu kỳ gói">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Cú pháp đăng ký <span class="red-clr">*</span></label>
+                                <input type="text" id="editRegistrationSyntax" class="form-control"
+                                       placeholder="Nhập cú pháp đăng ký" maxlength="100">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Cú pháp hủy <span class="red-clr">*</span></label>
+                                <input type="text" id="editCancelSyntax" class="form-control"
+                                       placeholder="Nhập cú pháp hủy" maxlength="100">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Nội dung gói <span class="red-clr">*</span></label>
+                                <input type="text" id="editPackageContent" class="form-control"
+                                       placeholder="Nhập nội dung gói" maxlength="300">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label">Trạng thái</label>
+                                <input type="checkbox" id="editStatus" class="js-switch" data-size="small"
+                                       data-color="#7460ee"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-5"></div>
+                        <div class="btn_main_act btn_R">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-rounded btn-primary"
+                                        onclick="handleUpdatePackageData(event)">Lưu
+                                </button>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-rounded btn-danger"
+                                        onclick="closeModel('modalEditPackageData','Bạn muốn hủy chỉnh sửa gói cước?')">
+                                    Hủy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="is-valid-info-update" value="0">
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+
+    <!-- Detail Package Data -->
+    <div id="modalDetailPackageData" data-backdrop="static" data-keyboard="false" class="modal fade bd-example-modal-lg"
+         tabindex="-1" role="dialog"
+         aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info-header shadow-sm">
+                    <h3 class="modal-title text-themecolor rounded">Chi tiết gói cước</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="row">
+                            <input type="hidden" id="detailId"/>
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-6">Tên gói:</div>
+                                            <div class="col-6 text-wrap">
+                                                <p id="detailPackageName"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-6">Nhóm gói cước:</div>
+                                            <div class="col-6">
+                                                <p id="detailPackageGroup"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-6">Mã gói CDR:</div>
+                                            <div class="col-6 text-wrap">
+                                                <p id="detailPackageCodeName"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-6">Mã gói:</div>
+                                            <div class="col-6 text-wrap">
+                                                <p id="detailPackageCode"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-6">Giá gói (VNĐ/chu kỳ):</div>
+                                            <div class="col-6 text-wrap">
+                                                <p id="detailPackagePrice"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-6">Chu kỳ (ngày):</div>
+                                            <div class="col-6 text-wrap">
+                                                <p id="detailCycle"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-6">Cú pháp đăng ký:</div>
+                                            <div class="col-6 text-wrap">
+                                                <p id="detailRegistrationSyntax"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-6">Cú pháp hủy:</div>
+                                            <div class="col-6 text-wrap">
+                                                <p id="detailCancelSyntax"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="row ">
+                                            <div class="col-6">Trạng thái:</div>
+                                            <div class="col-6 text-wrap">
+                                                <p id="detailStatus"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-6">Nội dung gói:</div>
+                                            <div class="col-6 text-wrap">
+                                                <p id="detailPackageContent"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+                    <button type="button" onclick="handleRedirectUpdatePackageData()" class="btn btn-primary">Sửa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Detail Sending Account -->
+
+</div>
+</body>
+
+<script th:inline="javascript">
+    var token = $("#csrfToken").val();
+    var packageCodeNames = [];
+    var getAllPackageCodeNames = /*[[${packageCodeNames}]]*/ 'default';
+    // $(document).ready(function () {
+    //     $('#modalEditPackageData').on('hide.bs.modal', function (event) {
+    //         let isValidData = $("#is-valid-info-update").val();
+    //         if (isValidData == 0) {
+    //             if (!confirm("Bạn muốn hủy chỉnh sửa gói cước?")) {
+    //                 event.preventDefault();
+    //             }
+    //         }
+    //     });
+    //     $('#modalAddPackageData').on('hide.bs.modal', function (event) {
+    //         let isValidData = $("#is-valid-info-add").val();
+    //         if (isValidData == 0) {
+    //             if (!confirm("Bạn muốn hủy thêm mới gói cước?")) {
+    //                 event.preventDefault();
+    //             }
+    //         }
+    //     });
+    //
+    // });
+
+    function closeModel(id, message) {
+        Swal.fire({
+            position: 'top',
+            title: 'Thông báo',
+            text: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK',
+            cancelButtonText: 'HỦY'
+        }).then((result) => {
+            if (result.value) {
+                $('#modalAddPackageData').modal('hide');
+                $('#modalEditPackageData').modal('hide');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+
+        // default disable package code name
+        $('#addPackageCodeName').attr("disabled", true);
+
+        // Switchery
+        $('.js-switch').each(function () {
+            new Switchery($(this)[0], $(this).data());
+        });
+        // For select 2
+        $(".select2").select2();
+        $('.selectpicker').selectpicker();
+
+        // handle change add package group
+        $('#addPackageGroup').on('change', function () {
+
+            const packageGroupText = $("#addPackageGroup option:selected").text();
+            if (packageGroupText.length > 0) {
+                $('#addPackageCodeName').attr("disabled", false);
+                $("#addPackageCodeName").val('').trigger('change');
+                var addPackageCodeNameElement = document.getElementById('addPackageCodeName');
+                var packageCodeNameHtml;
+
+                $.ajax({
+                    type: 'GET',
+                    contentType: 'application/json',
+                    url: `/package-codes?packageGroup=${packageGroupText}`,
+                    traditional: true,
+                    dataType: "JSON",
+                    headers: {
+                        'X-CSRF-Token': token
+                    },
+                    cache: true,
+                    async: false,
+                    success: function (response) {
+                        const httpStatus = response.code;
+                        const message = response.message;
+                        const data = response.data.data;
+                        if (httpStatus == 200) {
+                            console.log("data", data);
+                            $.each(data, function (i, packageCodeName) {
+                                if (!getAllPackageCodeNames.includes(packageCodeName)) {
+                                    packageCodeNameHtml += '<option value="' + packageCodeName + '" >' + packageCodeName + '</option>';
+                                }
+                            });
+                            addPackageCodeNameElement.innerHTML = packageCodeNameHtml;
+                        }
+                        if (httpStatus == 500) {
+                            console.log(message);
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    },
+                })
+            }
+        });
+
+        // handle change edit package group
+        $('#editPackageGroup').on('change', function () {
+            const packageGroupText = $("#editPackageGroup option:selected").text();
+            if (packageGroupText.length > 0) {
+                $("#editPackageCodeName").val('').trigger('change');
+                var packageCodeNameElement = document.getElementById('editPackageCodeName');
+                var packageCodeNameHtml;
+
+                $.ajax({
+                    type: 'GET',
+                    contentType: 'application/json',
+                    url: `/package-codes?packageGroup=${packageGroupText}`,
+                    traditional: true,
+                    dataType: "JSON",
+                    headers: {
+                        'X-CSRF-Token': token
+                    },
+                    cache: true,
+                    async: false,
+                    success: function (response) {
+                        const httpStatus = response.code;
+                        const message = response.message;
+                        const data = response.data.data;
+                        if (httpStatus == 200) {
+                            console.log("data", data);
+                            $.each(data, function (i, packageCodeName) {
+                                if (!getAllPackageCodeNames.includes(packageCodeName) || packageCodeNames[0].includes(packageCodeName)) {
+                                    packageCodeNameHtml += '<option value="' + packageCodeName + '" >' + packageCodeName + '</option>';
+                                }
+                            });
+                            packageCodeNameElement.innerHTML = packageCodeNameHtml;
+                        }
+                        if (httpStatus == 500) {
+                            console.log(message);
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    },
+                })
+            }
+        });
+
+    });
+
+    function searchPackageData() {
+        $('#packageDataForm').attr('action', '/package-datas/');
+    }
+
+    function handleShowModalAddPackageData() {
+        $('#modalAddPackageData').find('form').trigger('reset');
+        $("#addPackageCodeName").val('').trigger('change');
+        $('#addPackageCodeName').attr("disabled", true);
+        removeTooltip("addPackageName");
+        removeTooltip("addPackageGroup");
+        removeTooltip("addPackageCodeName");
+        removeTooltip("addPackageContent");
+        removeTooltip("addPackageCode");
+        removeTooltip("addPackagePrice");
+        removeTooltip("addCycle");
+        removeTooltip("addRegistrationSyntax");
+        removeTooltip("addCancelSyntax");
+        $('#modalAddPackageData').modal('show');
+    }
+
+    function handleAddPackageData(event) {
+        event.preventDefault();
+        $("#is-valid-info-add").val(1);
+        const isValid = validateAddPackageData();
+        const packageName = $("#addPackageName").val().trim();
+        const packageGroup = $("#addPackageGroup").val();
+        const packageCodeName = $('#addPackageCodeName option:selected').toArray().map(item => item.value)
+        const packageContent = $("#addPackageContent").val().trim();
+        const packagePrice = $("#addPackagePrice").val().trim();
+        const cycle = $("#addCycle").val().trim();
+        const registrationSyntax = $("#addRegistrationSyntax").val().trim();
+        const cancelSyntax = $("#addCancelSyntax").val().trim();
+        const status = $('#addStatus').is(':checked') ? 1 : 0;
+        const packageCode = $("#addPackageCode").val();
+        if (isValid) {
+            const data = JSON.stringify({
+                "packageName": packageName,
+                "packageGroup": packageGroup,
+                "packageCodeName": packageCodeName,
+                "packageContent": packageContent,
+                "packagePrice": packagePrice,
+                "cycle": cycle,
+                "registrationSyntax": registrationSyntax,
+                "cancelSyntax": cancelSyntax,
+                "status": status,
+                "packageCode": packageCode
+            });
+
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: '/package-datas',
+                traditional: true,
+                dataType: "JSON",
+                headers: {
+                    'X-CSRF-Token': token
+                },
+                data: data,
+                cache: true,
+                async: false,
+                success: function (response) {
+                    const httpStatus = response.code;
+                    const message = response.message;
+                    switch (httpStatus) {
+                        case 200:
+                            $('#modalAddPackageData').modal('hide');
+                            showAlertMessageSuccess(message);
+                            setTimeout(function () {
+                                window.location.href = '/package-datas/';
+                            }, 1500);
+                            break;
+                        case 400:
+                            showAlertMessageError(message);
+                            // showTooltip(message, "addPackageName")
+                            break;
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                },
+            })
+        }
+    }
+
+    function validateAddPackageData() {
+        let check = true
+        const packageName = $("#addPackageName").val().trim();
+        const packageGroup = $("#addPackageGroup").val();
+        const packageCodeName = $('#addPackageCodeName option:selected').toArray().map(item => item.value);
+        const packageContent = $("#addPackageContent").val().trim();
+        const packagePrice = $("#addPackagePrice").val().trim();
+        const cycle = $("#addCycle").val().trim();
+        const registrationSyntax = $("#addRegistrationSyntax").val().trim();
+        const cancelSyntax = $("#addCancelSyntax").val().trim();
+        const packageCode = $("#addPackageCode").val();
+
+        if (packageName.length == 0) {
+            // showAlertMessageError('Tên gói không được để trống.');
+            showTooltip("Tên gói không được để trống.", "addPackageName");
+            check = false;
+        }
+
+        if (packageGroup.length == 0) {
+            // showAlertMessageError('Vui lòng chọn nhóm gói cước.');
+            showTooltip("Vui lòng chọn nhóm gói cước.", "addPackageGroup");
+            check = false;
+            $("#addPackageGroup").change(function () {
+                $('#addPackageGroup').tooltip({disabled: true});
+               /* $("#addPackageGroup").removeAttr("title");*/
+                $("#addPackageGroup").parent().removeClass("has-danger");
+            });
+
+        }
+
+        if (packageCodeName.length == 0) {
+            // showAlertMessageError('Vui lòng chọn mã gói.');
+            showTooltip("Vui lòng chọn mã gói CDR.", "addPackageCodeName");
+
+            $("#addPackageCodeName").parent().removeClass("has-danger");
+            $('#addPackageCodeName').next().attr("title", "Vui lòng chọn mã gói CDR.");
+            $("#addPackageCodeName").addClass("tooltipError");
+            $("#addPackageCodeName").parent().addClass("has-danger");
+            $("#addPackageCodeName").focus();
+
+            $("#addPackageCodeName").next().tooltip({
+                position: {
+                    my: "left top",
+                    at: "right+5 top-5",
+                    collision: "none"
+                }
+            });
+
+            $("#addPackageCodeName").change(function () {
+
+                $('#addPackageCodeName').tooltip({disabled: true});
+                $('#addPackageCodeName').next().tooltip({disabled: true});
+               /* $("#addPackageCodeName").removeAttr("title");*/
+                $("#addPackageCodeName").parent().removeClass("has-danger");
+
+            });
+
+            check = false;
+        }
+
+        if (packageContent.length == 0) {
+            // showAlertMessageError('Nội dung gói không được để trống.');
+            showTooltip("Nội dung gói không được để trống.", "addPackageContent");
+            check = false;
+        }
+
+        if (packagePrice.length == 0) {
+            // showAlertMessageError('Giá gói không được để trống.');
+            showTooltip("Giá gói không được để trống.", "addPackagePrice");
+            check = false;
+        } else {
+            if (!checkIsPositive(packagePrice)) {
+                // showAlertMessageError('Chỉ nhập Số nguyên dương (>0).');
+                showTooltip("Chỉ nhập Số nguyên dương .", "addPackagePrice");
+                check = false;
+            }
+        }
+
+        if (packageCode.length == 0) {
+            // showAlertMessageError('Giá gói không được để trống.');
+            showTooltip("Mã gói không được để trống.", "addPackageCode");
+            check = false;
+        }
+
+        if (cycle.length == 0) {
+            // showAlertMessageError('Chu kỳ không được để trống.');
+            showTooltip("Chu kỳ không được để trống.", "addCycle");
+            check = false;
+        } else {
+            if (!checkIsPositive(cycle)) {
+                // showAlertMessageError('Chỉ nhập Số nguyên dương (>0).');
+                showTooltip("Chỉ nhập Số nguyên dương.", "addCycle");
+                check = false;
+            }
+        }
+
+
+
+        if (registrationSyntax.length == 0) {
+            // showAlertMessageError('Cú pháp đăng ký không được để trống.');
+            showTooltip("Cú pháp đăng ký không được để trống.", "addRegistrationSyntax");
+            check = false;
+        }
+
+        if (cancelSyntax.length == 0) {
+            // showAlertMessageError('Cú pháp hủy không được để trống.');
+            showTooltip("Cú pháp hủy không được để trống.", "addCancelSyntax");
+            check = false;
+        }
+        return check;
+    }
+
+    function handleShowModalEditPackageData(id) {
+        handleGetPackageDataDetail(id);
+        // handle get default package code name edit
+        getDefaultPackageCodeNames();
+        $("#is-valid-info-update").val(0);
+        // default disable package code name
+        removeTooltip("editPackageName");
+        removeTooltip("editPackageGroup");
+        removeTooltip("editPackageCodeName");
+        removeTooltip("editPackageContent");
+        removeTooltip("addPackageCode");
+        removeTooltip("editPackagePrice");
+        removeTooltip("editPackageCode");
+        removeTooltip("editRegistrationSyntax");
+        removeTooltip("editCancelSyntax");
+        removeTooltip("editCycle");
+        $('#modalEditPackageData').modal('show');
+    }
+
+    function handleUpdatePackageData(event) {
+        $("#is-valid-info-update").val(1);
+        event.preventDefault();
+        const isValid = validateUpdatePackageData();
+
+        const id = $("#editId").val();
+        const packageName = $("#editPackageName").val().trim();
+        const packageGroup = $("#editPackageGroup").val();
+        const packageCodeName = $('#editPackageCodeName option:selected').toArray().map(item => item.value)
+        const packageContent = $("#editPackageContent").val().trim();
+        const packagePrice = $("#editPackagePrice").val().trim();
+        const cycle = $("#editCycle").val().trim();
+        const registrationSyntax = $("#editRegistrationSyntax").val().trim();
+        const cancelSyntax = $("#editCancelSyntax").val().trim();
+        const status = $('#editStatus').is(':checked') ? 1 : 0;
+        const packageCode = $("#editPackageCode").val();
+        if (isValid) {
+            const data = JSON.stringify({
+                "packageName": packageName,
+                "packageGroup": packageGroup,
+                "packageCodeName": packageCodeName,
+                "packageContent": packageContent,
+                "packagePrice": packagePrice,
+                "cycle": cycle,
+                "registrationSyntax": registrationSyntax,
+                "cancelSyntax": cancelSyntax,
+                "status": status,
+                "packageCode": packageCode,
+            });
+
+            $.ajax({
+                type: 'PUT',
+                contentType: 'application/json',
+                url: `/package-datas/${id}`,
+                traditional: true,
+                dataType: "JSON",
+                headers: {
+                    'X-CSRF-Token': token
+                },
+                data: data,
+                cache: true,
+                async: false,
+                success: function (response) {
+                    const httpStatus = response.code;
+                    const message = response.message;
+                    if (httpStatus == 200) {
+                        $('#modalEditPackageData').modal('hide');
+                        showAlertMessageSuccess(message);
+                        setTimeout(function () {
+                            window.location.href = '/package-datas/';
+                        }, 1500);
+                    }
+                    if (httpStatus == 400 || httpStatus == 500) {
+                        showAlertMessageError(message);
+                        // showTooltip(message, "editSenderAccount")
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                },
+            })
+        }
+    }
+
+    function validateUpdatePackageData() {
+        let check = true;
+        const packageName = $("#editPackageName").val().trim();
+        const packageGroup = $("#editPackageGroup").val();
+        const packageCodeName = $('#editPackageCodeName option:selected').toArray().map(item => item.value)
+        const packageContent = $("#editPackageContent").val().trim();
+        const packagePrice = $("#editPackagePrice").val().trim();
+        const cycle = $("#editCycle").val().trim();
+        const registrationSyntax = $("#editRegistrationSyntax").val().trim();
+        const cancelSyntax = $("#editCancelSyntax").val().trim();
+        const packageCode = $("#editPackageCode").val();
+
+        if (packageCode.length == 0) {
+            // showAlertMessageError('Giá gói không được để trống.');
+            showTooltip("Mã gói không được để trống.", "editPackageCode")
+            check = false;
+        }
+
+        if (packageName.length == 0) {
+            // showAlertMessageError('Tên gói không được để trống.');
+            showTooltip("Tên gói không được để trống.", "editPackageName");
+            check = false;
+        }
+
+        if (packageGroup.length == 0) {
+            // showAlertMessageError('Vui lòng chọn nhóm gói cước.');
+            showTooltip("Vui lòng chọn nhóm gói cước.", "editPackageGroup")
+            check = false;
+            $("#editPackageGroup").change(function () {
+                $('#editPackageGroup').tooltip({disabled: true});
+                /* $("#addPackageGroup").removeAttr("title");*/
+                $("#editPackageGroup").parent().removeClass("has-danger");
+            });
+        }
+        if (packageCodeName.length == 0) {
+            // showAlertMessageError('Vui lòng chọn mã gói.');
+            showTooltip("Vui lòng chọn mã gói CDR.", "editPackageCodeName");
+
+            $("#editPackageCodeName").parent().removeClass("has-danger");
+            $('#editPackageCodeName').next().attr("title", "Vui lòng chọn mã gói CDR.");
+            $("#editPackageCodeName").addClass("tooltipError");
+            $("#editPackageCodeName").parent().addClass("has-danger");
+            $("#editPackageCodeName").focus();
+
+            $("#editPackageCodeName").next().tooltip({
+                position: {
+                    my: "left top",
+                    at: "right+5 top-5",
+                    collision: "none"
+                }
+            });
+
+            $("#editPackageCodeName").change(function () {
+
+                $('#editPackageCodeName').tooltip({disabled: true});
+                $('#editPackageCodeName').next().tooltip({disabled: true});
+                /* $("#addPackageCodeName").removeAttr("title");*/
+                $("#editPackageCodeName").parent().removeClass("has-danger");
+
+            });
+
+            check = false;
+        }
+        // if (packageCodeName.length == 0) {
+        //     // showAlertMessageError('Vui lòng chọn mã gói.');
+        //     showTooltip("Vui lòng chọn mã gói CDR.", "editPackageCodeName")
+        //     check = false;
+        // }
+
+        if (packageContent.length == 0) {
+            // showAlertMessageError('Nội dung gói không được để trống.');
+            showTooltip("Nội dung gói không được để trống.", "editPackageContent")
+            check = false;
+        }
+
+        if (packagePrice.length == 0) {
+            // showAlertMessageError('Giá gói không được để trống.');
+            showTooltip("Giá gói không được để trống.", "editPackagePrice")
+            check = false;
+        } else {
+            if (!checkIsPositive(packagePrice)) {
+                // showAlertMessageError('Chỉ nhập Số nguyên dương (>0).');
+                showTooltip("Chỉ nhập Số nguyên dương.", "editPackagePrice")
+                check = false;
+            }
+        }
+
+
+
+        if (cycle.length == 0) {
+            // showAlertMessageError('Chu kỳ không được để trống.');
+            showTooltip("Chu kỳ không được để trống.", "editCycle")
+            check = false;
+        } else {
+            if (!checkIsPositive(cycle)) {
+                // showAlertMessageError('Chỉ nhập Số nguyên dương (>0).');
+                showTooltip("Chỉ nhập Số nguyên dương (>0).", "editCycle")
+                check = false;
+            }
+        }
+
+        if (registrationSyntax.length == 0) {
+            // showAlertMessageError('Cú pháp đăng ký không được để trống.');
+            showTooltip("Cú pháp đăng ký không được để trống.", "editRegistrationSyntax")
+            check = false;
+        }
+
+        if (cancelSyntax.length == 0) {
+            // showAlertMessageError('Cú pháp hủy không được để trống.');
+            showTooltip("Cú pháp hủy không được để trống.", "editCancelSyntax")
+            check = false;
+        }
+
+        return check;
+    }
+
+    function handleShowModalDetailPackageData(id) {
+        $('#modalDetailPackageData').modal('show');
+        handleGetPackageDataDetail(id);
+    }
+
+    function handleGetPackageDataDetail(id) {
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: `/package-datas/${id}`,
+            traditional: true,
+            dataType: "JSON",
+            headers: {
+                'X-CSRF-Token': token
+            },
+            cache: true,
+            async: false,
+            success: function (response) {
+                if (response.code == 200) {
+                    const data = response.data;
+                    $("#editId").val(data.id);
+                    $("#editPackageName").val(data.packageName);
+                    $("#editPackageGroup").val(data.packageGroupNumber);
+                    $("#editPackageContent").val(data.packageContent);
+                    $("#editPackagePrice").val(data.packagePrice);
+                    $("#editRegistrationSyntax").val(data.registrationSyntax);
+                    $("#editCancelSyntax").val(data.cancelSyntax);
+                    $("#editCycle").val(data.cycle);
+                    $("#editPackageCode").val(data.packageCode);
+                    packageCodeNames.length = 0;
+                    packageCodeNames.push(data.packageCodeNames);
+                    const editStatus = $('#editStatus');
+                    if (data.statusNumber == 1) {
+                        changeSwitchery(editStatus, true);
+                    } else {
+                        changeSwitchery(editStatus, false);
+                    }
+
+                    $("#detailId").val(data.id);
+                    $("#detailPackageName").text(data.packageName);
+                    $("#detailPackageGroup").text(data.packageGroup);
+                    $("#detailPackageContent").text(data.packageContent);
+                    $("#detailPackagePrice").text(data.packagePriceCurrency);
+                    $("#detailRegistrationSyntax").text(data.registrationSyntax);
+                    $("#detailCancelSyntax").text(data.cancelSyntax);
+                    $("#detailStatus").text(data.status);
+                    $("#detailPackageCodeName").text(data.packageCodeName);
+                    $("#detailCycle").text(data.cycle + ' Ngày');
+                    $("#detailPackageCode").text(data.packageCode);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            },
+        })
+    }
+
+    function changeSwitchery(element, checked) {
+        if ((element.is(':checked') && checked == false) || (!element.is(':checked') && checked == true)) {
+            element.parent().find('.switchery').trigger('click');
+        }
+    }
+
+    function handleRedirectUpdatePackageData() {
+        const id = $("#detailId").val();
+        $('#modalDetailPackageData').modal('hide');
+        handleGetPackageDataDetail(id);
+        // handle get default package code name edit
+        getDefaultPackageCodeNames();
+        removeTooltip("editPackageName");
+        removeTooltip("editPackageGroup");
+        removeTooltip("editPackageCodeName");
+        removeTooltip("editPackageContent");
+        removeTooltip("editPackageCode");
+        removeTooltip("editPackagePrice");
+        removeTooltip("editCycle");
+        removeTooltip("editRegistrationSyntax");
+        removeTooltip("editCancelSyntax");
+        $('#modalEditPackageData').modal('show');
+    }
+
+    function handleDeletePackageData(id) {
+        Swal.fire({
+            title: "Bạn muốn xóa gói cước?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            cancelButtonText: "Hủy",
+            confirmButtonText: "OK",
+            allowOutsideClick: true,
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: `/package-datas/${id}`,
+                    traditional: true,
+                    dataType: 'JSON',
+                    headers: {
+                        'X-CSRF-Token': token
+                    },
+                    cache: true,
+                    async: false,
+                    success: function (response) {
+                        const httpStatus = response.code;
+                        const message = response.message;
+                        if (httpStatus == 200) {
+                            showAlertMessageSuccess(message);
+                            setTimeout(function () {
+                                window.location.href = '/package-datas/';
+                            }, 1500);
+                        }
+                        if (httpStatus == 500) {
+                            showAlertMessageError(message);
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    },
+                })
+            }
+        })
+    }
+
+    function getDefaultPackageCodeNames() {
+        var packageCodeNameElement = document.getElementById('editPackageCodeName');
+        var packageCodeNameHtml;
+        var packageGroupText = $("#editPackageGroup option:selected").text();
+
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: `/package-codes?packageGroup=${packageGroupText}`,
+            traditional: true,
+            dataType: "JSON",
+            headers: {
+                'X-CSRF-Token': token
+            },
+            cache: true,
+            async: false,
+            success: function (response) {
+                const httpStatus = response.code;
+                const message = response.message;
+                const data = response.data.data;
+                if (httpStatus == 200) {
+                    $.each(data, function (i, packageCodeName) {
+                        if (!getAllPackageCodeNames.includes(packageCodeName) || packageCodeNames[0].includes(packageCodeName)) {
+                            if (packageCodeNames[0].includes(packageCodeName)) {
+                                packageCodeNameHtml += '<option value="' + packageCodeName + '" selected>' + packageCodeName + '</option>';
+                            } else {
+                                packageCodeNameHtml += '<option value="' + packageCodeName + '" >' + packageCodeName + '</option>';
+                            }
+                        }
+                    });
+                    packageCodeNameElement.innerHTML = packageCodeNameHtml;
+                }
+                if (httpStatus == 500) {
+                    console.log(message);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            },
+        })
+    }
+
+    function checkIsPositive(str) {
+        const n = Math.floor(Number(str));
+        return n !== Infinity && String(n) === str && n > 0;
+    }
+
+    function formatterCurrency(element) {
+        var currency = $('#addPackagePrice').val();
+        if (validateCurrency(currency)) {
+            currency = currency.replaceAll(".", "");
+            $(id).val(numberWithCommas(currency));
+        }
+    }
+
+    function validateCurrency(number) {
+        if (number == null || number.length == 0) {
+            return false;
+        }
+        const numberLength = number.replaceAll(',', '').replaceAll('.', '');
+        if (numberLength.length > 18) {
+            return false;
+        }
+        const regexNumber = new RegExp('^(?![.0-9]{24})\\d{1,3}(?:\\.\\d{3})*(?:\\,\\d{1,3})?$|(^[0-9]+\\,?[0-9]*$)');
+        return regexNumber.test(number);
+    }
+
+    function numberWithCommas(x) {
+        var parts = x.toString().split(",");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return parts.join(",");
+    }
+
+</script>
+
+<script th:src="@{/js/common/common.js}"></script>
+</html>

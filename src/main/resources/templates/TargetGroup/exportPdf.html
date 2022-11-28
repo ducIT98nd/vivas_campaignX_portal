@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head th:replace="common/head :: head"></head>
+<style>
+    #export-pdf{
+        background-color: white;
+    }
+</style>
+
+<body class="fix-header card-no-border">
+<div th:insert="common/templates::alertMessage"></div>
+<!-- Preloader - style you can find in spinners.css -->
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<!-- Main wrapper - style you can find in pages.scss -->
+<div id="main-wrapper">
+    <div th:replace="common/bodyHeader"></div>
+
+    <!-- Left Sidebar - style you can find in sidebar.scss  -->
+    <div th:replace="common/leftmenu"></div>
+
+    <div class="page-wrapper" id="export-pdf">
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+
+            <div class="row pd-r-ctn">
+                <div class="col-lg-9 col-xlg-9 col-md-7 L_card">
+                    <!--Data table -->
+                    <div class="card">
+
+                        <div class="card-block">
+                            <div class="row smal_title">
+                                <h4 class="card-title col-lg-12"><i class="detail_obj_ic"></i>Xem chi tiết nhóm đối tượng</h4>
+                            </div>
+
+                            <div class="ctn_add_obj">
+
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-6 dt_obj_col">
+                                        <div class="ic_dt">
+                                            <i class="objs_dt_ic"></i>
+                                        </div>
+                                        <label>Tên nhóm đối tượng</label>
+                                        <p class="text-active" th:text="${tagetGroup.getName()}"></p>
+                                        <input type="hidden" id = "targetName" th:value="${tagetGroup.getName()}">
+                                    </div>
+                                    <div class="col-md-6 col-xs-6 dt_obj_col">
+                                        <div class="ic_dt">
+                                            <i class="filter_dt_ic"></i>
+                                        </div>
+                                        <label>Phương thức xác định nhóm đối tượng </label>
+                                        <p class="text-active" id = "channelObject"></p>
+                                        <input type="hidden" id="hiddenChannel" th:value="${tagetGroup.getChannel()}">
+                                        <input type="hidden" id="hiddenId" th:value="${tagetGroup.getId()}">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12 col-xs-12 dt_obj_col">
+                                        <div class="ic_dt">
+                                            <i class="des_dt_ic"></i>
+                                        </div>
+                                        <label>Mô tả</label>
+                                        <p class="text-active" th:text="${tagetGroup.getDescription()}"></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row" id="viewListMsisdn">
+                                    <div class="col-md-12 col-xs-12 dt_obj_col">
+                                        <div class="ic_dt">
+                                            <i class="des_dt_ic"></i>
+                                        </div>
+                                        <label>Danh sách thuê bao</label>
+                                        <p class="text-active">Tải danh sách thuê bao nhóm đối tượng <a th:href="@{'/TagetGroupManagerController/DownloadFileUpload/'+ ${tagetGroup.id}}" style="text-decoration: underline;">đây</a></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row" id="viewListCriteria">
+                                    <div class="col-md-12 col-xs-12 dt_obj_col">
+                                        <div class="ic_dt">
+                                            <i class="des_dt_ic"></i>
+                                        </div>
+                                        <label>Chi tiết tiêu chí:</label>
+                                        <p class="text-active"> Thỏa mãn tất cả điều kiện sau đây:</p>
+                                        <div class="dk-full">
+                                            <ul id="appendHTML">
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xlg-3 col-md-4 R_card">
+                    <div class="card card-inverse card-primary top_R_card first_R_card">
+                        <div class="card-block">
+                            <div class="d-flex">
+                                <div>
+                                    <h3 class="card-title">Quy mô nhóm</h3>
+                                </div>
+                            </div>
+                            <div class="row d-flex align-self-center">
+                                <div class="col-6">
+                                    <p class="display-6 text-white text-center sltb" th:text="${tagetGroup.getQuantityMsisdn()}"></p>
+                                    <p class="text-center">Thuê bao</p>
+                                </div>
+                                <div class="col-6  text-center">
+                                    <i class="total_group_ic"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-inverse card-primary top_R_card second_R_card">
+                        <div class="card-block">
+                            <div class="d-flex">
+                                <div>
+                                    <h3 class="card-title">Tỷ lệ so với toàn mạng</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="display-6 text-white text-center sltb" th:text="${tagetGroup.getWholeNetwork()+'%'}"></p>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <i class="graph_ic"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Row -->
+            <!-- ============================================================== -->
+            <!-- End PAge Content -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+
+            <!-- End Right sidebar -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Container fluid  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+
+        <!-- footer -->
+        <!-- ============================================================== -->
+
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
+
+    </div>
+    <!-- End Page wrapper  -->
+    <div th:insert="common/footer" th:remove="tag"></div>
+
+</div>
+</body>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        var channel = $("#hiddenChannel").val();
+        if(channel == 3){
+            $("#channelObject").text("Dùng danh sách lọc thuê bao");
+            $("#viewListCriteria").hide();
+            $("#viewListMsisdn").show();
+            exportPDF();
+
+        }else if(channel == 1){
+            $("#channelObject").text("Dùng tiêu chí lọc thuê bao");
+            $("#viewListCriteria").show();
+            $("#viewListMsisdn").hide();
+            var id = $("#hiddenId").val();
+            axios.get('/TagetGroupManagerController/getHtmlField?id='+id)
+                .then(function (response) {
+                    $("#appendHTML").append(response.data);
+                    exportPDF();
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }else if(channel == 4){
+            $("#channelObject").text("Dùng tập giao của danh sách thuê bao và tiêu chí");
+            $("#viewListCriteria").show();
+            $("#viewListMsisdn").show();
+            var id = $("#hiddenId").val();
+            axios.get('/TagetGroupManagerController/getHtmlField?id='+id)
+                .then(function (response) {
+                    $("#appendHTML").append(response.data);
+                    exportPDF();
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function exportPDF(){
+            const targetName = $("#targetName").val();
+            let d = new Date();
+            let month = d.getMonth() + 1;
+            if((d.getMonth() + 1) < 10) {
+                month = '0'+(d.getMonth() + 1);
+            }
+            let day = d.getDate();
+            if(d.getDate() < 10) {
+                day = '0'+d.getDate();
+            }
+            let today = day + "" + month + d.getFullYear();
+            let h = d.getHours();
+            if(d.getHours() < 10) {
+                h = '0'+d.getHours();
+            }
+            let m = d.getMinutes();
+            if(d.getMinutes() < 10) {
+                m = '0'+d.getMinutes();
+            }
+            let s = d.getSeconds();
+            if(d.getMinutes() < 10) {
+                s = '0'+d.getMinutes();
+            }
+            let time = h+ "" + m + s;
+            var fileName = targetName + "_" + today + "_"+ time +".pdf";
+            html2canvas(document.getElementById("export-pdf")).then(function cancas(canvas) {
+                //document.body.appendChild(canvas);
+
+                var w = document.getElementById("export-pdf").offsetWidth;
+                var h = document.getElementById("export-pdf").offsetHeight;
+                var img = canvas.toDataURL("image/jpeg", 1);
+                var doc = new jsPDF('L', 'px', [w, h]);
+                doc.addImage(img, 'JPEG', 0, 0, w, h);
+                doc.save(fileName);
+                setTimeout("window.close()", 1000)
+            });
+        }
+    });
+
+    function cancel() {
+        window.location.href = '/TagetGroupManagerController/targetGroupManager';
+    }
+
+    function showErrorMessage(message) {
+        Swal.fire({
+            position: 'top',
+            type: 'error',
+            icon: 'error',
+            title: 'Thông báo',
+            text: message
+        });
+    }
+</script>
+</html>

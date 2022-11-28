@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head th:replace="common/head :: head"></head>
+<link type="text/css" th:href="@{/assets/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{/assets/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+
+<style th:inline="text">
+    :not(.input-group) > .bootstrap-select.form-control:not([class*=col-]) {
+        width: 50%;
+    }
+
+    .ui-widget-header {
+        border: none;
+        background: none;
+    }
+
+    .ui-widget.ui-widget-content {
+        border: none;
+    }
+
+    .ui-tabs .ui-tabs-nav li {
+        border-bottom-width: 1px;
+        border-radius: 3px;
+    }
+
+    .report-border {
+    }
+
+    .form-control {
+        width: 50%;
+    }
+
+    .ctn_welcome {
+        width: 90%;
+        margin: auto;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child {
+        margin-top: 38%;
+        transform: translateY(-50%);
+    }
+
+    .ctn_welcome div.col-lg-6:last-child {
+        margin-top: 28%;
+        transform: translateY(-50%);
+    }
+
+    .ctn_welcome div.col-lg-6:first-child h3 {
+        font-size: 50px;
+        font-weight: 500;
+        color: #3d69bd;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child h3 span {
+        color: #af6db6;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child p {
+        font-size: 13px;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child h6 {
+        font-size: 15px;
+        margin-top: 30px;
+        line-height: 20px;
+    }
+
+</style>
+<body class="fix-header card-no-border">
+<div th:insert="common/templates::alertMessage"></div>
+<div th:insert="common/templates::pagination"></div>
+
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<div id="main-wrapper">
+    <div th:replace="common/bodyHeader"></div>
+    <div th:replace="common/leftmenu"></div>
+
+    <div class="page-wrapper">
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+            <div class="row pd-r-ctn">
+                <div class="col-12">
+                    <!--Data table -->
+                    <form id="reportForm" class="form" method="get">
+                        <div class="card">
+
+                            <div class="card-block">
+                                <div class="row smal_title">
+                                    <h4 class="card-title col-lg-6"><i class="campaign_ic"></i>Báo cáo gói</h4>
+
+                                </div>
+
+                                <div class="table-responsive m-t-10">
+                                    <input id="supersetUrl" type="hidden" name="supersetUrl" th:value="${supersetUrl}"/>
+                                    <div class="row search_table search_campaign">
+                                        <div class="col-md-12">
+                                            <div class="row">
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Gói cước</label>
+                                                        <select class="form-control custom-select selectpicker"
+                                                                data-live-search="true"
+                                                                data-placeholder="Tất cả"
+                                                                tabindex="1" id="packageName" name="packageName">
+                                                            <option value="">Tất cả
+                                                            </option>
+                                                            <option th:each="package : ${packageDataList}"
+                                                                    th:value="${package.getPackageName()}"
+                                                                    th:text="${package.getPackageName()}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Mốc thời gian</label>
+                                                        <select class="form-control custom-select"
+                                                                data-placeholder="Tất cả"
+                                                                tabindex="1" id="date" name="date" onchange="change()">
+                                                            <option value="0" th:selected="${date} == 0">Ngày</option>
+                                                            <option value="1" th:selected="${date} == 1">Tháng
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row m-t-20" id="days">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Ngày bắt đầu</label>
+                                                        <input class="form-control date-picker" type="text"
+                                                               id="startDate" name="startDate" th:value="${startDate}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Ngày kết thúc</label>
+                                                        <input class="form-control date-picker" type="text"
+                                                               id="endDate" name="endDate" th:value="${endDate}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row m-t-20" style="display: none" id="month">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Tháng bắt đầu</label>
+                                                        <input class="form-control" type="text"
+                                                               id="startDateMonth" name="startDateMonth" th:value="${startDateMonth}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Tháng kết thúc</label>
+                                                        <input class="form-control" type="text"
+                                                               id="endDateMonth" name="endDateMonth" th:value="${endDateMonth}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row m-t-20">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Loại biểu đồ</label>
+
+                                                        <select class="form-control custom-select"
+                                                                data-placeholder="Tất cả"
+                                                                tabindex="1" id="chartType" name="chartType">
+                                                            <option value="0">Bảng</option>
+                                                            <option value="1">Biểu đồ
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+
+                                                </div>
+                                            </div>
+                                            <div class="row m-t-20">
+                                                <div class="col-md-10">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-rounded btn-primary"
+                                                                onclick="search();"> Xem báo cáo
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div id="chart" style="display: none">
+                                        <div class="row form_qldhqc" id="all" style="display: none">
+                                            <div class="col-sm-12 col-xs-12">
+                                                <div class="row justify-content-center m-b-5">
+                                                    <div class="col-md-8">
+
+                                                    </div>
+                                                    <div class="col-md-4">
+
+                                                    </div>
+                                                </div>
+                                                <div class="row justify-content-center m-b-5">
+                                                    <div class="col-md-9 report-border"
+                                                         style=" height: 400px;  margin-right: 10px">
+                                                        <h2 style="text-align: center">Hiệu suất gửi tin</h2>
+                                                        <iframe id="slice_50"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="row justify-content-center m-b-5">
+                                                    <div class="col-md-5 report-border"
+                                                         style=" height: 400px;  margin-right: 10px">
+                                                        <h2 style="text-align: center">Tỉ lệ đăng ký</h2>
+                                                        <iframe id="slice_51"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+
+                                                    <div class="col-md-5 report-border" style=" height: 400px; ">
+                                                        <h2 style="text-align: center">Tỉ lệ đăng ký thành công</h2>
+                                                        <iframe id="slice_52"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+                                                </div>
+                                                <div class="row justify-content-center m-b-5">
+                                                    <div class="col-md-9 report-border"
+                                                         style=" height: 400px;  margin-right: 10px">
+                                                        <h2 style="text-align: center">Doanh thu bán gói</h2>
+                                                        <h3 style="text-align: center"><i>(Đơn vị: đồng)</i></h3>
+                                                        <iframe id="slice_53"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div id="report-by-channel-tabs">
+                                                    <div class="row row_prg_b">
+                                                        <div class="col-md-6">
+                                                            <ul>
+                                                                <li><a href="#tab-sms">SMS</a></li>
+                                                                <li><a href="#tab-ussd">USSD</a></li>
+                                                                <li><a href="#tab-ivr">IVR</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="tab-sms">
+                                                        <div class="col-md-10">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <button type="button" class="btn btn-rounded btn-primary"
+                                                                    style="float: right"
+                                                                    onclick="exportReport();"
+                                                            > Tải báo cáo
+                                                            </button>
+                                                        </div>
+
+                                                        <div id="allSMS">
+                                                            <div class="row justify-content-center m-b-5">
+                                                                <div class="col-md-9 report-border"
+                                                                     style=" height: 400px;  margin-top: 30px;">
+                                                                    <h2 style="text-align: center">Hiệu suất gửi
+                                                                        tin</h2>
+                                                                    <iframe id="slice_54"
+                                                                            style="width:100%; height:100%; border: None;"></iframe>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row justify-content-center m-b-5">
+                                                                <div class="col-md-9 report-border"
+                                                                     style=" height: 400px;  margin-top: 30px;">
+                                                                    <h2 style="text-align: center">Đăng ký gói cước</h2>
+                                                                    <iframe id="slice_55"
+                                                                            style="width:100%; height:100%; border: None;"></iframe>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row justify-content-center m-b-5">
+                                                                <div class="col-md-9 report-border"
+                                                                     style=" height: 400px;  margin-top: 30px;">
+                                                                    <h2 style="text-align: center">Doanh thu bán
+                                                                        gói</h2>
+                                                                    <h3 style="text-align: center"><i>(Đơn vị: đồng)</i>
+                                                                    </h3>
+                                                                    <iframe id="slice_56"
+                                                                            style="width:100%; height:100%; border: None;"></iframe>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="tab-ussd"></div>
+                                                    <div id="tab-ivr"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row form_qldhqc" id="one" style="display: none">
+                                            <div class="col-sm-12 col-xs-12">
+                                                <div>
+                                                    <div>
+                                                        <div class="col-sm-12 col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-md-10">
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <button type="button"
+                                                                            class="btn btn-rounded btn-primary"
+                                                                            style="float: right"
+                                                                            onclick="exportReport();"
+                                                                    > Tải báo cáo
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <div class="row justify-content-center m-b-5">
+                                                                <div class="col-md-9 report-border"
+                                                                     style=" height: 400px;  margin-top: 30px;">
+                                                                    <h2 style="text-align: center">Hiệu suất gửi
+                                                                        tin</h2>
+                                                                    <iframe id="slice_57"
+                                                                            style="width:100%; height:100%; border: None;"></iframe>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row justify-content-center m-b-5">
+                                                                <div class="col-md-9 report-border"
+                                                                     style=" height: 400px;  margin-top: 30px;">
+                                                                    <h2 style="text-align: center">Đăng ký gói cước</h2>
+                                                                    <iframe id="slice_58"
+                                                                            style="width:100%; height:100%; border: None;"></iframe>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row justify-content-center m-b-5">
+                                                                <div class="col-md-9 report-border"
+                                                                     style=" height: 400px;  margin-top: 30px;">
+                                                                    <h2 style="text-align: center">Doanh thu bán
+                                                                        gói</h2>
+                                                                    <h3 style="text-align: center"><i>(Đơn vị: đồng)</i>
+                                                                    </h3>
+                                                                    <iframe id="slice_59"
+                                                                            style="width:100%; height:100%; border: None;"></iframe>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="board" style="display: none">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th style="text-align: left;">#</th>
+                                                <th style="text-align: left;">Ngày</th>
+                                                <th style="text-align: center;">Số tin mời</th>
+                                                <th style="text-align: left;">Tin gửi thành công</th>
+                                                <th style="text-align: left;">Tỷ lệ gửi tin thành công</th>
+                                                <th style="text-align: left;">Số lượt đăng ký</th>
+                                                <th style="text-align: left;">Tỷ lệ thuê bao tương tác</th>
+                                                <th style="text-align: left;">Đăng ký thành công</th>
+                                                <th style="text-align: left;">Tỷ lê thuê bao đăng ký thành công</th>
+                                                <th style="text-align: left;">Doanh thu</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:if="${totalPages == 0}">
+                                                <td th:if="${totalPages == 0}" colspan="6" class="font-bold">Không tìm
+                                                    thấy báo cáo chiến dịch thỏa mãn
+                                                </td>
+                                            </tr>
+                                            <tr th:each="data,loop : ${dataPage}">
+                                                <td style="text-align: left"
+                                                    th:text="${loop.index+1+(currentPage-1)*pageSize}"></td>
+                                                <div th:if="${loop.index+1+(currentPage-1)*pageSize} == 1">
+                                                    <td style="text-align: center" th:text="Tổng"></td>
+                                                    <td style="text-align: left"
+                                                        th:text="${sumInvitationMessage}"></td>
+                                                    <td style="text-align: left"
+                                                        th:text="${sumSuccessMessage}"></td>
+                                                    <td style="text-align: left"
+                                                        th:text="${(sumSuccessMessage / sumInvitationMessage) * 100 } + '%'"></td>
+                                                    <td style="text-align: left"
+                                                        th:text="${sumRegisterMessage}"></td>
+                                                    <td style="text-align: left"
+                                                        th:text="${(sumRegisterMessage / sumInvitationMessage) * 100 } + '%'"></td>
+                                                    <td style="text-align: left"
+                                                        th:text="${sumSuccessRegisterMessage}"></td>
+                                                    <td style="text-align: left"
+                                                        th:text="${(sumSuccessRegisterMessage / sumRegisterMessage) * 100 } + '%'"></td>
+                                                    <td style="text-align: left"
+                                                        th:text="${sumRevenue}"></td>
+                                                </div>
+
+                                                <td style="text-align: center"
+                                                    th:if="${loop.index+1+(currentPage-1)*pageSize} != 1"
+                                                    th:text="${#dates.format(data.getReportedDate(),'dd-MM-yyyy')}"></td>
+
+                                                <div th:if="${loop.index+1+(currentPage-1)*pageSize} != 1">
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getInvitationMessage()} != null"
+                                                        th:text="${data.getInvitationMessage()}"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getInvitationMessage()} == null"
+                                                        th:text="0"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getSuccessMessage()} != null"
+                                                        th:text="${data.getSuccessMessage()}"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getSuccessMessage()} == null"
+                                                        th:text="0"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getSuccessMessage() != null && data.getInvitationMessage() != null} "
+                                                        th:text="${(data.getSuccessMessage() / data.getInvitationMessage()) * 100 } + '%'"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getSuccessMessage() == null && data.getInvitationMessage() == null} "
+                                                        th:text="0+ '%'"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getRegisterMessage()} != null"
+                                                        th:text="${data.getRegisterMessage()}"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getRegisterMessage()} == null"
+                                                        th:text="0"></td>
+
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getRegisterMessage() != null && data.getInvitationMessage() != null} "
+                                                        th:text="${(data.getRegisterMessage() / data.getInvitationMessage()) * 100 } + '%'"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getRegisterMessage() == null && data.getInvitationMessage() == null} "
+                                                        th:text="0+ '%'"></td>
+
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getSuccessRegisterMessage()} != null"
+                                                        th:text="${data.getSuccessRegisterMessage()}"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getSuccessRegisterMessage()} == null"
+                                                        th:text="0"></td>
+
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getSuccessRegisterMessage() != null && data.getRegisterMessage() != null} "
+                                                        th:text="${(data.getSuccessRegisterMessage() / data.getRegisterMessage()) * 100 } + '%'"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getSuccessRegisterMessage() == null && data.getRegisterMessage() == null} "
+                                                        th:text="0+ '%'"></td>
+
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getRevenue()} != null"
+                                                        th:text="${data.getRevenue()}"></td>
+                                                    <td style="text-align: left"
+                                                        th:if="${data.getRevenue()} == null"
+                                                        th:text="0"></td>
+                                                </div>
+
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="float-right m-t-20">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination-sm" id="pagination"></ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                </form>
+            </div>
+
+        </div>
+        <!-- Row -->
+        <!-- ============================================================== -->
+        <!-- End PAge Content -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+
+        <!-- End Right sidebar -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Container fluid  -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+
+    <!-- footer -->
+    <!-- ============================================================== -->
+
+    <!-- ============================================================== -->
+    <!-- End footer -->
+    <!-- ============================================================== -->
+
+</div>
+<div th:insert="common/footer" th:remove="tag"></div>
+</div>
+
+</body>
+<script th:inline="javascript" th:fragment="contextPath">
+    var contextPath = [[@{/}]];
+</script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $("#report-by-channel-tabs").tabs();
+        var chartType = /*[[${chartType}]]*/ 'default';
+        if (chartType == null) {
+            $("#board").hide();
+            $("#chart").hide();
+        }
+        if (chartType == 1) {
+            $("#board").hide();
+            $("#chart").show();
+        }
+        if (chartType == 0) {
+            $("#board").show();
+            $("#chart").hide();
+        }
+    })
+    const supersetUrl = $("#supersetUrl").val();
+    $("#startDate").datepicker({format: 'dd/mm/yyyy', todayHighlight: true});
+    $("#endDate").datepicker({format: 'dd/mm/yyyy', todayHighlight: true});
+
+    $("#startDateMonth").datepicker({
+        format: "mm/yyyy",
+        startView: "months",
+        minViewMode: "months"
+    });
+
+    $("#endDateMonth").datepicker({
+        format: "mm/yyyy",
+        startView: "months",
+        minViewMode: "months"
+    });
+
+    function change() {
+        var date = $("#date").val();
+        if (date == 0) {
+            $("#days").show();
+            $("#month").hide();
+        }
+
+        if (date == 1) {
+            $("#days").hide();
+            $("#month").show();
+        }
+    }
+
+    function search() {
+        var chartType = $("#chartType").val();
+
+        removeTooltip('startDate');
+        removeTooltip('endDate');
+        removeTooltip('startDateMonth');
+        removeTooltip('endDateMonth');
+        var name = $("#packageName").val();
+        var date = $("#date").val();
+        var startDate = null;
+        var endDate = null;
+        let query = `1=1`;
+        let check = true;
+        if (date == 0) {
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+            if (startDate == "") {
+                showTooltip("Ngày bắt đầu không được để trống!", 'startDate');
+                check = false;
+            }
+            if (endDate == "") {
+                showTooltip("Ngày kết thúc không được để trống!", 'endDate');
+                check = false;
+            }
+            if (check) {
+                var scheStart = $("#startDate").val();
+                scheStart = scheStart.replace(new RegExp("/", 'g'), " ");
+                scheStart = scheStart.split(" ");
+
+                var scheStartDate = new Date(scheStart[2], scheStart[1] - 1, scheStart[0]);
+                console.log("scheStartDate:" + scheStartDate);
+
+                var scheEnd = $("#endDate").val();
+                scheEnd = scheEnd.replace(new RegExp("/", 'g'), " ");
+                scheEnd = scheEnd.split(" ");
+                var scheEndDate = new Date(scheEnd[2], scheEnd[1] - 1, scheEnd[0]);
+                console.log("scheEnd[2]:" + (scheEnd[2]));
+                console.log("(scheEnd[1] - 1)" + (scheEnd[1]))
+                console.log("(scheEnd[0])" + (scheEnd[0]))
+                var dateNow = new Date();
+                console.log("scheEndDate:" + scheEndDate);
+                if (scheStartDate > scheEndDate) {
+                    showTooltip("Ngày bắt đầu không được lớn hơn ngày kết thúc!", "startDate");
+                    showTooltip("Ngày bắt đầu không được lớn hơn ngày kết thúc!", "endDate");
+                    check = false;
+                }
+                if ((scheEndDate - scheStartDate) / 86400000 > 90) {
+                    showTooltip("Thời gian tra cứu chỉ tối đa 90 ngày!", "startDate");
+                    showTooltip("Thời gian tra cứu chỉ tối đa 90 ngày!", "endDate");
+                    check = false;
+                }
+                if (scheStartDate > dateNow) {
+                    showTooltip("Ngày bắt đầu không được lớn hơn ngày hiện tại!", "startDate");
+                    check = false;
+                }
+                if (scheEndDate > dateNow) {
+                    showTooltip("Ngày kết thúc không được lớn hơn ngày hiện tại!", "endDate");
+                    check = false;
+                }
+            }
+
+        } else if (date == 1) {
+            startDate = $("#startDateMonth").val();
+            endDate = $("#endDateMonth").val();
+
+            if (startDate == "") {
+                showTooltip("Tháng bắt đầu không được để trống!", 'startDateMonth');
+                check = false;
+            }
+            if (endDate == "") {
+                showTooltip("Tháng kết thúc không được để trống!", 'endDateMonth');
+                check = false;
+            }
+            if (check) {
+                var scheStart = $("#startDateMonth").val();
+                scheStart = scheStart.replace(new RegExp("/", 'g'), " ");
+                scheStart = scheStart.split(" ");
+
+                var scheStartDate = new Date(scheStart[1], scheStart[0] - 1, 1);
+                console.log("scheStartDate:" + scheStartDate);
+
+                var scheEnd = $("#endDateMonth").val();
+                scheEnd = scheEnd.replace(new RegExp("/", 'g'), " ");
+                scheEnd = scheEnd.split(" ");
+                let day = null;
+                // if (scheEnd[0] == 1 || scheEnd[0] == 3 || scheEnd[0] == 5 || scheEnd[0] == 7 || scheEnd[0] == 8 || scheEnd[0] == 10 || scheEnd[0] == 12) {
+                //     day = 31;
+                // }
+                // if (scheEnd[0] == 4 || scheEnd[0] == 6 || scheEnd[0] == 9 || scheEnd[0] == 11) {
+                //     day = 30;
+                // }
+                // if (scheEnd[0] == 2) day = 28
+                var scheEndDate = new Date(scheEnd[1], scheEnd[0], day);
+                scheEndDate.setMonth(scheEndDate.getMonth() - 3);
+                var dateNow = new Date();
+
+                console.log("(scheEnd[1])" + (scheEnd[1]))
+                console.log("(scheEnd[0])" + (scheEnd[0]))
+                if ((scheEnd[0] < scheStart[0]) && (scheEnd[1] <= scheStart[1])) {
+                    showTooltip("Tháng bắt đầu không được lớn hơn tháng kết thúc!", 'startDateMonth');
+                    showTooltip("Tháng bắt đầu không được lớn hơn tháng kết thúc!", 'endDateMonth');
+                    check = false;
+                }
+                if (scheEndDate > scheStartDate) {
+                    showTooltip("Thời gian tra cứu chỉ tối đa 3 tháng!", "startDateMonth");
+                    showTooltip("Thời gian tra cứu chỉ tối đa 3 tháng!", "endDateMonth");
+                    check = false;
+                }
+                console.log("dateNow.getFullYear()" + dateNow.getFullYear())
+
+                if ((scheStart[1] > dateNow.getFullYear())) {
+                    showTooltip("Tháng bắt đầu không được lớn hơn tháng hiện tại!", "startDateMonth");
+                    check = false;
+                }
+                if ((scheStart[1] == dateNow.getFullYear()) && (scheStart[0] > (dateNow.getMonth() + 1))) {
+                    showTooltip("Tháng bắt đầu không được lớn hơn tháng hiện tại!", "startDateMonth");
+                    check = false;
+                }
+
+                if ((scheEnd[1] > dateNow.getFullYear())) {
+                    showTooltip("Tháng kết thúc không được lớn hơn tháng hiện tại!", "endDateMonth");
+                    check = false;
+                }
+                if ((scheEnd[1] == dateNow.getFullYear()) && (scheEnd[0] > (dateNow.getMonth() + 1))) {
+                    showTooltip("Tháng kết thúc không được lớn hơn tháng hiện tại!", "endDateMonth");
+                    check = false;
+                }
+
+            }
+        }
+        if (chartType == 0) {
+            if(check) {
+                $("#board").show();
+                $("#chart").hide();
+                if (check) {
+                    if (date == 0) {
+                        window.location.href = '/ReportController/overviewPackage?name=' + name + '&date=' + date +
+                            '&startDate=' + startDate + '&endDate=' + endDate + '&chartType=' + chartType;
+                    }
+                    if (date == 1) {
+                        window.location.href = '/ReportController/overviewPackage?name=' + name + '&date=' + date +
+                            '&startDateMonth=' + startDate + '&endDateMonth=' + endDate + '&chartType=' + chartType;
+                    }
+                }
+            }
+        }
+        if (chartType == 1) {
+            event.preventDefault();
+            $("#board").hide();
+            $("#chart").show();
+            if (check) {
+
+                if (name == "") {
+                    if (date == 0) {
+                        query = 'REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'dd/mm/yyyy\') and REPORTED_DATE<= TO_DATE(' + "'" + endDate + "'" + ',\'dd/mm/yyyy\') ';
+                    }
+                    if (date == 1) {
+                        query = 'REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'mm/yyyy\') and REPORTED_DATE<= LAST_DAY(TO_DATE(' + "'" + endDate + "'" + ',\'mm/yyyy\')) ';
+                    }
+                    $("#all").hide();
+                    $("#one").show();
+                    console.log("query:", query);
+                    reportOne(query, date);
+                } else {
+
+                    if (date == 0) {
+                        query = 'PACKAGE =' + "'" + name + "'" + ' and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'dd/mm/yyyy\') and REPORTED_DATE<= TO_DATE(' + "'" + endDate + "'" + ',\'dd/mm/yyyy\') ';
+                    }
+                    if (date == 1) {
+                        query = 'PACKAGE =' + "'" + name + "'" + ' and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'mm/yyyy\') and REPORTED_DATE<= LAST_DAY(TO_DATE(' + "'" + endDate + "'" + ',\'mm/yyyy\')) ';
+                    }
+                    $("#all").hide();
+                    $("#one").show();
+                    reportOne(query, date);
+                }
+            }
+        }
+
+
+    }
+
+    function reportAll(query, date) {
+        let slice_50 = document.getElementById("slice_50");
+        slice_50_url = supersetUrl + `superset/explore/?form_data={"slice_id":50,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_50.src = slice_50_url;
+
+        let slice_51 = document.getElementById("slice_51");
+        slice_51_url = supersetUrl + `superset/explore/?form_data={"slice_id":51,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_51.src = slice_51_url;
+
+        let slice_52 = document.getElementById("slice_52");
+        slice_52_url = supersetUrl + `superset/explore/?form_data={"slice_id":52,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_52.src = slice_52_url;
+
+        let slice_53 = document.getElementById("slice_53");
+        slice_53_url = supersetUrl + `superset/explore/?form_data={"slice_id":53,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_53.src = slice_53_url;
+
+        let slice_54 = document.getElementById("slice_54");
+        slice_54_url = supersetUrl + `superset/explore/?form_data={"slice_id":54,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_54.src = slice_54_url;
+
+        let slice_55 = document.getElementById("slice_55");
+        slice_55_url = supersetUrl + `superset/explore/?form_data={"slice_id":55,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_55.src = slice_55_url;
+
+        let slice_56 = document.getElementById("slice_56");
+        slice_56_url = supersetUrl + `superset/explore/?form_data={"slice_id":56,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_56.src = slice_56_url;
+
+
+    }
+
+    function reportOne(query, date) {
+
+
+        let slice_57 = document.getElementById("slice_57");
+        if (date == 0) {
+            slice_54_url = supersetUrl + `superset/explore/?form_data={"slice_id":54,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        } else {
+            slice_54_url = supersetUrl + `superset/explore/?form_data={"slice_id":54,"time_grain_sqla":"P1M","x_axis_format":"%m/%Y","adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        }
+        slice_57.src = slice_54_url;
+
+        let slice_58 = document.getElementById("slice_58");
+        if (date == 0) {
+            slice_55_url = supersetUrl + `superset/explore/?form_data={"slice_id":55,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        } else {
+            slice_55_url = supersetUrl + `superset/explore/?form_data={"slice_id":55,"time_grain_sqla":"P1M","x_axis_format":"%m/%Y","adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        }
+        slice_58.src = slice_55_url;
+
+        let slice_59 = document.getElementById("slice_59");
+        if (date == 0) {
+            slice_56_url = supersetUrl + `superset/explore/?form_data={"slice_id":56,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        } else {
+            slice_56_url = supersetUrl + `superset/explore/?form_data={"slice_id":56,"time_grain_sqla":"P1M","x_axis_format":"%m/%Y","adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        }
+        slice_59.src = slice_56_url;
+        console.log("slice_56_url:", slice_56_url)
+
+    }
+
+    function exportReport() {
+        Swal.fire({
+            position: 'top',
+            type: 'info',
+            title: 'Thông báo',
+            text: "Hệ thống đang xử lý dữ liệu. Vui lòng chờ trong ít phút.",
+            showConfirmButton: false,
+            timer: 5000
+        })
+        var date = $("#date").val();
+        var name = $("#packageName").val();
+        var startDate = $("#startDate").val();
+        var endDate = $("#endDate").val();
+        if (date == 0) {
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+        } else if (date == 1) {
+            startDate = $("#startDateMonth").val();
+            endDate = $("#endDateMonth").val();
+        }
+        let token = $("#common-csrf").val();
+        let queryString = window.location.search;
+        let d = new Date();
+        let month = d.getMonth() + 1;
+        let today = d.getFullYear() + "" + month + d.getDate();
+        let h = d.getHours();
+        let m = d.getMinutes();
+        let s = d.getSeconds();
+        let time = h + "" + m + s;
+        let fileName = "Bao_cao_goi_cuoc_" + name + "_" + today + "_" + time + ".xlsx";
+        fetch(contextPath + 'ReportController/exportPackage?name=' + name + '&startDate=' + startDate + '&endDate=' + endDate)
+            .then(resp => resp.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // the filename you want
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(err => console.log(err));
+    }
+</script>
+
+</html>
+

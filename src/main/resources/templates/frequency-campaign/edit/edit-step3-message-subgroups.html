@@ -1,0 +1,139 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div class="add_cp_pages m-t-10" id="step-component-3-message-subgroups" style="display: none">
+    <div id="content-message-subgroups">
+        <div th:each="data,loop : ${subTargetGroups}">
+            <div class="row p-t-20">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label class="control-label">Nhóm</label>
+                        <input class="form-control" th:value="${data.getSubTargetGroup().name}" disabled type="text">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Thứ tự ưu tiên</label>
+                        <input class="form-control" th:value="${data.getSubTargetGroup().getPriority()}" disabled type="text">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group stg_mess">
+                        <label class="control-label">Thông điệp</label>
+                        <div class="">
+                            <a th:onclick="showPopupSetupMessage([[${loop.index}]])" class="subgroup-message" data-toggle="modal" href="#">Cấu hình thông điệp</a>
+                            <!--                    <i class="ti-check"></i>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" title='Đã cấu hình' th:id="'checkMessageContent_'+${loop.index}">
+                        <i class="ti-check"></i>
+                    </div>
+                </div>
+            </div>
+            <div aria-hidden="true" aria-labelledby="myLargeModalLabel" data-backdrop="static" data-keyboard="false" th:id="'popup_ctn_mess_' + ${loop.index}"
+                 class="modal fade bs-example-modal-lg"
+                 role="dialog" style="display: none;" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myLargeModalLabel">Nội dung thông điệp</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row p-t-20">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Kênh truyền thông<span class="red-clr">*</span></label>
+                                        <select class="form-control custom-select" th:id="'channel-marketing_' + ${loop.index}"
+                                                data-placeholder="Chọn kênh truyền thông" tabindex="1">
+                                            <option value="1">SMS</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Tài khoản gửi tin<span class="red-clr">*</span></label>
+                                        <select class="form-control custom-select selectpicker sending-account-sub-group"
+                                                th:id="'sending-account_' + ${loop.index}" data-placeholder="Chọn tài khoản gửi tin"
+                                                data-dropup-auto="false" data-live-search="true" data-size="6" data-width="100%">
+                                            <option th:each="sendingAccount,loop : ${sendingAccounts}"
+                                                    th:selected="(${sendingAccount.id == data.getSubTargetGroup().accountSendingId})"
+                                                    th:value="${sendingAccount.id}"
+                                                    th:text="${sendingAccount.senderAccount}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Gói cước<span class="red-clr">*</span></label>
+                                        <select class="form-control custom-select selectpicker" th:id="'product-package_' + ${loop.index}"
+                                                name="package" data-placeholder="Chọn gói cước"
+                                                data-dropup-auto="false" data-live-search="true" data-size="6" data-width="100%">
+                                            <option  th:each="package,loop : ${listPackage}"
+                                                     th:selected="(${data.getSubTargetGroup().packageDataId == package.getId()})"
+                                                     th:value="${package.getId()}"
+                                                     th:text="${package.getPackageName()}">
+
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group m-b-20">
+                                        <label class="control-label">Nội dung <span class="red-clr">*</span></label>
+                                        <textarea class="form-control fc_area" th:id="'message-content_'+ ${loop.index}" th:onkeyup="countMT([[${loop.index}]])" th:text="${data.getSmsContentDTO().messageContent}" onpaste="countMTOnPaste(event)" th:value="${data.getSmsContentDTO().messageContent}" placeholder="" rows="5"></textarea>
+                                        <p class="note_area m-b-0" th:id="'mt-count_'+ ${loop.index}"  th:text="${#strings.length(data.getSmsContentDTO().messageContent)} + ' ký tự ' + ${data.getSmsContentDTO().countMT} + ' tin nhắn (MT).'" ></p>
+                                        <input type="hidden" id="is-unicode" name="isUnicode" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row m-b-20">
+                                <div class="col-md-6">
+                                    <div class="btn-group">
+                                        <button class="btn btn-rounded btn-primary" type="button"><i aria-hidden="true" class="ti-plus text m-r-10"></i>Thêm
+                                            nội dung tham biến
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn_main_act btn_R">
+                                <div class="btn-group">
+                                    <button class="btn btn-rounded btn-primary" type="button"
+                                            th:onclick='validateContentMessage([[${loop.index}]])'>Lưu
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-rounded btn-danger" data-dismiss="modal" type="button">Hủy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <input type="hidden" th:id="'countMT_'+${loop.index}" th:value="${data.getSmsContentDTO().countMT}">
+            <input type="hidden" th:id="'unicode_'+${loop.index}" th:value="${data.getSmsContentDTO().unicode}">
+            <input type="hidden" th:id="'jsonSubMessageContent_'+${loop.index}" name="message-content" th:value="${data.getSmsContentDTO().getJsonSmsContentDTO()}">
+        </div>
+
+    </div>
+
+    <div class="btn_main_act">
+        <div class="btn-group">
+            <button class="btn btn-rounded btn-primary" id="step3-next-multi-message" type="button">Tiếp tục</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-rounded btn-danger cancel-create-campagin" type="button">Hủy</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-rounded btn-secondary" id="step3-prev-multi-message" type="button">Quay lại</button>
+        </div>
+    </div>
+</div>

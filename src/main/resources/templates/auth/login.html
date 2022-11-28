@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="assets/images/logo-icon_2.png">
+    <title>VIVAS Campaign X</title>
+    <!-- Bootstrap Core CSS -->
+    <link type="text/css" href="assets/plugins/bootstrap/css/bootstrap.min.css"
+          rel="stylesheet">
+    <!-- Custom CSS -->
+    <link type="text/css" href="css/style.css" rel="stylesheet">
+    <!-- You can change the theme colors from here -->
+    <link type="text/css" href="css/colors/red.css" id="theme" rel="stylesheet">
+</head>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .input-container {
+        display: -ms-flexbox; /* IE10 */
+        display: flex;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    /* Set a style for the submit button */
+    .btn {
+        background-color: dodgerblue;
+        color: white;
+        padding: 15px 20px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        opacity: 0.9;
+    }
+
+    .btn:hover {
+        opacity: 1;
+    }
+
+    .text-forgot-password {
+        text-decoration: underline;
+        display: block;
+        text-align: center;
+    }
+</style>
+<body>
+
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+    </svg>
+</div>
+<section id="wrapper">
+    <div class="login-register">
+        <div class="login-box card card_login">
+            <div class="card-block">
+                <div class="col-xs-12 col-sm-12 col-md-12 text-center p-4">
+                    <b>
+                        <img th:src="@{/assets/images/logo-icon_2.png}" alt="homepage" class="dark-logo"/>
+                    </b>
+                    <span>
+	                     <img th:src="@{/assets/images/logo-text_2.png}" alt="homepage" class="dark-logo"/>
+					</span>
+                </div>
+
+                <form class="form-horizontal form-material" id="loginform" onsubmit="return validate()" action="login"
+                      method="post">
+                    <h5 id="error-login" style="color: red" class="text-center" th:text="${errorLogin}"></h5>
+                    <div class="form-group field_login">
+                        <i class="icon-user"></i>
+                        <input id="username" name="username" class="form-control" type="text" placeholder="Tài khoản">
+                    </div>
+                    <div class="form-group field_login">
+                        <i class="ti-lock"></i>
+                        <input id="password" name="password" class="form-control" type="password" placeholder="Mật khẩu">
+                    </div>
+                    <div class="form-group text-center btn_login">
+                        <button class="btn btn-md btn-block text-uppercase waves-effect waves-light btn-rounded btn-primary" type="submit">Đăng nhập</button>
+                    </div>
+                    <a class="text-forgot-password" th:href="@{/page-forgot-password}">Quên mật khẩu?</a>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap tether Core JavaScript -->
+<script src="assets/plugins/bootstrap/js/tether.min.js"></script>
+<script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- slimscrollbar scrollbar JavaScript -->
+<script src="js/jquery.slimscroll.js"></script>
+<!--Wave Effects -->
+<script src="js/waves.js"></script>
+<!--Menu sidebar -->
+<script src="js/sidebarmenu.js"></script>
+<!--stickey kit -->
+<script src="assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
+<!--Custom JavaScript -->
+<script src="js/custom.min.js"></script>
+<script src="assets/plugins/styleswitcher/jQuery.style.switcher.js"></script>
+<script src="js/common/common.js" type="text/javascript"></script>
+<script src="js/sweetalert2.all.min.js" type="text/javascript"></script>
+<div id="foot_main"></div>
+
+<script>
+
+
+    function validate() {
+        let flag = true;
+        var username = $("#username").val();
+        if (username == null || username.length <= 0) {
+            showTooltip('Tên đăng nhập không được để trống', 'username');
+            flag = false;
+        }
+        var password = $("#password").val();
+        if (password == null || password.length <= 0) {
+            showTooltip('Mật khẩu không được để trống', 'password');
+            flag = false;
+        }
+        return flag;
+    }
+
+    $('.form-control').click(function (e) {
+        $("#error-login").remove();
+    });
+
+</script>
+</body>
+</html>

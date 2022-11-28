@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns="http://www.w3.org/1999/html">
+<head th:replace="common/head :: head"></head>
+<style>
+    #permissions {
+        margin-left: -38px;
+    }
+</style>
+<body class="fix-header card-no-border">
+<div th:insert="common/templates::alertMessage"></div>
+<!-- Preloader - style you can find in spinners.css -->
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<!-- Main wrapper - style you can find in pages.scss -->
+<div id="main-wrapper">
+    <div th:replace="common/bodyHeader"></div>
+
+    <!-- Left Sidebar - style you can find in sidebar.scss  -->
+    <div th:replace="common/leftmenu"></div>
+
+    <div class="page-wrapper">
+        <!-- Container fluid  -->
+        <div class="container-fluid">
+            <div class="row page-titles">
+                <div class="col-md-12 col-12 align-self-center">
+                    <h3 class="text-themecolor m-b-0 m-t-0">Chi tiết nhóm quyền</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/MMPPortal/permissions/view">Quản lý nhóm quyền</a></li>
+                        <li class="breadcrumb-item active">Chi tiết nhóm quyền</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-block">
+                            <h4 class="card-title">Chi tiết nhóm quyền</h4>
+                            <hr class="hr_style">
+                            <div class="table-responsive m-t-40">
+                                <div class="row form_qldhqc">
+                                    <div class="col-sm-12 col-xs-12">
+                                        <form id="permissionForm" class="form">
+                                            <div class="row">
+                                                <div class="form-group m-t-10 col-lg-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4 col-form-label font-bold">Tên nhóm
+                                                            quyền: </label>
+                                                        <div class="col-md-8 scroll-inline pt-1" id="permissionName"
+                                                             name="permissionName" th:text="${permissionName}"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group m-t-10 col-lg-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4 col-form-label font-bold">Trạng
+                                                            thái: </label>
+                                                        <div class="col-md-8 scroll-inline pt-1"
+                                                             th:if="${status == true}">Hoạt động
+                                                        </div>
+                                                        <div class="col-md-8 scroll-inline pt-1"
+                                                             th:if="${status == false}">Tạm khóa
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group m-t-10 col-lg-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4 col-form-label font-bold">Quyền truy
+                                                            cập: </label>
+                                                        <div class="col-md-8 pt-1" id="permissions" name="permissions"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="text-center m-t-40 m-b-20">
+                                                <button class="btn waves-effect waves-light m-r-10 p-10 btn_blue btn_back"
+                                                        th:onclick="update([[${permissionId}]])" type="button">Sửa
+                                                </button>
+                                                <button class="btn waves-effect waves-light m-r-10 p-10 btn-success btn_back"
+                                                        th:onclick="showDialogAndDeletePermission([[${permissionId}]])"
+                                                        type="button">Xóa
+                                                </button>
+                                                <button class="btn waves-effect waves-light p-10 btn-info btn_back"
+                                                        onclick="handleCancel()"
+                                                        type="button">Hủy
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- footer -->
+        <footer class="footer">
+            Bản quyền thuộc về Công ty TNHH Cung cấp Giải pháp Dịch vụ Giá trị gia tăng <span class="red-clr">VIVAS</span>
+        </footer>
+        <!-- End footer -->
+    </div>
+    <!-- End Page wrapper  -->s
+    <div th:insert="common/footer" th:remove="tag"></div>
+
+</div>
+
+</body>
+<script th:inline="javascript">
+    let privilegeId = /*[[${privilegeIds}]]*/ 'default';
+
+    $(document).ready(function () {
+        getAllPrivileges();
+
+        handleClickOpenClose();
+    })
+
+    function getAllPrivileges() {
+        $.ajax({
+            type: 'GET',
+            url: '/MMPPortal/privileges/getAll',
+            traditional: true,
+            cache: true,
+            async: false,
+            success: function (response) {
+                if (response) {
+                    showPermissions(response, privilegeId);
+                }
+            },
+            error: function () {
+                showErrorMessage('Không thể kết nối tới máy chủ do hệ thống đang bận. Vui lòng thử lại!');
+            }
+        });
+    }
+
+    function showPermissions(data, privilegeId) {
+        let permissionElement = '<ul id="treeCheckbox">';
+        $.each(data, function (i, obj) {
+            const isBoolean = obj.privilegeIds.some(el => {return privilegeId.includes(el.privilegeChildrenId)});
+            permissionElement += ('<li>');
+            if (isBoolean) {
+                permissionElement += ('<span class="permission"></span>') + obj.privilegeName;
+            }
+            permissionElement += ('<ul class="privileges">');
+            $.each(obj.privilegeIds, function (j, value) {
+                permissionElement += ('<li>');
+                if (privilegeId.includes(value.privilegeChildrenId)) {
+                    permissionElement += value.actionName
+                }
+                permissionElement += ('</li>');
+            });
+            permissionElement += ('</ul>');
+            permissionElement += ('</li>');
+        });
+        permissionElement += '</ul>';
+        $("#permissions").html(permissionElement);
+    }
+
+    function handleClickOpenClose() {
+        const toggle = document.getElementsByClassName("permission");
+        let i;
+
+        for (i = 0; i < toggle.length; i++) {
+            toggle[i].addEventListener("click", function () {
+                this.parentElement.querySelector(".privileges").classList.toggle("active");
+                this.classList.toggle("down");
+            });
+        }
+    }
+
+    function handleCancel() {
+        window.history.go(-1);
+    }
+
+    function update(permissionId) {
+        window.location.href = "/MMPPortal/permissions/view-update?permissionId=" + permissionId;
+    }
+
+    function showDialogAndDeletePermission(permissionId) {
+        const title = "Bạn có chắc chắn muốn xóa nhóm quyền này?";
+        Swal.fire({
+            title: "",
+            text: title,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy",
+            closeOnConfirm: false
+        }).then((res) => {
+            if (res.value) {
+                window.location.href = '/MMPPortal/permissions/delete?permissionId=' + permissionId;
+            }
+        })
+    }
+
+</script>
+</html>

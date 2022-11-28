@@ -1,0 +1,236 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div class="parent_crit_custom" th:id="${rowIdLevel3}" style="margin-top: 0px !important;">
+    <div class="col-lg-12 cdt_slc" th:id="${level3}" style="margin-bottom: 0px !important;">
+    </div>
+    <br>
+    <div class="col-lg-12 row_crit">
+        <div class="row">
+            <div class="col-lg-11">
+                <div class="row">
+                    <div class="col-lg-3" th:id="${selectCriteriaID}" style="padding-left: 0px !important; padding-right: 0px !important;">
+                        <div class="dropdown tieu_chi" style="text-align: center; margin-top: 4px;">
+                            <button th:id="${buttonIdLevel3}" onclick="clickSelectParam(event)" style="text-align: left; white-space:normal !important; word-wrap:break-word;" class="form-control btn btn-success-1 btn-circle-lg dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Chọn tham số <i style="float: right" class="fa fa-angle-down"></i>
+                            </button>
+                            <ul id="menu" class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" tabindex="-1" >Thuê bao</a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item" th:onclick="chonTieuChi(1, 'Tuổi mạng',[[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Tuổi mạng</li>
+                                        <li class="dropdown-item" th:onclick="chonTieuChi(2, 'Số ngày không hoạt động', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Số ngày không hoạt động</li>
+                                        <li class="dropdown-item" th:onclick="chonTieuChi(3, 'Trạng thái', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Trạng thái</li>
+                                        <li class="dropdown-item" th:onclick="chonTieuChi(4, 'Loại tài khoản', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Loại tài khoản</li>
+                                        <li class="dropdown-item" th:onclick="chonTieuChi(5, 'Loại thuê bao/SIM', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Loại thuê bao/SIM</li>
+                                        <li class="dropdown-submenu"><a class="dropdown-item">Số dư tài khoản chính</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(6, 'Số dư tài khoản chính', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Số dư tài khoản chính</li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(7, 'Số dư tài khoản chính OCS', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Số dư tài khoản chính OCS</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" tabindex="-1" >Tiêu dùng</a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item" th:onclick="chonTieuChi(8, 'Tổng tiêu dùng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Tổng tiêu dùng</li>
+                                        <li class="dropdown-submenu" ><a class="dropdown-item" >Giá trị nạp tiền</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(9, 'Giá trị nạp tiền trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Giá trị nạp tiền trung bình</li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(10, 'Giá trị nạp tiền thấp nhất', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Giá trị nạp tiền thấp nhất</li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(11, 'Giá trị nạp tiền cao nhất', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Giá trị nạp tiền cao nhất</li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(12, 'Giá trị nạp tiền gần nhất', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Giá trị nạp tiền gần nhất</li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(13, 'Giá trị nạp tiền được nạp nhiều lần nhất', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Giá trị nạp tiền được nạp nhiều lần nhất</li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(14, 'Tổng giá trị nạp tiền', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Tổng giá trị nạp tiền</li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown-item" th:onclick="chonTieuChi(15, 'Số lần nạp tiền', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Số lần nạp tiền</li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" tabindex="-1" >Cuộc gọi đi</a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-submenu">
+                                            <a class="dropdown-item">Số cuộc gọi đi</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(16, 'Số cuộc gọi đi nội mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Nội mạng</li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(17, 'Số cuộc gọi đi ngoại mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Ngoại mạng</li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(18, 'Số cuộc gọi đi quốc tế', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Quốc tế</li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(19, 'Số cuộc gọi đi toàn mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Toàn mạng</li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown-submenu">
+                                            <a class="dropdown-item" >Số phút gọi</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-submenu">
+                                                    <a class="dropdown-item">Tổng số phút gọi</a>
+                                                    <ul class="dropdown-menu">
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(20, 'Tổng số phút gọi nội mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Nội mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(21, 'Tổng số phút gọi ngoại mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Ngoại mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(22, 'Tổng số phút gọi quốc tế', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Quốc tế</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(23, 'Tổng số phút gọi toàn mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Toàn mạng</li>
+                                                    </ul>
+                                                </li>
+                                                <li class="dropdown-submenu">
+                                                    <a class="dropdown-item">Số phút gọi trung bình</a>
+                                                    <ul class="dropdown-menu">
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(24, 'Số phút gọi nội mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Nội mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(25, 'Số phút gọi ngoại mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Ngoại mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(26, 'Số phút gọi quốc tế trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Quốc tế</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(27, 'Số phút gọi toàn mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Toàn mạng</li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown-submenu">
+                                            <a class="dropdown-item" >Tiêu dùng cuộc gọi</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-submenu">
+                                                    <a class="dropdown-item">Tổng tiêu dùng cuộc gọi</a>
+                                                    <ul class="dropdown-menu">
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(28, 'Tổng tiêu dùng cuộc gọi nội mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Nội mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(29, 'Tổng tiêu dùng cuộc gọi ngoại mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Ngoại mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(30, 'Tổng tiêu dùng cuộc gọi quốc tế', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Quốc tế</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(31, 'Tổng tiêu dùng cuộc gọi toàn mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Toàn mạng</li>
+                                                    </ul>
+                                                </li>
+                                                <li class="dropdown-submenu">
+                                                    <a class="dropdown-item">Tiêu dùng cuộc gọi trung bình</a>
+                                                    <ul class="dropdown-menu">
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(32, 'Tiêu dùng cuộc gọi nội mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Nội mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(33, 'Tiêu dùng cuộc gọi ngoại mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Ngoại mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(34, 'Tiêu dùng cuộc gọi quốc tế trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Quốc tế</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(35, 'Tiêu dùng cuộc gọi toàn mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Toàn mạng</li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" tabindex="-1" >SMS gửi đi</a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-submenu">
+                                            <a class="dropdown-item" >Số SMS gửi đi</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-submenu" >
+                                                    <a class="dropdown-item" >Tổng SMS gửi đi</a>
+                                                    <ul class="dropdown-menu">
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(36, 'Tổng SMS nội mạng gửi đi', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Nội mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(37, 'Tổng SMS ngoại mạng gửi đi', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Ngoại mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(38, 'Tổng SMS quốc tế gửi đi', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Quốc tế</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(39, 'Tổng SMS toàn mạng gửi đi', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Toàn mạng</li>
+                                                    </ul>
+                                                </li>
+                                                <li class="dropdown-submenu" >
+                                                    <a class="dropdown-item" >Số SMS trung bình</a>
+                                                    <ul class="dropdown-menu">
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(40, 'Số SMS nội mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Nội mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(41, 'Số SMS ngoại mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Ngoại mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(42, 'Số SMS quốc tế trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Quốc tế</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(43, 'Số SMS toàn mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Toàn mạng</li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown-submenu">
+                                            <a class="dropdown-item">Tiêu dùng SMS</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-submenu" >
+                                                    <a class="dropdown-item" >Tổng tiêu dùng SMS</a>
+                                                    <ul class="dropdown-menu">
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(44, 'Tổng tiêu dùng SMS nội mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Nội mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(45, 'Tổng tiêu dùng SMS ngoại mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Ngoại mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(46, 'Tổng tiêu dùng SMS quốc tế', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Quốc tế</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(47, 'Tổng tiêu dùng SMS toàn mạng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Toàn mạng</li>
+                                                    </ul>
+                                                </li>
+                                                <li class="dropdown-submenu" >
+                                                    <a class="dropdown-item" >Tiêu dùng SMS trung bình</a>
+                                                    <ul class="dropdown-menu">
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(48, 'Tiêu dùng SMS nội mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Nội mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(49, 'Tiêu dùng SMS ngoại mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Ngoại mạng</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(50, 'Tiêu dùng SMS quốc tế trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Quốc tế</li>
+                                                        <li class="dropdown-item" th:onclick="chonTieuChi(51, 'Tiêu dùng SMS toàn mạng trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])">Toàn mạng</li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" tabindex="-1" >Tiêu dùng data</a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item" th:onclick="chonTieuChi(52, 'Tổng dung lượng data đã sử dụng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Tổng dung lượng data đã sử dụng</a></li>
+                                        <li class="dropdown-item" th:onclick="chonTieuChi(53, 'Tổng tiêu dùng data', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Tổng tiêu dùng data</a></li>
+                                        <li class="dropdown-item" th:onclick="chonTieuChi(54, 'Tiêu dùng data trung bình', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Tiêu dùng data trung bình</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" tabindex="-1" >Gói cước</a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-submenu">
+                                            <a class="dropdown-item" >Gói DATA</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(55, 'Số lần đăng ký/gia hạn gói DATA', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Số lần đăng ký/gia hạn gói DATA</a></li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(56, 'Gói DATA đang sử dụng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Gói DATA đang sử dụng</a></li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(65, 'Số gói DATA đang sở hữu', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Số gói DATA đang sở hữu</a></li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(57, 'Số ngày quá hạn gói DATA', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Số ngày quá hạn gói DATA</a></li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(58, 'Số ngày sử dụng còn lại của gói DATA', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Số ngày sử dụng còn lại của gói DATA</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown-submenu">
+                                            <a class="dropdown-item">Gói KMCB</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(59, 'Số lần đăng ký/gia hạn gói KMCB', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Số lần đăng ký/gia hạn gói KMCB</a></li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(60, 'Gói KMCB đang sử dụng', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Gói KMCB đang sử dụng</a></li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(66, 'Số gói KMCB đang sở hữu', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Số gói KMCB đang sở hữu</a></li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(61, 'Số ngày quá hạn gói KMCB', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Số ngày quá hạn gói KMCB</a></li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(62, 'Số ngày sử dụng còn lại của gói KMCB', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Số ngày sử dụng còn lại của gói KMCB</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown-submenu">
+                                            <a class="dropdown-item" >Giá trị gói cước đang sử dụng</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(63, 'Giá trị gói lớn nhất', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Giá trị gói lớn nhất</a></li>
+                                                <li class="dropdown-item" th:onclick="chonTieuChi(64, 'Giá trị gói nhỏ nhất', [[${buttonIdLevel3}]], [[${selectCriteriaID}]], [[${currentNodeID}]])"><a >Giá trị gói nhỏ nhất</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-1">
+                <div class="row">
+                    <div class="col-lg-12 act_crit" style="padding-right: 0px !important; padding-left: 0px !important;">
+                        <button type="button" class="btn btn_ksn btn_ksn_delete btn_cl_black duplicate_btn" th:id="'buttonAddRow_'+${currentNodeID}" th:onclick="addCriteriaLevel3(this, [[${rowIdLevel3}]], [[${parentNodeId}]])" title="Thêm dòng">
+                            <i class="duplicate_ic"></i>
+                        </button>
+                        <button type="button" class="btn btn_ksn btn_ksn_delete btn_cl_black" th:onclick="deleteCriteria([[${rowIdLevel3}]], [[${rowIdLevel3}]], [[${currentNodeID}]])" title="Xóa tiêu chí">
+                            <i class="delete_ic"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function clickSelectParam(e) {
+        let cursorY = e.clientY;
+        let height = screen.height;
+        if(cursorY > height/2) {
+            $(".tieu_chi>.multi-level").css("bottom", "110%");
+            $(".dropdown-submenu>.dropdown-menu").css("top", "-30px");
+        }
+        else {
+            $(".tieu_chi>.multi-level").css("bottom", "");
+        }
+    }
+</script>
+</html>

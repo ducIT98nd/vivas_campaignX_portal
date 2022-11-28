@@ -1,0 +1,105 @@
+<!--Modal-->
+<div aria-hidden="true" aria-labelledby="myLargeModalLabel" class="modal fade bs-example-modal-lg popup_ctn_mess"
+     role="dialog" style="display: none;" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myLargeModalLabel">Nội dung thông điệp</h4>
+                <button aria-hidden="true" class="close" data-dismiss="modal" type="button">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="row p-t-20">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Kênh truyền thông<span class="red-clr">*</span></label>
+                            <select class="form-control custom-select" name="channel-marketing" data-placeholder="Chọn kênh truyền thông"
+                                    tabindex="1">
+                                <option value="1">Chọn kênh truyền thông</option>
+                                <option value="2">Category 2</option>
+                                <option value="3">Category 5</option>
+                                <option value="4">Category 4</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Tài khoản gửi tin<span class="red-clr">*</span></label>
+                            <select class="form-control custom-select" name="sending-account" data-placeholder="Chọn tài khoản gửi tin"
+                                    tabindex="1">
+                                <option value="1">Chọn tài khoản gửi tin</option>
+                                <option value="2">Category 2</option>
+                                <option value="3">Category 5</option>
+                                <option value="4">Category 4</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Cú pháp đăng ký<span class="red-clr">*</span></label>
+                            <input class="form-control" id="regis-command" name="regis-command" placeholder="Nhập cú pháp đăng ký" type="text">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Cú pháp xác nhận đăng ký SMS<span
+                                    class="red-clr">*</span></label>
+                            <input class="form-control" id="confirm-command" name="confirm-command" placeholder="Nhập cú pháp xác nhận đăng ký SMS"
+                                   type="text">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Gói cước<span class="red-clr">*</span></label>
+                            <select class="form-control custom-select"id="package" name="package"  data-placeholder="Chọn gói cước" tabindex="1">
+                                <option value="1">Chọn gói cước</option>
+                                <option value="2">Category 2</option>
+                                <option value="3">Category 5</option>
+                                <option value="4">Category 4</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group m-b-20">
+                            <label class="control-label">Nội dung <span class="red-clr">*</span></label>
+                            <textarea class="form-control fc_area" id="message-content" name="message-content" placeholder="Nhập nội dung bản tin"
+                                      rows="5"></textarea>
+                            <p class="note_area m-b-0">0 ký tự - 1 tin nhắn (MT).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row m-b-20">
+                    <div class="col-md-6">
+                        <div class="btn-group">
+                            <button class="btn btn-rounded btn-primary" type="button"><i aria-hidden="true"
+                                                                                         class="ti-plus text m-r-10"></i>Thêm nội
+                                dung tham biến
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn_main_act btn_R">
+                    <div class="btn-group">
+                        <button class="btn btn-rounded btn-primary" type="button">Tiếp tục</button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-rounded btn-danger" type="button">Hủy</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

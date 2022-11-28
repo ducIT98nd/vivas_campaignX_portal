@@ -1,0 +1,107 @@
+<!-- navigation menu end -->
+<!-- Left Sidebar - style you can find in sidebar.scss  --> <!-- ============================================================== -->
+<aside class="left-sidebar" style="position: fixed;" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <div class="scroll-sidebar">
+        <nav class="sidebar-nav">
+            <ul id="sidebarnav">
+                <li sec:authorize="hasAnyAuthority('list:targetgroup','create:targetgroup','detail:targetgroup','update:targetgroup','delete:targetgroup','copy:targetgroup','export:msisdn:targetgroup','export:detail:targetgroup','export:list:targetgroup')">
+                    <a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i
+                            class="obj"></i><span class="hide-menu">Đối tượng</span></a>
+                    <ul aria-expanded="false" class="collapse">
+                        <li><a th:href="@{/TagetGroupManagerController/targetGroupManager}">Danh sách nhóm đối tượng</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse">
+                        <li><a th:href="@{/TargetGroupController/viewCreate}">Tạo nhóm đối tượng</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasAnyAuthority('view:frequency:campaign','approve:campaign','refuse:campaign','stop:campaign','end:campign','search:view:campaign')">
+                    <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+                        <i class="cp"></i><span class="hide-menu">Chiến dịch</span>
+                    </a>
+                    <ul aria-expanded="false" class="collapse" >
+                        <li><a th:href="@{/campaignManager}">Danh sách chiến dịch</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse" >
+                        <li><a th:href="@{/frequency-campaign/create}">Tạo mới chiến dịch tần suất</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse" >
+                        <li><a th:href="@{/event-campaign/create}">Tạo mới chiến dịch sự kiện</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse" >
+                        <li><a>Chiến dịch lưu trữ</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasAnyAuthority('report:reportallcampaign','report:reportonecampaign','report:downloadcampaign','report:runner','report:packdata','report:downloadpackdata')">
+                    <a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i
+                            class="rp"></i><span class="hide-menu">Báo cáo</span></a>
+                    <ul aria-expanded="false" class="collapse" sec:authorize="hasAnyAuthority('report:reportallcampaign','report:reportonecampaign','report:downloadcampaign')">
+                        <li><a th:href="@{/ReportController/overview}">Báo cáo chiến dịch</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse" sec:authorize="hasAnyAuthority('report:packdata','report:downloadpackdata')">
+                        <li><a th:href="@{/ReportController/overviewPackage}">Báo cáo gói</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse" sec:authorize="hasAnyAuthority('report:runner')">
+                        <li><a th:href="@{/ReportController/running}">Lịch chạy chiến dịch</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasAnyAuthority('list:config-mt-content','update:config-mt-content'
+                ,'update:configpolicylimit','view:configpolicylimit'
+                ,'create:blacklist','update:blacklist','detail:blacklist','search:view:blacklist',
+                   'view:search:packdata','create:packdata','detail:packdata','update:packdata','delete:packdata',
+                   'view:search:sender','create:sender','detail:sender','update:sender','delete:sender','search:view:user','create:user','update:user','delete:user','renew:user')">
+                    <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+                        <i class="stg"></i><span class="hide-menu">Thiết lập</span></a>
+                    <ul aria-expanded="false" class="collapse"
+                        sec:authorize="hasAnyAuthority('update:configpolicylimit','view:configpolicylimit')">
+                        <li><a th:href="@{/config-policy}">Chính sách chung</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse">
+                        <li><a>Cấu hình chung</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse"
+                        sec:authorize="hasAnyAuthority('view:search:packdata','create:packdata','detail:packdata','update:packdata','delete:packdata')">
+                        <li><a th:href="@{/package-datas/}">Gói cước</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse"
+                        sec:authorize="hasAnyAuthority('view:search:sender','create:sender','detail:sender','update:sender','delete:sender')">
+                        <li><a th:href="@{/sending-accounts/manager}">Tài khoản gửi tin</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse"
+                        sec:authorize="hasAnyAuthority('list:config-mt-content','update:config-mt-content')">
+                        <li><a th:href="@{/config-mt}">Tin phản hồi tự động</a></li>
+                    </ul>
+                    <ul aria-expanded="false" class="collapse"
+                        sec:authorize="hasAnyAuthority('create:blacklist','update:blacklist','detail:blacklist','search:view:blacklist')">
+                        <li><a th:href="@{/blacklist}">DS thuê bao loại trừ</a></li>
+                    </ul>
+
+                    <ul aria-expanded="false" class="collapse" sec:authorize="hasAnyAuthority('search:view:user','create:user','update:user','delete:user','renew:user','history:user','detail:user')">
+                        <li ><a th:href="@{/UsersController/usersManager}">Tài khoản</a></li>
+                    </ul>
+                </li>
+                <!--<li sec:authorize="hasAnyAuthority('search:view:brandname','create:brandname','update:brandname','delete:brandname','detail:brandname','lock:brandname','unlock:brandname')">
+                    <a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i class="stg"></i><span
+                            class="hide-menu">Thiết lập</span></a>
+                    <ul aria-expanded="false" class="collapse">
+                        <li sec:authorize="hasAnyAuthority('search:view:brandname','create:brandname','update:brandname','delete:brandname','detail:brandname','lock:brandname','unlock:brandname')">
+                            <a th:href="@{/brandName/brandNameManager}">Danh sách Brandname/<br>đầu số</a></li>
+                    </ul>
+                </li>-->
+
+
+            </ul>
+        </nav>
+        <!-- End Sidebar navigation -->
+    </div>
+    <!-- End Sidebar scroll-->
+    <!-- Bottom points-->
+    <div class="sidebar-footer">
+        <!-- item-->
+        <!--        <a th:href="@{/logout}" class="link" data-toggle="tooltip" title="Logout"><i class="mdi mdi-power"></i> Đăng
+                    xuất</a>-->
+    </div>
+    <!-- End Bottom points-->
+</aside>
+<!-- ============================================================== -->
+<!-- End Left Sidebar - style you can find in sidebar.scss  -->
+<!-- ============================================================== -->

@@ -1,0 +1,68 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div class="add_cp_pages m-t-10 step-component" id="step-component-3-message" style="display: none">
+
+  <div class="row p-t-20">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label">Kênh truyền thông<span class="red-clr">*</span></label>
+        <select class="form-control custom-select" id="channel-marketing_one" name="channel-marketing" data-placeholder="Chọn kênh truyền thông" tabindex="1">
+          <option selected value="1">SMS</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label">Tài khoản gửi tin<span class="red-clr">*</span></label>
+        <select class="form-control custom-select selectpicker" id="sending-account_one" name="sending-account" data-dropup-auto="false"
+                data-live-search="true" data-size="6" title="Chọn tài khoản gửi tin" data-width="100%">
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="control-label">Gói cước<span class="red-clr">*</span></label>
+        <select class="form-control custom-select" id="product-package_one" name="package" data-dropup-auto="false"
+                data-live-search="true" data-size="6" title="Chọn gói cước" data-width="100%">
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group m-b-20">
+        <label class="control-label">Nội dung <span class="red-clr">*</span></label>
+        <textarea class="form-control fc_area" id="message-content_one" onpaste="countMTOnPaste(event)" onkeyup="countMT('one')" placeholder="Nhập nội dung bản tin" rows="5"></textarea>
+        <p class="note_area m-b-0" id="mt-count_one">0 ký tự - 1 tin nhắn (MT).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row m-b-20">
+    <div class="col-md-6">
+      <div class="btn-group">
+        <button type="button" class="btn btn-rounded btn-primary"><i class="ti-plus text m-r-10" aria-hidden="true"></i>Thêm nội dung tham biến</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn_main_act">
+    <div class="btn-group">
+      <button type="button" class="btn btn-rounded btn-primary" id="step4-next-one-message" onclick="validateContentMessage('one')">Tiếp tục</button>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-rounded btn-danger cancel-create-campagin">Hủy</button>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-rounded btn-secondary" id="step4-prev-one-message">Quay lại</button>
+    </div>
+  </div>
+  <input type="hidden" id="countMT_one">
+  <input type="hidden" id="unicode_one">
+  <input type="hidden" id="jsonSubMessageContent_one" name="message-content">
+</div>

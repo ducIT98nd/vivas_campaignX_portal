@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head th:replace="common/head :: head"></head>
+<body class="fix-header card-no-border">
+<div th:insert="common/templates::alertMessage"></div>
+<div th:insert="common/templates::contextPath"></div>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: '/campaignManager/getHtmlField',
+            traditional: true,
+            dataType: 'JSON',
+            cache: true,
+            async: false,
+            success: function (response) {
+                if (response) {
+                    console.log(response);
+                    if (response.code == 0) {
+                        let data = response.data;
+                        htmlField += "<div class=\"col-lg-3 " + classNameCondition + " \" style=\"padding-left: 0px !important; padding-right: 0px !important;\">\n" +
+                            "                        <select id='mainService_" + currentNodeID + "' name='' class=\"form-control\" >\n";
+                        for (let i = 0; i < data.length; i++) {
+                            htmlField += "                            <option value=\"" + data[i] + "\">" + data[i] + "</option>\n";
+                        }
+                        htmlField += "                        </select>\n" +
+                            "                    </div>";
+                    }
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            },
+        })
+    })
+</script>
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<div id="main-wrapper">
+    <div th:replace="common/bodyHeader"></div>
+    <div th:replace="common/leftmenu"></div>
+
+    <!-- Page wrapper  -->
+    <div class="page-wrapper">
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+
+            <div class="row pd-r-ctn">
+                <div class="col-lg-12 col-xlg-12 col-md-12 L_card">
+                    <!--Data table -->
+                    <div class="card">
+
+                        <div class="card-block">
+                            <div class="row smal_title">
+                                <h4 class="card-title col-lg-6"><img
+                                        th:src="@{/assets/images/iconsvg/ic-campaign.svg}"/> Xem chi tiết chiến dịch
+                                </h4>
+                                <div class="col-lg-6 title_btn">
+                                    <div class="btn-group">
+                                        <button class="btn btn-rounded btn-primary" data-toggle="modal"
+                                                data-target="#history-edit-modal">
+                                            <i class="ti-time"></i>
+                                            Xem lịch sử chỉnh sửa
+                                        </button>
+                                    </div>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="history-edit-modal" tabindex="-1" role="dialog"
+                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Lịch sử chỉnh
+                                                        sửa</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+                                                             xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M8.99981 16.5C13.1248 16.5 16.4998 13.125 16.4998 9C16.4998 4.875 13.1248 1.5 8.99981 1.5C4.87481 1.5 1.49981 4.875 1.49981 9C1.49981 13.125 4.87481 16.5 8.99981 16.5Z"
+                                                                  stroke-width="1.5" stroke-linecap="round"
+                                                                  stroke-linejoin="round"/>
+                                                            <path d="M6.87756 11.1225L11.1226 6.8775" stroke-width="1.5"
+                                                                  stroke-linecap="round" stroke-linejoin="round"/>
+                                                            <path d="M11.1226 11.1225L6.87756 6.8775" stroke-width="1.5"
+                                                                  stroke-linecap="round" stroke-linejoin="round"/>
+                                                        </svg>
+
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="table-responsive tableFixHead">
+                                                        <table class="table">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>Thời gian chỉnh sửa</th>
+                                                                <th>Thông tin chỉnh sửa</th>
+                                                                <th>Tài khoản chỉnh sửa</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td>25/08/2021 15:30:00</td>
+                                                                <td>Tạo mới</td>
+                                                                <td>Tuht</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>25/08/2021 15:30:00</td>
+                                                                <td>Thay đổi thông tin</td>
+                                                                <td>Tuht</td>
+                                                            </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="add_cp_pages campaign-detail"
+                                 style="margin-left: 2px; margin-right: 2px; width: 100% !important;">
+                                <div type="hidden" id="campaignId" name="campaignId" th:value="${campaignId}"></div>
+                                <div type="hidden" id="typeCode" name="typeCode" th:value="${typeCode}"></div>
+
+                                <div class="row row_overview">
+                                    <span class="badge badge-pill badge-primary label_ov">Chi tiết</span>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>Tên chiến dịch</label>
+                                                <p th:text="${campaign.getCampaignName()}"></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Loại chiến dịch</label>
+                                                <p th:text="${type}"></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Tỷ lệ chấp thuận dự kiến</label>
+                                                <p th:if="(${campaign.getAcceptanceRate() != null && campaign.getAcceptanceRate() >= 0})"
+                                                   th:text="${campaign.getAcceptanceRate()} + '%'"></p>
+                                                <p th:if="(${campaign.getAcceptanceRate() == null})">N/A</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>Mục tiêu chiến dịch</label>
+                                                <p th:text="${campaign.getCampaignTarget()}"></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Mô tả</label>
+                                                <p th:text="${campaign.getDescription()}"></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Hiệu lực chiến dịch</label>
+                                                <p th:text="${timeSendCampaign}"></p>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>Khung giờ gửi tin</label>
+                                                <p th:if="${campaign.getTimeRange1Start() != null && campaign.getTimeRange1End() != null && campaign.getTimeRange2Start() == null && campaign.getTimeRange2End() == null}"
+                                                   th:text="'Từ ' +${#strings.substring(campaign.getTimeRange1Start(),0,5)} + ' đến ' + ${#strings.substring(campaign.getTimeRange1End(),0,5)}"></p>
+                                                <p th:if="${campaign.getTimeRange1Start() == null && campaign.getTimeRange1End() == null && campaign.getTimeRange2Start() != null && campaign.getTimeRange2End() != null}"
+                                                   th:text="'Từ ' +${#strings.substring(campaign.getTimeRange2Start(),0,5)} + ' đến ' + ${#strings.substring(campaign.getTimeRange2End(),0,5)}"></p>
+                                                <p th:if="${campaign.getTimeRange1Start() != null && campaign.getTimeRange1End() != null && campaign.getTimeRange2Start() != null && campaign.getTimeRange2End() != null}"
+                                                   th:text="'Từ ' +${#strings.substring(campaign.getTimeRange1Start(),0,5)} + ' đến ' + ${#strings.substring(campaign.getTimeRange1End(),0,5)} + '; ' + 'Từ ' +${#strings.substring(campaign.getTimeRange2Start(),0,5)} + ' đến ' + ${#strings.substring(campaign.getTimeRange2End(),0,5)}"></p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Nhóm gói cước</label>
+                                                <p th:if="${campaign.getPackageGroupId() == 1}">Data</p>
+                                                <p th:if="${campaign.getPackageGroupId() == 2}">KMCB</p>
+                                            </div>
+                                            <div class="col-md-4" th:if="${typeCode} == 2">
+                                                <label>Tần suất gửi tin</label>
+                                                <p th:text="${frequency}"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row row_overview" th:if="${typeCode} == 1">
+                                    <span class="badge badge-pill badge-primary label_ov">Sự kiện</span>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Loại sự kiện</label>
+                                                <p th:text="${typeEvent}"></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Thiết lập sự kiện</label>
+                                                <p>
+                                                <div th:each="data,loop : ${listEventToView}">
+                                                    <div th:remove="tag" th:utext="${data}"></div>
+                                                </div>
+                                                </p>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="row row_overview">
+                                    <span class="badge badge-pill badge-primary label_ov">Nhóm đối tượng</span>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label>Phương thức xác định</label>
+                                                <p th:if="${campaign.typeTargetGroup} == 1">Dùng tiêu chí lọc thuê
+                                                    bao</p>
+                                                <p th:if="${campaign.typeTargetGroup} == 3">Dùng danh sách thuê bao</p>
+                                                <p th:if="${campaign.typeTargetGroup} == 4">Dùng Tập giao của Danh sách
+                                                    thuê bao và Tiêu chí</p>
+                                                <p th:if="${campaign.typeTargetGroup} == 6">Dùng Nhóm đối tượng có
+                                                    sẵn</p>
+                                            </div>
+
+                                            <div class="col-md-4" th:if="${campaign.typeTargetGroup} == 1">
+                                                <label>Tiêu chí lọc: </label>
+                                                <p class="text-active" id="typeLv1"></p>
+                                                <input type="hidden" id="targetGroupId" th:value="${targetGroupId}">
+                                                <input type="hidden" id="typeLevel1" th:value="${typeLevel1}">
+                                                <div class="dk-full">
+                                                    <div id="appendHTML">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4" th:if="${campaign.typeTargetGroup} == 3">
+                                                <label>Danh sách thuê bao</label>
+                                                <div>
+                                                    <label style="font-size: 12px"><a
+                                                            th:href="@{'/campaignManager/exportDataCustomer?id=' + ${campaign.campaignId} + '&type=' + ${typeCode}}"
+                                                            th:text="${campaign.originalNameFileDataCustomer}"></a></label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4" th:if="${campaign.typeTargetGroup} == 4">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <label>Tiêu chí lọc: </label>
+
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Danh sách thuê bao</label>
+                                                        <label style="font-size: 12px"><a
+                                                                th:href="@{'/campaignManager/exportDataCustomer?id=' + ${campaign.campaignId} + '&type=' + ${typeCode}}"
+                                                                th:text="${campaign.originalNameFileDataCustomer}"></a></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4" th:if="${campaign.typeTargetGroup} == 6">
+                                                <label>Nhóm đối tượng</label>
+                                                <div>
+                                                    <p th:text="${targetGroupOldName}"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <label>Danh sách blacklist</label>
+                                                <p th:if="${typeBlacklist} == 0">N/A</p>
+                                                <p th:if="${typeBlacklist} == 2" style="margin-bottom: 0px !important;">
+                                                    Chọn nhóm đối tượng có sẵn</p>
+                                                <p th:if="${typeBlacklist} == 3" style="margin-bottom: 0px !important;">
+                                                    Tải tập danh sách mới</p>
+                                                <p th:if="${typeBlacklist} == 2" th:text="${groupBlacklistName}"></p>
+                                                <p th:if="${typeBlacklist} == 3"><a
+                                                        th:href="@{'/campaignManager/exportDataBlacklist?id=' + ${campaign.campaignId} + '&type=' + ${typeCode}}"
+                                                        th:text="${campaign.originalNameFileBlacklist}"></a></p>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <p id="div-overview-group-size"
+                                                   th:text="'Quy mô nhóm: ' + ${campaign.getMainGroupSize()} + ' thuê bao'">
+                                                    Quy mô nhóm:</p>
+                                                <p id="div-overview-ratio" th:if="${campaign.getRatio() != null}"
+                                                   th:text="'Tỷ lệ so với toàn mạng: ' + ${campaign.getRatio()} + ' %'">
+                                                    Tỷ lệ so với toàn mạng:</p>
+                                                <p id="div-overview-ratio" th:if="${campaign.getRatio() == null}">
+                                                    Tỷ lệ so với toàn mạng: 0.00%</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row_overview" th:if="${subTarget} == 1">
+                                    <span class="badge badge-pill badge-primary label_ov">Phân nhỏ nhóm</span>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label>Gửi thông điệp theo thứ tự ưu tiên nếu trùng lặp thuê bao</label>
+                                                <p th:if="${campaign.isDuplicateMsisdn} == 1">Có</p>
+                                                <p th:if="${campaign.isDuplicateMsisdn} == 0">Không</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label>Nhóm nhỏ</label>
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Tên nhóm</th>
+                                                            <th>Tiêu chí bổ sung</th>
+                                                            <th>Thứ tự ưu tiên</th>
+                                                            <th>Quy mô nhóm</th>
+                                                            <th>Tỷ lệ so với nhóm cha</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody th:each="data,loop : ${listSubGroupToView}">
+                                                        <div th:remove="tag" th:utext="${data}"></div>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row_overview">
+                                    <span class="badge badge-pill badge-primary label_ov">Thông điệp </span>
+                                    <div class="col-md-12">
+                                        <div class="row" th:each="data,loop : ${listContentToView}">
+                                            <div th:remove="tag" th:utext="${data}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row_overview">
+                                    <span class="badge badge-pill badge-primary label_ov">Chính sách</span>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-12" id="frequency-policy">
+                                                <label>Vô hiệu hóa chính sách</label>
+                                                <p id="viewSendingLimitFre"></p>
+                                                <p id="viewMessageLimitFre"></p>
+                                            </div>
+                                            <div class="col-md-12" id="event-policy">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label>Chu kỳ giữa các sự kiện</label>
+                                                        <p id="view-event-cycle"></p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Giới hạn sự kiện</label>
+                                                        <p id="view-event-limit"></p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Vô hiệu hóa chính sách</label>
+                                                        <p id="viewSendingLimit"></p>
+                                                        <p id="viewMessageLimit"></p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="btn_main_act">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn-more dropdown-toggle" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false"><i class="ti-more-alt"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <button type="button" class="dropdown-item" href="#"
+                                                    th:if="${status == 1 && (roleLogin == 'Quản trị' || roleLogin == 'Super Admin' || userName == currentUser) && (roleLogin != 'Báo cáo')} "
+                                                    th:onclick="sendApprovalCampaign([[${id}]],1,2,[[${typeCode}]], [[${startDate}]], [[${endDate}]])">
+                                                <i
+                                                        class="ti-new-window"></i>&nbsp;&nbsp;Gửi
+                                                phê
+                                                duyệt
+                                            </button>
+                                            <button type="button" class="dropdown-item"
+                                                    th:if="${(status != 1  && status != 2  && status != 3  && status != 5) ||
+                                                                            (status == 4 && (statusOld != 1  || statusOld != 2  || statusOld != 3  || statusOld != 5 ))} "
+                                                    th:onclick="changeReport([[${name}]] , [[${startDate}]], [[${endDate}]], [[${status}]], [[${typeCode}]])">
+                                                <i
+                                                        class="ti-stats-up"></i>&nbsp;&nbsp;Xem kết
+                                                quả
+                                            </button>
+
+                                            <button type="button" class="dropdown-item"
+                                                    th:if="${status != 4 && (roleLogin == 'Quản trị' || roleLogin == 'Super Admin' || userName == currentUser) && (roleLogin != 'Báo cáo')}"
+                                                    href="#" th:onclick="endCampaign([[${id}]],1,4,[[${typeCode}]])"><i
+                                                    class="ti-control-stop"></i>&nbsp;&nbsp;Kết
+                                                thúc
+                                            </button>
+                                            <button type="button" class="dropdown-item"
+                                                    th:if="${status == 0 && (roleLogin == 'Quản trị' || roleLogin == 'Super Admin' || userName == currentUser) && (roleLogin != 'Báo cáo')}"
+                                                    href="#" th:onclick="pauseCampaign([[${id}]],0,6,[[${typeCode}]])">
+                                                <i
+                                                        class="ti-control-pause"></i>&nbsp;&nbsp;Tạm
+                                                dừng
+                                            </button>
+                                            <button type="button" class="dropdown-item"
+                                                    th:if="${status == 6 && (roleLogin == 'Quản trị' || roleLogin == 'Super Admin' || userName == currentUser) && (roleLogin != 'Báo cáo')}"
+                                                    href="#"
+                                                    th:onclick="reInitializationCampaign([[${id}]],6,0,[[${typeCode}]])">
+                                                <i
+                                                        class="ti-control-play"></i>&nbsp;&nbsp;Tái
+                                                khởi
+                                                tạo
+                                            </button>
+                                            <a class="dropdown-item" th:if="${roleLogin != 'Báo cáo' }" id="viewPdf"
+                                               th:onclick="exportPdf([[${id}]],[[${typeCode}]])"
+                                            ><i
+                                                    class="ti-share"></i>&nbsp;&nbsp;Xuất chi tiết</a>
+
+                                        </div>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-rounded btn-primary"
+                                                th:if="${roleLogin != 'Báo cáo'}"
+                                                th:onclick="copyCampaign([[${id}]],[[${typeCode}]])"><i
+                                                class="ti-files"></i> Sao chép
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <div th:if="${campaign.getTypeCampaign()} == 2">
+                                            <a class="btn btn-rounded btn-outline-primary"
+                                               th:if="${status != 4 && status != 0  && status != 2  && status != 3  && status != 6  && (roleLogin == 'Quản trị' || roleLogin == 'Super Admin'  || userName == currentUser) && (roleLogin != 'Báo cáo')}"
+                                               th:href="@{'/frequency-campaign/edit?frequencyCampaignId=' + ${campaignId}}">
+                                                <i class="ti-marker-alt"></i> Chỉnh sửa
+                                            </a>
+                                        </div>
+                                        <div th:if="${campaign.getTypeCampaign()} == 1">
+                                            <a class="btn btn-rounded btn-outline-primary"
+                                               th:if="${status != 4 && status != 0  && status != 2  && status != 3  && status != 6  && (roleLogin == 'Quản trị' || roleLogin == 'Super Admin'  || userName == currentUser) && (roleLogin != 'Báo cáo')}"
+                                               th:href="@{'/event-campaign/edit?eventCampaignId=' + ${campaignId}}">
+                                                <i class="ti-marker-alt"></i> Chỉnh sửa
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-rounded btn-outline-danger size_i"
+                                                th:if="${status == 2 && (roleLogin == 'Quản trị' || roleLogin == 'Super Admin')} "
+                                                th:onclick="refuseCampaign([[${id}]],2,[[${typeCode}]])"><i
+                                                class="ti-close"></i> Từ chối phê duyệt
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-rounded btn_check"
+                                                th:if="${status == 2 && (roleLogin == 'Quản trị' || roleLogin == 'Super Admin')} "
+                                                th:onclick="approvalCampaign([[${id}]],2,[[${typeCode}]], [[${startDate}]], [[${endDate}]])">
+                                            <i class="ti-check"></i>Phê duyệt
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" href="/campaignManager"
+                                                class="btn btn-rounded btn-secondary" onclick="cancel()">Quay lại
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- Row -->
+            <!-- ============================================================== -->
+            <!-- End PAge Content -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+
+            <!-- End Right sidebar -->
+            <!-- ============================================================== -->
+        </div>
+
+
+        <footer class="footer">
+            Bản quyền thuộc về Công ty TNHH Cung cấp Giải pháp Dịch vụ Giá trị gia tăng <span
+                class="red-clr">VIVAS</span>
+        </footer>
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
+    </div>
+
+    <div th:insert="common/footer" th:remove="tag"></div>
+</div>
+</body>
+<script th:inline="javascript">
+    function cancel() {
+        window.location.href = '/campaignManager';
+    }
+
+    function pauseCampaign(id, oldStatus, status, type) {
+        swal({
+            title: "Thông báo",
+            text: "Bạn muốn tam dừng chiến dịch?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            cancelButtonText: "Hủy",
+            closeOnConfirm: false
+        }, function () {
+            window.location.href = '/campaignManager/changeStatusDetail?id=' + id + '&status=' + status + '&type=' + type;
+        });
+    }
+
+    function reInitializationCampaign(id, oldStatus, status, type) {
+        swal({
+            title: "Thông báo",
+            text: "Bạn muốn tái khởi tạo chiến dịch?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            cancelButtonText: "Hủy",
+            closeOnConfirm: false
+        }, function () {
+            window.location.href = '/campaignManager/changeStatusDetail?id=' + id + '&status=' + status + '&type=' + type;
+        });
+    }
+
+    function endCampaign(id, oldStatus, status, type) {
+        swal({
+            title: "Thông báo",
+            text: "Bạn muốn kết thúc chiến dịch?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            cancelButtonText: "Hủy",
+            closeOnConfirm: false
+        }, function () {
+            window.location.href = '/campaignManager/changeStatusDetail?id=' + id + '&status=' + status + '&type=' + type;
+        });
+    }
+
+    function sendApprovalCampaign(id, oldStatus, status, type, startDate, endDate) {
+        var check = false;
+        var date = new Date();
+        var scheStart = startDate;
+        scheStart = scheStart.replace(new RegExp("/", 'g'), " ");
+        scheStart = scheStart.split(" ");
+        var scheStartDate = new Date(scheStart[2], scheStart[1] - 1, scheStart[0], 23, 59, 59);
+        console.log("scheStartDate:" + scheStartDate);
+        console.log("date:", date);
+        if (endDate == null) {
+            if (date > scheStartDate) {
+                check = true;
+            }
+        } else {
+            var scheEnd = endDate;
+            scheEnd = scheEnd.replace(new RegExp("/", 'g'), " ");
+            scheEnd = scheEnd.split(" ");
+            var scheEndDate = new Date(scheEnd[2], scheEnd[1] - 1, scheEnd[0], 23, 59, 59);
+            if (date > scheEndDate) {
+                check = true;
+            }
+        }
+        if (check) {
+            showErrorMessage("Hiệu lực của chiến dịch đã kết thúc. Vui lòng chỉnh sửa trước khi gửi phê duyệt.")
+        } else {
+            swal({
+                title: "Thông báo",
+                text: "Bạn muốn gửi yêu cầu phê duyệt chiến dịch?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "OK",
+                cancelButtonText: "Hủy",
+                closeOnConfirm: false
+            }, function () {
+                window.location.href = '/campaignManager/changeStatusDetail?id=' + id + '&status=' + status + '&type=' + type;
+            });
+        }
+    }
+
+    function approvalCampaign(id, oldStatus, type, startDate, endDate) {
+        var check = false;
+        var date = new Date();
+        var scheStart = startDate;
+        scheStart = scheStart.replace(new RegExp("/", 'g'), " ");
+        scheStart = scheStart.split(" ");
+        var scheStartDate = new Date(scheStart[2], scheStart[1] - 1, scheStart[0], 23, 59, 59);
+        console.log("scheStartDate:" + scheStartDate);
+        console.log("date:", date);
+        if (endDate == null) {
+            if (date > scheStartDate) {
+                check = true;
+            }
+        } else {
+            var scheEnd = endDate;
+            scheEnd = scheEnd.replace(new RegExp("/", 'g'), " ");
+            scheEnd = scheEnd.split(" ");
+            var scheEndDate = new Date(scheEnd[2], scheEnd[1] - 1, scheEnd[0], 23, 59, 59);
+            if (date > scheEndDate) {
+                check = true;
+            }
+        }
+        if (check) {
+            showErrorMessage("Hiệu lực của chiến dịch đã kết thúc. Vui lòng từ chối phê duyệt để chỉnh sửa.")
+
+        } else {
+            swal({
+                title: "Thông báo",
+                text: "Bạn muốn phê duyệt chiến dịch?",
+                type: "warning",
+                showCancelButton: true,
+                showCloseButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "OK",
+                cancelButtonText: "Hủy",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            }, function () {
+                window.location.href = '/campaignManager/changeStatusDetail?id=' + id + '&status=0' + '&type=' + type;
+            });
+        }
+    }
+
+    function refuseCampaign(id, oldStatus, type) {
+        swal({
+            title: "Thông báo",
+            text: "Bạn muốn từ chối phê duyệt chiến dịch?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            cancelButtonText: "Hủy",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        }, function () {
+            window.location.href = '/campaignManager/changeStatusDetail?id=' + id + '&status=5' + '&type=' + type;
+        });
+        return false;
+    }
+
+    function copyCampaign(id, type) {
+        if (type == 2) {
+            window.location.href = '/frequency-campaign/copy?frequencyCampaignId=' + id;
+        } else if (type == 1) {
+            window.location.href = '/event-campaign/copy?eventCampaignId=' + id;
+        }
+    }
+
+    function changeReport(name, startDate, endDate, status, type) {
+        var scheStart = startDate;
+        scheStart = scheStart.replace(new RegExp("/", 'g'), " ");
+        scheStart = scheStart.split(" ");
+
+        var scheStartDate = new Date(scheStart[2], scheStart[1] - 1, scheStart[0]);
+        console.log("scheStartDate:" + scheStartDate);
+
+        if (endDate != null) {
+            var scheEnd = endDate
+            scheEnd = scheEnd.replace(new RegExp("/", 'g'), " ");
+            scheEnd = scheEnd.split(" ");
+            var scheEndDate = new Date(scheEnd[2], scheEnd[1] - 1, scheEnd[0]);
+        }
+
+        let d = new Date();
+        let month = d.getMonth() + 1;
+        if (scheStartDate > d) {
+            if (month < 10) {
+                startDate = d.getDate() + "/" + "0" + month + "/" + d.getFullYear();
+            } else if (month >= 10) {
+                startDate = d.getDate() + "/" + month + "/" + d.getFullYear();
+            }
+        }
+        if (scheEndDate > d) {
+            if (month < 10) {
+                endDate = d.getDate() + "/" + "0" + month + "/" + d.getFullYear();
+            } else if (month >= 10) {
+                endDate = d.getDate() + "/" + month + "/" + d.getFullYear();
+            }
+        }
+        if (endDate == null) {
+            if (month < 10) {
+                endDate = d.getDate() + "/" + "0" + month + "/" + d.getFullYear();
+            } else if (month >= 10) {
+                endDate = d.getDate() + "/" + month + "/" + d.getFullYear();
+            }
+        }
+        window.location.href = '/ReportController/overview?type=' + type + '&status=' + status + '&campaignName=' + name + '&checkCampaign=1&startDate=' + startDate + '&endDate=' + endDate + '&chartType=1';
+    }
+
+    $(document).ready(function () {
+        $(".viewPdf").on("click", function () {
+            var id = $("#campaignId").val();
+            var type = $("#typeCode").val();
+            var linkPdf = '/campaignManager/exportpdf/' + id + '?type=' + type;
+            $(this).attr("href", linkPdf);
+            $(this).attr("target", "_blank");
+        })
+        let sendingLimitChannel = [[${sendingLimitChannel}]];
+        let messageLimitChannel = [[${messageLimitChannel}]];
+        let disablePolicy = [[${disablePolicy}]];
+        let typeCode = [[${typeCode}]];
+        if (typeCode == 1) {
+            let eventCycle = [[${eventCycle}]];
+            let eventLimitPerday = [[${eventLimitPerday}]];
+            if (eventCycle != null) {
+                $("#view-event-cycle").text(eventCycle + " ngày");
+            } else {
+                $("#view-event-cycle").text("N/A");
+            }
+            if (eventLimitPerday != null) {
+                $("#view-event-limit").text(eventLimitPerday + " sự kiện");
+            } else {
+                $("#view-event-limit").text("N/A");
+            }
+            $("#frequency-policy").hide();
+            $("#event-policy").show()
+            if (disablePolicy == 0) {
+                $("#viewSendingLimit").text("N/A")
+            } else {
+                if (sendingLimitChannel != null && sendingLimitChannel.length > 0) {
+                    $("#viewSendingLimit").text("Khung giờ gửi tin từng kênh truyền thông ngoài nhà mạng: " + sendingLimitChannel);
+                }
+                if ((messageLimitChannel != null && messageLimitChannel.length > 0) && (sendingLimitChannel == null || sendingLimitChannel == "")) {
+                    $("#viewSendingLimit").text("Giới hạn thông điệp từng kênh truyền thông ngoài nhà mạng: " + messageLimitChannel);
+                } else if ((messageLimitChannel != null && messageLimitChannel.length > 0) && (sendingLimitChannel != null || sendingLimitChannel != "")) {
+                    $("#viewMessageLimit").text("Giới hạn thông điệp từng kênh truyền thông ngoài nhà mạng: " + messageLimitChannel);
+                }
+
+            }
+        } else if (typeCode == 2) {
+            $("#frequency-policy").show()
+            $("#event-policy").hide();
+            if (disablePolicy == 0) {
+                $("#viewSendingLimitFre").text("N/A")
+            } else {
+                if (sendingLimitChannel != null && sendingLimitChannel.length > 0) {
+                    $("#viewSendingLimitFre").text("Khung giờ gửi tin từng kênh truyền thông ngoài nhà mạng: " + sendingLimitChannel);
+                }
+                if ((messageLimitChannel != null && messageLimitChannel.length > 0) && (sendingLimitChannel == null || sendingLimitChannel == "")) {
+                    $("#viewSendingLimitFre").text("Giới hạn thông điệp từng kênh truyền thông ngoài nhà mạng: " + messageLimitChannel);
+                } else if ((messageLimitChannel != null && messageLimitChannel.length > 0) && (sendingLimitChannel != null || sendingLimitChannel != "")) {
+                    $("#viewMessageLimitFre").text("Giới hạn thông điệp từng kênh truyền thông ngoài nhà mạng: " + messageLimitChannel);
+                }
+
+            }
+        }
+    })
+
+    function exportPdf(id, type) {
+        var linkPdf = '/campaignManager/exportpdf/' + id + '?type=' + type;
+        $("#viewPdf").attr("href", linkPdf);
+        $("#viewPdf").attr("target", "_blank");
+    }
+
+    function showErrorMessage(message) {
+        Swal.fire({
+            position: 'top',
+            type: 'info',
+            title: 'Thông báo',
+            text: message,
+            showConfirmButton: false,
+            timer: 5000
+        })
+    }
+
+    $(document).ready(function () {
+        var typeLevel1 = $("#typeLevel1").val();
+        if (typeLevel1 == 1) {
+            $("#typeLv1").text("Thỏa mãn tất cả các điều kiện sau đây:");
+        } else if (typeLevel1 == 2) {
+            $("#typeLv1").text("Thỏa mãn một trong số các điều kiện sau đây:");
+        }
+        var id = $("#targetGroupId").val();
+        axios.get('/TagetGroupManagerController/getHtmlFieldCampaign?id=' + id)
+            .then(function (response) {
+                $("#appendHTML").append(response.data);
+                console.log(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    });
+</script>
+
+</html>

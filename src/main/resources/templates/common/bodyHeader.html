@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<header class="topbar" th:fragment="bodyHeader">
+    <script type="text/javascript" th:src="@{/js/sockjs-1.1.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/stomp.min.js}"></script>
+
+    <nav class="navbar top-navbar navbar-toggleable-sm navbar-light">
+        <!-- ============================================================== -->
+        <!-- Logo -->
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/index}">
+                <!-- Logo icon -->
+                <b>
+                    <!-- Dark Logo icon -->
+                    <img th:src="@{/assets/images/logo-icon_2.png}" alt="homepage" class="dark-logo" />
+                </b>
+                <span>
+                     <!-- dark Logo text -->
+                     <img th:src="@{/assets/images/logo-text_2.png}" alt="homepage" class="dark-logo" />
+				</span>
+            </a>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Logo -->
+        <!-- ============================================================== -->
+        <div class="navbar-collapse">
+            <!-- ============================================================== -->
+            <!-- toggle and nav items -->
+            <!-- ============================================================== -->
+            <ul class="navbar-nav mr-auto mt-md-0 ">
+                <!-- This is  -->
+                <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
+                <li class="nav-item"> <a class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="icon-arrow-left-circle"></i></a> </li>
+                <!-- ============================================================== -->
+                <!-- Messages -->
+                <!-- ============================================================== -->
+                <li class="nav-item dropdown" >
+                    <a class="nav-link dropdown-toggle text-muted text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="clickNotify()"> <i class="mdi mdi-message"></i>
+                        <div class="notify"> <span class="heartbit notifyIcon" style="display: none"></span> <span class="point notifyIcon" style="display: none"></span></div>
+                    </a>
+                    <div class="dropdown-menu mailbox animated bounceInDown">
+                        <ul>
+                            <li>
+                                <div class="drop-title">Thông báo</div>
+                            </li>
+                            <li>
+                                <div class="message-center" id="contentNotify">
+
+                                </div>
+                            </li>
+                            <li>
+                                <!--<a class="nav-link text-center" href="javascript:void(0);"><strong>Xem tất cả thông báo</strong> <i class="fa fa-angle-right"></i> </a>-->
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <!-- ============================================================== -->
+                <!-- End Messages -->
+            </ul>
+            <!-- ============================================================== -->
+            <!-- User profile and search -->
+            <!-- ============================================================== -->
+            <ul class="navbar-nav my-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img th:src="@{/assets/images/users/1.jpg}" alt="user" class="profile-pic" />Xin chào, <span sec:authentication="name"> </span><i class="fa fa-angle-down"></i></a>
+                    <div class="dropdown-menu dropdown-menu-right animated flipInY">
+                        <ul class="dropdown-user">
+                            <li>
+                                <div class="dw-user-box">
+                                    <div class="u-img"><img th:src="@{/assets/images/users/1.jpg}" alt="user"></div>
+                                    <div class="u-text">
+                                        <p sec:authentication="name"></p>
+<!--                                        Quyền hạn: <span sec:authentication="principal.groupName"></span>-->
+                                    </div>
+                                </div>
+                            </li>
+<!--                            <li role="separator" class="divider"></li>
+                            <li role="separator" class="divider"></li>-->
+                            <li><a th:href="@{/UsersController/changePassword}"><i class="fa fa-key"></i>Đổi mật khẩu</a></li>
+                            <li><a  th:onclick="logoutBody()"><i class="fa fa-power-off"></i> Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!--Global Internet connection checking-->
+<div id="noInternetConnection" class="noInternetConnection" style="display: none">
+    <div style="color: white; margin-bottom: 8rem">
+        <h3 style="color: white">Không thể kết nối tới máy chủ.</h3>
+        <h3 style="color: white">Kiểm tra lại kết nối internet và thử lại!</h3>
+    </div>
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+<div id="ajaxLoading" class="ajaxLoading" style="display: none">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<script th:inline="javascript">
+    function clickNotify(){
+        $(".notifyIcon").hide();
+
+        $.ajax({
+            type: 'GET',
+            url: '/NotifyController/markAllAsRead',
+            traditional: true,
+            dataType: 'JSON',
+            cache: true,
+            async: false,
+            success: function (response) {
+                if (response) {
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            },
+        })
+
+        setTimeout(function() {
+            $(".div-notify").css("font-weight", "");
+        }, 2000);
+
+    }
+
+    function logoutBody() {
+        Swal.fire({
+            title: "CampaignX  Thông báo",
+            text: "Bạn muốn đăng xuất khỏi hệ thống?",
+            type: "warning",
+            showCancelButton: true,
+            showCloseButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            cancelButtonText: "Hủy",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        }).then((result) => {
+            if (result.value) {
+                window.location.href = "../../logout";
+            }
+        });
+    }
+
+
+
+    function getNotify(){
+        $.ajax({
+            type: 'GET',
+            url: '/NotifyController/getNotify',
+            traditional: true,
+            dataType: 'JSON',
+            cache: true,
+            async: false,
+            success: function (response) {
+                if (response) {
+                    console.log(response);
+                    if (response.code==0){
+                        let data = response.data;
+                        for(let i = 0; i < data.length; i++) {
+                            if (data[i].status == 1) {
+                                let htmlField = "<div style=\"margin-left: 10px; margin-right: 10px;\">\n" +
+                                    "                 <div class=\"mail-contnet\">\n" +
+                                    "                 <h5>" + data[i].subject + "</h5> <span class=\"mail-desc\">" + data[i].content + "</span> </div>\n" +
+                                    "                 <h6 style='margin-top: 5px' class='div-notify' >" + data[i].createdDate + "</h6>"+
+                                    "            </div>";
+                                htmlField += "<hr class=\"hr_style\">";
+                                $("#contentNotify").append(htmlField);
+
+                            } else {
+                                let htmlField = "<div style=\"margin-left: 10px; margin-right: 10px;\">\n" +
+                                    "                 <div class=\"mail-contnet\">\n" +
+                                    "                 <h5 class='div-notify' style='font-weight: 800'>" + data[i].subject + "</h5> <span class='div-notify' style='font-weight: 800' class=\"mail-desc\">" + data[i].content + "</span> </div>\n" +
+                                    "                 <h6 style='margin-top: 5px' class='div-notify' >" + data[i].createdDate + "</h6>"+
+                                    "            </div>";
+                                htmlField += "<hr class=\"hr_style\">";
+                                $("#contentNotify").append(htmlField);
+                                $(".notifyIcon").show();
+                            }
+                        }
+                    }
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            },
+        })
+    }
+
+    jQuery(document).ready(function() {
+
+        getNotify();
+
+        var socket = new SockJS('/ws');
+        var stompClient = Stomp.over(socket);
+        var token = $("#token").val();
+        var headers = {
+            'X-CSRF-Token': token
+        };
+        stompClient.connect(headers, function(frame) {
+            stompClient.subscribe("/topic/notify", function(data) {
+                let dataList = data.body;
+                console.log("data : " + dataList);
+                $("#contentNotify").empty();
+                getNotify();
+                $(".notifyIcon").show();
+            });
+        });
+
+        var socketCount = new SockJS('/ws');
+        var stompClientCount = Stomp.over(socketCount);
+        var tokenCount = $("#token").val();
+        var headersCount = {
+            'X-CSRF-Token': tokenCount
+        };
+        stompClientCount.connect(headersCount, function(frame) {
+            stompClientCount.subscribe("/topic/countMSISDN", function(data) {
+                let dataList = data.body;
+                console.log("data : " + dataList);
+                let resp=jQuery.parseJSON(dataList);
+                let targetGroupID = resp.targetGroupID;
+                let count = resp.count;
+                let ratio  = resp.ratio;
+                //hiển thị lại số lượng thuê bao thỏa mãn ở màn danh sách nhóm đối tượng
+                $("#quatityMSISDN_"+targetGroupID).text(count);
+                //Hiển thị lại số lượng thuê bao thỏa mãn, tỉ lệ ở màn chi tiết nhóm đối tượng
+                $("#groupSize_" + targetGroupID).text(count);
+                $("#wholeNetwork_" + targetGroupID).text(ratio + "%");
+            });
+        });
+
+        var socketUserAction = new SockJS('/ws');
+        var stompClientUserAction = Stomp.over(socketUserAction);
+        var tokenUserAction = $("#token").val();
+        var headersUserAction = {
+            'X-CSRF-Token': tokenUserAction
+        };
+        stompClientUserAction.connect(headersUserAction, function(frame) {
+            stompClientUserAction.subscribe("/topic/userAction", function(data) {
+                let actionData = data.body;
+                console.log("data userAction : " + actionData);
+                let objActionData = JSON.parse(actionData);
+                if(objActionData.action == "changeUser") {
+                    getNotify();
+                }else if(objActionData.action == "deleteUser"){
+                    let userId = objActionData.userId;
+                    if(verifyDeleteUser(userId)){
+                        logout();
+                    }
+                } else if(objActionData.action == "renewPassword") {
+                    let userId = objActionData.userId;
+                    if(verifyDeleteUser(userId)){
+                        logoutRenewpassword();
+                    }
+                }
+            });
+        });
+    });
+
+    function verifyDeleteUser(userId){
+        let flag = true
+        $.ajax({
+            url: '/UsersController/verifyDeleteUser?userId='+userId,
+            type: 'get',
+            dataType: 'json',
+            async: false,
+            success: function(response) {
+                flag = response.result;
+            }
+        });
+        return flag;
+    }
+
+</script>
+
+
+</html>

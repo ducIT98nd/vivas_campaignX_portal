@@ -1,0 +1,309 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div class="add_cp_pages m-t-10 step-component">
+
+    <div class="row p-t-20">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Tên chiến dịch <span class="red-clr">*</span></label>
+                <input class="form-control" id="campaign-name" maxlength="100" name="campaign-name" th:value="${frequencyCampaign.campaignName}" placeholder="Nhập tên chiến dịch" type="text">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Tỷ lệ chấp thuận dự kiến</label>
+                <input class="form-control" id="expected-approval-rate" name="expected-approval-rate" maxlength="100" placeholder="Nhập tỷ lệ chấp thuận dự kiến" th:value="${frequencyCampaign.acceptanceRate}" type="text">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Mục tiêu chiến dịch <span class="red-clr">*</span></label>
+                <textarea class="form-control fc_area" id="campaign-target" name="campaign-target" th:text="${frequencyCampaign.campaignTarget}" th:value="${frequencyCampaign.campaignTarget}" placeholder="Nhập mục tiêu chiến dịch" rows="5"></textarea>
+                <p class="note_area">Tối đa 10 nhãn. Mỗi nhãn chứa tối đa 30 ký tự.</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Mô tả</label>
+                <textarea class="form-control fc_area" maxlength="1000" id="campaign-description" name="campaign-description" th:text="${frequencyCampaign.description}" th:value="${frequencyCampaign.description}" placeholder="Nhập mô tả" rows="5"></textarea>
+                <p class="note_area">Tối đa 1.000 ký tự.</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <label class="control-label">Hiệu lực chiến dịch</label>
+            <div class="row date_input_cols">
+                <div class="col-md-6 form-group" id="div-start-date">
+                    <label class="control-label">Từ <span class="red-clr">*</span></label>
+                    <input class="form-control date-picker" type="text" th:value="${frequencyCampaign.startDate}"  readonly id="start-date" name="start-date">
+                </div>
+                <div class="col-md-6 form-group" id="div-end-date" style="display: none">
+                    <label class="control-label">Đến</label>
+                    <input class="form-control date-picker" type="text" th:value="${frequencyCampaign.endDate}" readonly id="end-date" name="end-date">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label class="control-label">Khung giờ gửi tin</label>
+            <div class="row date_input_cols date_input_rows" id="time-range-1">
+                <div class="col-md-10" id="alert-time-range-1">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label class="control-label">Từ<span class="red-clr">*</span></label>
+                            <input class="form-control" id="time-range-1-start" name="time-range-1-start" type="text" th:value="${frequencyCampaign.timeRange1Start}">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="control-label">Đến<span class="red-clr">*</span></label>
+                            <input class="form-control" id="time-range-1-end" name="time-range-1-end" type="text" th:value="${frequencyCampaign.timeRange1End}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 act_crit">
+                    <button type="button" class="btn btn_ksn btn_ksn_delete btn_cl_black duplicate_btn" id="add-time-range-2" data-toggle="tooltip" data-placement="top" title="Thêm khung giờ gửi tin">
+                        <i class="duplicate_ic"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row date_input_cols date_input_rows" id="time-range-2" style="display: none">
+                <div class="col-md-10" id="alert-time-range-2">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label class="control-label">Từ<span class="red-clr">*</span></label>
+                            <input class="form-control" id="time-range-2-start" name="time-range-2-start" type="text" th:value="${frequencyCampaign.timeRange2Start}">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="control-label">Đến<span class="red-clr">*</span></label>
+                            <input class="form-control" id="time-range-2-end" name="time-range-2-end" type="text" th:value="${frequencyCampaign.timeRange2End}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 act_crit">
+                    <button type="button" class="btn btn_ksn btn_ksn_delete btn_cl_black" id="remove-time-range-2" data-toggle="tooltip" data-placement="top" title="Xóa khung giờ gửi tin">
+                        <i class="delete_ic"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="row p-t-20">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Tần suất gửi tin<span class="red-clr">*</span></label>
+                <select class="form-control custom-select" id="sending-frequency" name="sending-frequency" tabindex="1">
+                    <option value="once" th:selected="${frequencySendingDTO.getFrequencyType() == 0}">Một lần</option>
+                    <option value="daily" th:selected="${frequencySendingDTO.getFrequencyType() == 1}">Hàng ngày</option>
+                    <option value="weekly" th:selected="${frequencySendingDTO.getFrequencyType() == 2}">Hàng tuần</option>
+                    <option value="monthly" th:selected="(${frequencySendingDTO.getFrequencyType() == 3 || frequencySendingDTO.getFrequencyType() == 4})">Hàng tháng</option>
+                    <option value="custom" th:selected="(${frequencySendingDTO.getFrequencyType() == 5 || frequencySendingDTO.getFrequencyType() == 6})">Tùy chỉnh</option>
+                </select>
+            </div>
+
+            <div class="freq_send_mes" id="custom-date" style="display: none">
+                <ul class="icheck-list" style="width: 65%">
+                    <li>
+                        <div>
+                            <input type="radio" class="check" id="specific-date-checkbox" name="custom-date-checkbox" value="specific" data-radio="iradio_square-purple" th:checked="${frequencySendingDTO.getCheckSendMessageExactDay() == true || frequencySendingDTO.getCheckSendMessageEveryDay() == false}">
+                            <label for="specific-date-checkbox">Gửi thông điệp vào ngày cụ thể</label>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control date-picker"  readonly id="specific-date-value" type="text" name="specific-date-value" th:value="${frequencySendingDTO.getValueExactDay()}">
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <input type="radio" class="check" id="periodic-day-checkbox" name="custom-date-checkbox" value="periodic" data-radio="iradio_square-purple" th:checked="${frequencySendingDTO.getCheckSendMessageEveryDay()}">
+                            <label for="periodic-day-checkbox">Cứ mỗi</label>
+                        </div>
+                        <div class="freq_select2">
+                            <div class="form-group">
+                                <input type="text" id="periodic-number" name="periodic-number" class="form-control" placeholder="" th:value="${frequencySendingDTO.getNumberPeriodic()}">
+                            </div>
+                            <div class="form-group" style="width: 35%">
+                                <select class="form-control custom-select" id="custom-date-freq-type" name="custom-date-freq-type" tabindex="1">
+                                    <option value="daily" th:selected="${frequencySendingDTO.getUnitPeriodic()} == 1">Ngày</option>
+                                    <option value="weekly" th:selected="${frequencySendingDTO.getUnitPeriodic()} == 2">Tuần</option>
+                                    <option value="monthly" th:selected="${frequencySendingDTO.getUnitPeriodic()} == 3">Tháng</option>
+                                </select>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="form-check freq_send_mes freq_week" style="display: none">
+                <ul class="icheck-list" id="weekday-checkbox-list">
+                    <li>
+                        <input type="checkbox" class="check freq-weekday-checkbox" id="square-checkbox-1" name="freq_daily" value="0" data-checkbox="icheckbox_square-purple"  th:checked="${#lists.contains(frequencySendingDTO.getListChoosenDay(), '' + 0)}">
+                        <label for="square-checkbox-1">Thứ hai</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="check freq-weekday-checkbox" id="square-checkbox-2" name="freq_daily" value="1" data-checkbox="icheckbox_square-purple" th:checked="${#lists.contains(frequencySendingDTO.getListChoosenDay(), '' + 1)}">
+                        <label for="square-checkbox-2">Thứ ba</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="check freq-weekday-checkbox" id="square-checkbox-3" name="freq_daily" value="2" data-checkbox="icheckbox_square-purple" th:checked="${#lists.contains(frequencySendingDTO.getListChoosenDay() , '' + 2)}">
+                        <label for="square-checkbox-3">Thứ tư</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="check freq-weekday-checkbox" id="square-checkbox-4" name="freq_daily" value="3" data-checkbox="icheckbox_square-purple" th:checked="${#lists.contains(frequencySendingDTO.getListChoosenDay(), '' + 3)}">
+                        <label for="square-checkbox-4">Thứ năm</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="check freq-weekday-checkbox" id="square-checkbox-5" name="freq_daily" value="4" data-checkbox="icheckbox_square-purple" th:checked="${#lists.contains(frequencySendingDTO.getListChoosenDay(), '' + 4)}">
+                        <label for="square-checkbox-5">Thứ sáu</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="check freq-weekday-checkbox" id="square-checkbox-6" name="freq_daily" value="5" data-checkbox="icheckbox_square-purple" th:checked="${#lists.contains(frequencySendingDTO.getListChoosenDay(), '' + 5)}">
+                        <label for="square-checkbox-6">Thứ bảy</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="check freq-weekday-checkbox" id="square-checkbox-7" name="freq_daily" value="6" data-checkbox="icheckbox_square-purple"  th:checked="${#lists.contains(frequencySendingDTO.getListChoosenDay(), '' + 6)}">
+                        <label for="square-checkbox-7">Chủ nhật</label>
+                    </li>
+                </ul>
+            </div>
+            <input type="hidden" id="freq-weekday-value" name="freq-weekday-value">
+            <div class="freq_send_mes freq_month" id="freq-type-month" style="display: none">
+                <ul class="icheck-list">
+                    <li>
+                        <input type="radio" class="check" id="monthly-by-day-checkbox" name="monthly-by-day-checkbox" value="1" data-radio="iradio_square-purple" th:checked="(${frequencySendingDTO.getCheckMonthlyByDay() == true || frequencySendingDTO.getCheckMonthlyByWeekday() == false})">
+                        <label class="label-d-m" for="monthly-by-day-checkbox" id="label-day-in-month">
+                            <span>Ngày</span>
+                            <input id="day-in-month" name="day-in-month" class="form-control" onkeypress="return keyPressPositiveNumber(event);"
+                                   onpaste="return pastePositiveNumber(event);" type="number" min='0' max="31" placeholder="" th:value="${frequencySendingDTO.getValueMonthlyByDay()}">
+                            <span>hằng tháng</span>
+                        </label>
+                    </li>
+                    <li>
+                        <input type="radio" class="check" id="monthly-by-weekday-checkbox" name="monthly-by-day-checkbox" value="2" data-radio="iradio_square-purple" th:checked="( ${frequencySendingDTO.getCheckMonthlyByWeekday()})">
+                        <label class="label-d-m label-order" for="monthly-by-weekday-checkbox">
+                            <div class="form-group" style="width: 25%">
+                                <select class="form-control custom-select" id="monthly-by-weekday" name="monthly-by-weekday" tabindex="1">
+                                    <option value="0" th:selected="${frequencySendingDTO.getValueMonthlyByWeekday() == 0}">Thứ hai</option>
+                                    <option value="1" th:selected="${frequencySendingDTO.getValueMonthlyByWeekday() == 1}">Thứ ba</option>
+                                    <option value="2" th:selected="${frequencySendingDTO.getValueMonthlyByWeekday() == 2}">Thứ tư</option>
+                                    <option value="3" th:selected="${frequencySendingDTO.getValueMonthlyByWeekday() == 3}">Thứ năm</option>
+                                    <option value="4" th:selected="${frequencySendingDTO.getValueMonthlyByWeekday() == 4}">Thứ sáu</option>
+                                    <option value="5" th:selected="${frequencySendingDTO.getValueMonthlyByWeekday() == 5}">Thứ bảy</option>
+                                    <option value="6" th:selected="${frequencySendingDTO.getValueMonthlyByWeekday() == 6}">Chủ nhật</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control custom-select" id="monthly-by-weekday-ordinal"  name="monthly-by-weekday-ordinal" data-placeholder="Đầu tiên" tabindex="1">
+                                    <option value="0" th:selected="${frequencySendingDTO.getValueMonthlyByWeekdayOrdinal() == 0}">Đầu tiên</option>
+                                    <option value="1" th:selected="${frequencySendingDTO.getValueMonthlyByWeekdayOrdinal() == 1}">Thứ 2</option>
+                                    <option value="2" th:selected="${frequencySendingDTO.getValueMonthlyByWeekdayOrdinal() == 2}">Thứ 3</option>
+                                    <option value="3" th:selected="${frequencySendingDTO.getValueMonthlyByWeekdayOrdinal() == 3}">Thứ 4</option>
+                                    <option value="4" th:selected="${frequencySendingDTO.getValueMonthlyByWeekdayOrdinal() == 4}">Cuối cùng</option>
+                                </select>
+                            </div>
+                            <span>hằng tháng</span>
+                        </label>
+
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label">Nhóm gói cước<span class="red-clr">*</span></label>
+                <select class="form-control custom-select" id="package-group" name="package-group"tabindex="1">
+                    <option value="1" th:selected="${frequencyCampaign.getPackageGroupId() == 1}">Data</option>
+                    <option value="2" th:selected="${frequencyCampaign.getPackageGroupId() == 2}">KMCB</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn_main_act btn_R">
+        <div class="btn-group">
+            <button class="btn btn-rounded btn-primary" id="step1-next" type="button">Tiếp tục</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-rounded btn-danger cancel-create-campagin" type="button">Hủy</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var startDate = "[[${frequencyCampaign.startDate}]]";
+        var endDate = "[[${frequencyCampaign.endDate}]]";
+        var startDate2 = new Date(startDate);
+        var endDate2 = new Date(endDate);
+        $('#start-date').datepicker({
+            format: 'dd/mm/yyyy',
+            orientation: 'bottom'
+        });
+
+        $('#start-date').datepicker('setDate', startDate2);
+
+        $('#end-date').datepicker({
+            format: 'dd/mm/yyyy',
+            orientation: 'bottom'
+        });
+        $('#end-date').datepicker('setDate', endDate2);
+
+        var sendingFrequency = $("#sending-frequency").val()
+
+        if (sendingFrequency == 'once'){
+            $("#div-end-date").css("display", "none");
+            $(".freq_week").css("display", "none");
+            $(".freq_month").css("display", "none");
+            $("#custom-date").css("display", "none");
+        } else if (sendingFrequency == 'daily') {
+            $("#div-end-date").css("display", "flex");
+            $(".freq_week").css("display", "none");
+            $(".freq_month").css("display", "none");
+            $("#custom-date").css("display", "none");
+        } else if (sendingFrequency == 'weekly') {
+            $("#div-end-date").css("display", "flex");
+            $(".freq_week").css("display", "block");
+            $(".freq_month").css("display", "none");
+            $("#custom-date").css("display", "none");
+        } else if (sendingFrequency == 'monthly') {
+            $("#div-end-date").css("display", "flex");
+            $(".freq_week").css("display", "none");
+            $(".freq_month").css("display", "block");
+            $("#custom-date").css("display", "none");
+        } else if (sendingFrequency == 'custom') {
+            $("#div-end-date").css("display", "flex");
+            $(".freq_week").css("display", "none");
+            $(".freq_month").css("display", "none");
+            $("#custom-date").css("display", "block");
+
+            var customDateFreqType = $("#custom-date-freq-type").val()
+            if (customDateFreqType == 'monthly'){
+                $(".freq_month").css("display", "block");
+                $(".freq_week").css("display", "none");
+            } else if (customDateFreqType == 'weekly'){
+                $(".freq_week").css("display", "block");
+                $(".freq_month").css("display", "none");
+            } else {
+                $(".freq_week").css("display", "none");
+                $(".freq_month").css("display", "none");
+            }
+        }
+
+        $("#specific-date-value").datepicker({
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            multidateSeparator: ", ",
+            multidate: true
+        });
+
+    });
+
+
+</script>

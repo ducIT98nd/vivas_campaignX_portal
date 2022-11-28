@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head th:replace="common/head :: head"></head>
+<link type="text/css" th:href="@{/assets/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{/assets/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+
+<style th:inline="text">
+    :not(.input-group) > .bootstrap-select.form-control:not([class*=col-]) {
+        width: 50%;
+    }
+
+    .ui-widget-header {
+        border: none;
+        background: none;
+    }
+
+    .ui-widget.ui-widget-content {
+        border: none;
+    }
+
+    .ui-tabs .ui-tabs-nav li {
+        border-bottom-width: 1px;
+        border-radius: 3px;
+    }
+
+    .report-border {
+    }
+
+    .form-control {
+        width: 50%;
+    }
+
+    .ctn_welcome {
+        width: 90%;
+        margin: auto;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child {
+        margin-top: 38%;
+        transform: translateY(-50%);
+    }
+
+    .ctn_welcome div.col-lg-6:last-child {
+        margin-top: 28%;
+        transform: translateY(-50%);
+    }
+
+    .ctn_welcome div.col-lg-6:first-child h3 {
+        font-size: 50px;
+        font-weight: 500;
+        color: #3d69bd;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child h3 span {
+        color: #af6db6;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child p {
+        font-size: 13px;
+    }
+
+    .ctn_welcome div.col-lg-6:first-child h6 {
+        font-size: 15px;
+        margin-top: 30px;
+        line-height: 20px;
+    }
+
+</style>
+<body class="fix-header card-no-border">
+<div th:insert="common/templates::alertMessage"></div>
+<div th:insert="common/templates::pagination"></div>
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" fill="none" r="20" stroke-miterlimit="10" stroke-width="2"/>
+    </svg>
+</div>
+
+<div id="main-wrapper">
+    <div th:replace="common/bodyHeader"></div>
+    <div th:replace="common/leftmenu"></div>
+
+    <div class="page-wrapper">
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid">
+
+            <div class="row pd-r-ctn">
+                <div class="col-12">
+                    <!--Data table -->
+                    <form id="reportForm" class="form" method="get">
+                        <div class="card">
+
+                            <div class="card-block">
+                                <div class="row smal_title">
+                                    <h4 class="card-title col-lg-6"><i class="campaign_ic"></i>Báo cáo tổng quan</h4>
+
+                                </div>
+
+                                <div class="table-responsive m-t-10">
+
+                                    <div class="row search_table search_campaign">
+                                        <div class="col-md-12">
+                                            <div class="row m-t-20">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <input id="supersetUrl" type="hidden" name="supersetUrl"
+                                                               th:value="${supersetUrl}" disabled/>
+                                                        <input id="chartTypeView" type="hidden" name="chartTypeView"
+                                                               th:value="${chartType}" disabled/>
+                                                        <input id="checkCampaign" type="hidden" name="checkCampaign"
+                                                               th:value="${checkCampaign}"/>
+                                                        <label class="control-label">Loại chiến dịch</label>
+                                                        <select class="form-control custom-select"
+                                                                data-placeholder="Tất cả"
+                                                                tabindex="1" id="type" name="type"
+                                                                onchange="changeCampaign2()">
+                                                            <option th:selected="${type} == 0" value="0">Tất cả
+                                                            </option>
+                                                            <option th:selected="${type} == 1"
+                                                                    value="1">Sự kiện
+                                                            </option>
+                                                            <option th:selected="${type} == 2" value="2">
+                                                                Tần suất
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Trạng thái</label>
+                                                        <select class="form-control custom-select"
+                                                                data-placeholder="Tất cả"
+                                                                tabindex="1" id="status" name="status"
+                                                                onchange="changeCampaign2()">
+                                                            <option th:selected="${status} == 10" value="10">Tất cả
+                                                            </option>
+                                                            <option th:selected="${status} == 0" value="0">Đang chạy
+                                                            </option>
+                                                            <option th:selected="${status} == 4" value="4">Kết thúc
+                                                            </option>
+                                                            <option th:selected="${status} == 6" value="6">Tạm dừng
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row m-t-20">
+                                                <div class="col-md-6" id="changeCampaignName2">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Tên chiến dịch</label>
+                                                        <select class="form-control custom-select selectpicker"
+                                                                data-live-search="true"
+                                                                data-placeholder="Tất cả"
+                                                                tabindex="1" id="campaignName"
+                                                                name="campaignName"
+                                                        >
+                                                            <option value="">Tất cả
+                                                            </option>
+                                                            <option th:each="campaign : ${campaignManagerDtoList}"
+                                                                    th:value="${campaign.getName()}"
+                                                                    th:text="${campaign.getName()}"
+                                                                    th:selected="${campaign.getName() == campaignName}">
+                                                            </option>
+
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Mốc thời gian</label>
+                                                        <select class="form-control custom-select"
+                                                                data-placeholder="Tất cả"
+                                                                tabindex="1" id="date" name="date" onchange="change()">
+                                                            <option value="0">Ngày</option>
+                                                            <option value="1">Tháng
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row m-t-20" id="days">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Ngày bắt đầu</label>
+                                                        <input class="form-control date-picker" type="text"
+                                                               id="startDate" name="startDate" th:value="${startDate}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Ngày kết thúc</label>
+                                                        <input class="form-control date-picker" type="text"
+                                                               id="endDate" name="endDate" th:value="${endDate}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row m-t-20" style="display: none" id="month">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Tháng bắt đầu</label>
+                                                        <input class="form-control" type="text"
+                                                               id="startDateMonth" name="startDateMonth">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Tháng kết thúc</label>
+                                                        <input class="form-control" type="text"
+                                                               id="endDateMonth" name="endDateMonth">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row m-t-20">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Loại biểu đồ</label>
+
+                                                        <select class="form-control custom-select"
+                                                                data-placeholder="Tất cả"
+                                                                tabindex="1" id="chartType" name="chartType">
+                                                            <option th:selected="${chartType} == 0" value="0">Bảng</option>
+                                                            <option th:selected="${chartType} == 1" value="1">Biểu đồ
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+
+                                                </div>
+                                            </div>
+                                            <div class="row m-t-20">
+                                                <div class="col-md-10">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-rounded btn-primary"
+                                                                id="report"
+                                                                onclick="search();"> Xem báo cáo
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div id="board" style="display: none">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th style="text-align: left;">#</th>
+                                                <th style="text-align: left;">Ngày</th>
+                                                <th style="text-align: center;">Số tin mời</th>
+                                                <th style="text-align: left;">Tin gửi thành công</th>
+                                                <th style="text-align: left;">Tỷ lệ gửi tin thành công</th>
+                                                <th style="text-align: left;">Số lượt đăng ký</th>
+                                                <th style="text-align: left;">Tỷ lệ thuê bao tương tác</th>
+                                                <th style="text-align: left;">Đăng ký thành công</th>
+                                                <th style="text-align: left;">Tỷ lê thuê bao đăng ký thành công</th>
+                                                <th style="text-align: left;">Doanh thu</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:if="${totalPages == 0}">
+                                                <td th:if="${totalPages == 0}" colspan="6" class="font-bold">Không tìm
+                                                    thấy báo cáo chiến dịch thỏa mãn
+                                                </td>
+                                            </tr>
+                                            <tr th:each="data,loop : ${dataPage}">
+                                                <td style="text-align: left"  th:text="${loop.index+1+(currentPage-1)*pageSize}"></td>
+                                                <td style="text-align: center"  th:if="${loop.index+1+(currentPage-1)*pageSize} == 1" th:text="Tổng"></td>
+                                                <td style="text-align: center"  th:if="${loop.index+1+(currentPage-1)*pageSize} != 1" th:text="${#dates.format(data.getReportedDate(),'dd-MM-yyyy')}"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} == 1" th:text="${sumInvitationMessage}"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} != 1"  th:text="${data.getInvitationMessage()}"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} == 1" th:text="${sumSuccessMessage}"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} != 1"  th:text="${data.getSuccessMessage()}"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} == 1" th:text="${(sumSuccessMessage / sumInvitationMessage) * 100 } + '%'"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} != 1"  th:text="${(data.getSuccessMessage() / data.getInvitationMessage()) * 100 } + '%'"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} == 1" th:text="${sumRegisterMessage}"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} != 1"  th:text="${data.getRegisterMessage()}"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} == 1" th:text="${(sumRegisterMessage / sumInvitationMessage) * 100 } + '%'"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} != 1"  th:text="${(data.getRegisterMessage() / data.getInvitationMessage()) * 100 } + '%'"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} == 1" th:text="${sumSuccessRegisterMessage}"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} != 1"  th:text="${data.getSuccessRegisterMessage()}"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} == 1" th:text="${(sumSuccessRegisterMessage / sumRegisterMessage) * 100 } + '%'"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} != 1"  th:text="${(data.getSuccessRegisterMessage() / data.getRegisterMessage()) * 100 } + '%'"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} == 1" th:text="${sumRevenue}"></td>
+                                                <td style="text-align: left"  th:if="${loop.index+1+(currentPage-1)*pageSize} != 1"  th:text="${data.getRevenue()}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="float-right m-t-20">
+                                            <nav aria-label="Page navigation">
+                                                <ul class="pagination-sm" id="pagination"></ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                    <div id="chart" style="display: none">
+                                        <div class="row form_qldhqc" id="all" style="display: none">
+                                            <div class="col-sm-12 col-xs-12">
+                                                <div class="row justify-content-center m-b-5">
+                                                    <div class="col-md-8">
+
+                                                    </div>
+                                                    <div class="col-md-4">
+
+                                                    </div>
+                                                </div>
+                                                <div class="row justify-content-center m-b-5">
+                                                    <div class="col-md-5 report-border"
+                                                         style=" height: 400px;  margin-right: 10px" id="allCampaign">
+                                                        <h2 style="text-align: center">Số chiến dịch</h2>
+                                                        <iframe id="slice_34"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+                                                    <div class="col-md-5 report-border"
+                                                         style=" height: 400px;  margin-right: 10px; display: none"
+                                                         id="oneCampaignEve">
+                                                        <h2 style="text-align: center">Số chiến dịch</h2>
+                                                        <iframe id="slice_57"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+                                                    <div class="col-md-5 report-border"
+                                                         style=" height: 400px;  margin-right: 10px; display: none"
+                                                         id="oneCampaignFre">
+                                                        <h2 style="text-align: center">Số chiến dịch</h2>
+                                                        <iframe id="slice_46"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+                                                    <div class="col-md-5 report-border" style=" height: 400px; ">
+                                                        <h2 style="text-align: center">Tỷ lệ tương tác</h2>
+                                                        <iframe id="slice_35"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row justify-content-center m-b-5">
+                                                    <div class="col-md-9 report-border"
+                                                         style=" height: 400px;  margin-top: 30px;">
+                                                        <h2 style="text-align: center">Doanh thu bán gói</h2>
+                                                        <h3 style="text-align: center"><i>(Đơn vị: đồng)</i></h3>
+                                                        <iframe id="slice_36"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+                                                </div>
+
+                                                <div id="report-by-channel-tabs">
+                                                    <div class="row row_prg_b">
+                                                        <div class="col-md-6">
+                                                            <ul>
+                                                                <li><a href="#tab-sms">SMS</a></li>
+                                                                <li><a href="#tab-ussd">USSD</a></li>
+                                                                <li><a href="#tab-ivr">IVR</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="tab-sms">
+                                                        <div class="row row_prg_b">
+                                                            <div class="col-md-10" id="changeCampaignName">
+                                                                <input type="hidden" th:value="${size}" id="size"
+                                                                       name="size">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Chiến dịch</label>
+                                                                    <select class="form-control custom-select"
+                                                                            data-placeholder="Tất cả"
+                                                                            tabindex="1" id="campaign-name"
+                                                                            name="campaign-name"
+                                                                            onchange="changeOneCampaign()"
+                                                                    >
+                                                                        <option value="">Tất cả
+                                                                        </option>
+                                                                    </select>
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button type="button" class="btn btn-rounded btn-primary" style="float: right"
+                                                                        onclick="exportReport();"
+                                                                > Tải báo cáo
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div id="allSMS">
+                                                            <div class="row justify-content-center m-b-5">
+                                                                <div class="col-md-9 report-border"
+                                                                     style=" height: 400px;  margin-top: 30px;">
+                                                                    <h2 style="text-align: center">Hiệu suất gửi tin</h2>
+                                                                    <iframe id="slice_30"
+                                                                            style="width:100%; height:100%; border: None;"></iframe>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row justify-content-center m-b-5">
+                                                                <div class="col-md-9 report-border"
+                                                                     style=" height: 400px;  margin-top: 30px;">
+                                                                    <h2 style="text-align: center">Tương tác chiến dịch</h2>
+                                                                    <iframe id="slice_31"
+                                                                            style="width:100%; height:100%; border: None;"></iframe>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row justify-content-center m-b-5">
+                                                                <div class="col-md-9 report-border"
+                                                                     style=" height: 400px;  margin-top: 30px;">
+                                                                    <h2 style="text-align: center">Doanh thu bán gói</h2>
+                                                                    <h3 style="text-align: center"><i>(Đơn vị: đồng)</i>
+                                                                    </h3>
+                                                                    <iframe id="slice_33"
+                                                                            style="width:100%; height:100%; border: None;"></iframe>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="oddSMS" style="display: none">
+                                                            <div class="col-sm-12 col-xs-12">
+                                                                <div class="row justify-content-center m-b-5">
+                                                                    <div class="col-md-5 report-border"
+                                                                         style=" height: 400px;  margin-right: 10px">
+                                                                        <h2 style="text-align: center">Hiệu suất gửi
+                                                                            tin</h2>
+                                                                        <iframe id="slice_50"
+                                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                                    </div>
+
+                                                                    <div class="col-md-5 report-border"
+                                                                         style=" height: 400px; ">
+                                                                        <h2 style="text-align: center">Tỷ lệ tương tác</h2>
+                                                                        <iframe id="slice_47"
+                                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-1"></div>
+                                                                    <div class="col-md-10 report-border"
+                                                                         style=" height: 400px;  margin-top: 30px;">
+                                                                        <h2 style="text-align: center">Tần suất tương
+                                                                            tác</h2>
+                                                                        <iframe id="slice_48"
+                                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-1"></div>
+                                                                    <div class="col-md-10 report-border"
+                                                                         style=" height: 400px;  margin-top: 30px;">
+                                                                        <h2 style="text-align: center">Doanh thu bán gói
+                                                                        </h2>
+                                                                        <h3 style="text-align: center"><i>(Đơn vị: đồng)</i>
+                                                                        </h3>
+                                                                        <iframe id="slice_49"
+                                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="tab-ussd"></div>
+                                                    <div id="tab-ivr"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row form_qldhqc" id="one" style="display: none">
+                                            <div class="col-sm-12 col-xs-12">
+                                                <div class="row">
+                                                    <div class="col-md-10"></div>
+                                                    <div class="col-md-2">
+                                                        <button type="button" class="btn btn-rounded btn-primary" style="float: right"
+                                                                onclick="exportReportOneCampaign();"
+                                                        > Tải báo cáo
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-sm-12 col-xs-12">
+                                                <div class="row">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-10"
+                                                         style=" height: 400px;  margin-top: 30px;">
+                                                        <h2 style="text-align: center">Hiệu suất gửi tin</h2>
+                                                        <iframe id="slice_41"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-10"
+                                                         style=" height: 400px;  margin-top: 30px;">
+                                                        <h2 style="text-align: center">Tỷ lệ tương tác</h2>
+                                                        <iframe id="slice_42"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-10"
+                                                         style=" height: 400px;  margin-top: 30px;">
+                                                        <h2 style="text-align: center">Tần suất tương tác</h2>
+                                                        <iframe id="slice_43"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-10"
+                                                         style=" height: 400px;  margin-top: 30px;">
+                                                        <h2 style="text-align: center">Doanh thu bán gói </h2>
+                                                        <h3 style="text-align: center"><i>(Đơn vị: đồng)</i></h3>
+                                                        <iframe id="slice_44"
+                                                                style="width:100%; height:100%; border: None;"></iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+            <!-- Row -->
+            <!-- ============================================================== -->
+            <!-- End PAge Content -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+
+            <!-- End Right sidebar -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Container fluid  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+
+        <!-- footer -->
+        <!-- ============================================================== -->
+
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
+
+    </div>
+    <div th:insert="common/footer" th:remove="tag"></div>
+</div>
+
+</body>
+<script th:inline="javascript" th:fragment="contextPath">
+    var contextPath = [[@{/}]];
+</script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $("#report-by-channel-tabs").tabs();
+        const checkCampaign = $("#checkCampaign").val();
+        var name = $("#campaignName").val();
+        var startDate = $("#startDate").val();
+        var endDate = $("#endDate").val();
+        var date = $("#date").val();
+        if (checkCampaign == 1) {
+            $("#one").show();
+            $("#chart").show();
+            var query = 'CAMPAIGN_TYPE in (1,2)' + ' and CAMPAIGN_NAME =' + "'" + name + "'" + ' and  CAMPAIGN_STATUS in(0,1,2,3,4,5,6,7)' + 'and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'dd/mm/yyyy\') and REPORTED_DATE<= TO_DATE(' + "'" + endDate + "'" + ',\'dd/mm/yyyy\')';
+            reportOne(query,date)
+        }
+
+        var chartType = /*[[${chartType}]]*/ 'default';
+        if (chartType == null) {
+            $("#board").hide();
+            $("#chart").hide();
+        }
+        if (chartType == 1) {
+            $("#board").hide();
+            $("#chart").show();
+        }
+        if (chartType == 0) {
+            $("#board").show();
+            $("#chart").hide();
+        }
+        
+        $( "#report-by-channel-tabs" ).tabs();
+    });
+
+    $("#startDate").datepicker({format: 'dd/mm/yyyy', todayHighlight: true});
+    $("#endDate").datepicker({format: 'dd/mm/yyyy', todayHighlight: true});
+
+    $("#startDateMonth").datepicker({
+        format: "mm/yyyy",
+        startView: "months",
+        minViewMode: "months"
+    });
+
+    $("#endDateMonth").datepicker({
+        format: "mm/yyyy",
+        startView: "months",
+        minViewMode: "months"
+    });
+    const supersetUrl = $("#supersetUrl").val();
+    function change() {
+        var date = $("#date").val();
+        if (date == 0) {
+            $("#days").show();
+            $("#month").hide();
+        }
+
+        if (date == 1) {
+            $("#days").hide();
+            $("#month").show();
+        }
+    }
+    function search() {
+        removeTooltip('startDate');
+        removeTooltip('endDate');
+        removeTooltip('startDateMonth');
+        removeTooltip('endDateMonth');
+        var chartType = $("#chartType").val();
+        let query = `1=1`;
+        let query34 = `1=1`;
+        var type = $("#type").val();
+        var status = $("#status").val();
+        var name = $("#campaignName").val();
+        var date = $("#date").val();
+        var size = $("size").val();
+        var startDate = null;
+        var endDate = null;
+        let check = true;
+
+        if (date == 0) {
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+            if (startDate == "") {
+                showTooltip("Ngày bắt đầu không được để trống!", 'startDate');
+                check = false;
+            }
+            if (endDate == "") {
+                showTooltip("Ngày kết thúc không được để trống!", 'endDate');
+                check = false;
+            }
+            if (check) {
+                var scheStart = $("#startDate").val();
+                scheStart = scheStart.replace(new RegExp("/", 'g'), " ");
+                scheStart = scheStart.split(" ");
+
+                var scheStartDate = new Date(scheStart[2], scheStart[1] - 1, scheStart[0]);
+                console.log("scheStartDate:" + scheStartDate);
+
+                var scheEnd = $("#endDate").val();
+                scheEnd = scheEnd.replace(new RegExp("/", 'g'), " ");
+                scheEnd = scheEnd.split(" ");
+                var scheEndDate = new Date(scheEnd[2], scheEnd[1] - 1, scheEnd[0]);
+                console.log("scheEnd[2]:" + (scheEnd[2]));
+                console.log("(scheEnd[1] - 1)" + (scheEnd[1]))
+                console.log("(scheEnd[0])" + (scheEnd[0]))
+                var dateNow = new Date();
+                console.log("scheEndDate:" + scheEndDate);
+                if (scheStartDate > scheEndDate) {
+                    showTooltip("Ngày bắt đầu không được lớn hơn ngày kết thúc!", "startDate");
+                    showTooltip("Ngày bắt đầu không được lớn hơn ngày kết thúc!", "endDate");
+                    check = false;
+                }
+                if ((scheEndDate - scheStartDate) / 86400000 > 90) {
+                    showTooltip("Thời gian tra cứu chỉ tối đa 90 ngày!", "startDate");
+                    showTooltip("Thời gian tra cứu chỉ tối đa 90 ngày!", "endDate");
+                    check = false;
+                }
+                if (scheStartDate > dateNow) {
+                    showTooltip("Ngày bắt đầu không được lớn hơn ngày hiện tại!", "startDate");
+                    check = false;
+                }
+                if (scheEndDate > dateNow) {
+                    showTooltip("Ngày kết thúc không được lớn hơn ngày hiện tại!", "endDate");
+                    check = false;
+                }
+            }
+
+        } else if (date == 1) {
+            startDate = $("#startDateMonth").val();
+            endDate = $("#endDateMonth").val();
+
+            if (startDate == "") {
+                showTooltip("Tháng bắt đầu không được để trống!", 'startDateMonth');
+                check = false;
+            }
+            if (endDate == "") {
+                showTooltip("Tháng kết thúc không được để trống!", 'endDateMonth');
+                check = false;
+            }
+            if (check) {
+                var scheStart = $("#startDateMonth").val();
+                scheStart = scheStart.replace(new RegExp("/", 'g'), " ");
+                scheStart = scheStart.split(" ");
+
+                var scheStartDate = new Date(scheStart[1], scheStart[0] - 1, 1);
+                console.log("scheStartDate:" + scheStartDate);
+
+                var scheEnd = $("#endDateMonth").val();
+                scheEnd = scheEnd.replace(new RegExp("/", 'g'), " ");
+                scheEnd = scheEnd.split(" ");
+                let day = null;
+                /*                if (scheEnd[0] == 1 || scheEnd[0] == 3 || scheEnd[0] == 5 || scheEnd[0] == 7 || scheEnd[0] == 8 || scheEnd[0] == 10 || scheEnd[0] == 12) {
+                                    day = 31;
+                                }
+                                if (scheEnd[0] == 4 || scheEnd[0] == 6 || scheEnd[0] == 9 || scheEnd[0] == 11) {
+                                    day = 30;
+                                }
+                                if (scheEnd[0] == 2) day = 28*/
+                var scheEndDate = new Date(scheEnd[1], scheEnd[0], day);
+                scheEndDate.setMonth(scheEndDate.getMonth() - 3);
+
+                var dateNow = new Date();
+                console.log("(scheEnd[1])" + (scheEnd[1]))
+                console.log("(scheEnd[0])" + (scheEnd[0]))
+                if ((scheEnd[0] < scheStart[0]) && (scheEnd[1] <= scheStart[1])) {
+                    showTooltip("Tháng bắt đầu không được lớn hơn tháng kết thúc!", 'startDateMonth');
+                    showTooltip("Tháng bắt đầu không được lớn hơn tháng kết thúc!", 'endDateMonth');
+                    check = false;
+                }
+                if (scheEndDate > scheStartDate) {
+                    showTooltip("Thời gian tra cứu chỉ tối đa 3 tháng!", "startDateMonth");
+                    showTooltip("Thời gian tra cứu chỉ tối đa 3 tháng!", "endDateMonth");
+                    check = false;
+                }
+                console.log("dateNow.getFullYear()" + dateNow.getFullYear())
+                console.log("dateNow.getMonth()" + dateNow.getMonth())
+
+                if ((scheStart[1] > dateNow.getFullYear())) {
+                    showTooltip("Tháng bắt đầu không được lớn hơn tháng hiện tại!", "startDateMonth");
+                    check = false;
+                }
+                if ((scheStart[1] == dateNow.getFullYear()) && (scheStart[0] > (dateNow.getMonth() + 1))) {
+                    showTooltip("Tháng bắt đầu không được lớn hơn tháng hiện tại!", "startDateMonth");
+                    check = false;
+                }
+
+                if ((scheEnd[1] > dateNow.getFullYear())) {
+                    showTooltip("Tháng kết thúc không được lớn hơn tháng hiện tại!", "endDateMonth");
+                    check = false;
+                }
+                if ((scheEnd[1] == dateNow.getFullYear()) && (scheEnd[0] > (dateNow.getMonth() + 1))) {
+                    showTooltip("Tháng kết thúc không được lớn hơn tháng hiện tại!", "endDateMonth");
+                    check = false;
+                }
+
+            }
+        }
+        if (chartType == 0) {
+            if(check) {
+                $("#board").show();
+                $("#chart").hide();
+                if(date == 0) {
+                    window.location.href = '/ReportController/overview?type=' + type + '&status=' + status + '&campaignName=' + name + '&date=' + date +
+                        '&startDate=' + startDate + '&endDate=' + endDate + '&chartType=' + chartType;
+                }
+                if(date == 1) {
+                    window.location.href = '/ReportController/overview?type=' + type + '&status=' + status + '&campaignName=' + name + '&date=' + date +
+                        '&startDateMonth=' + startDate + '&endDateMonth=' + endDate + '&chartType=' + chartType;
+                }
+            }
+        } else if (chartType == 1) {
+            event.preventDefault();
+            $("#board").hide();
+            $("#chart").show();
+            if (check) {
+                if (type == 0) {
+                    type = new Array(1, 2);
+                }
+                if (status == 10) {
+                    status = new Array(0, 4, 6);
+                }
+                if (name == "") {
+                    if (date == 0) {
+                        query34 = 'CAMPAIGN_TYPE in ' + "(" + type + ")" + ' and CAMPAIGN_STATUS in' + "(" + status + ")" + ' and START_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'dd/mm/yyyy\') and END_DATE<= TO_DATE(' + "'" + endDate + "'" + ',\'dd/mm/yyyy\')';
+                        query = 'CAMPAIGN_TYPE in ' + "(" + type + ")" + ' and CAMPAIGN_STATUS in' + "(" + status + ")" + 'and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'dd/mm/yyyy\') and REPORTED_DATE<= TO_DATE(' + "'" + endDate + "'" + ',\'dd/mm/yyyy\')';
+                    }
+                    if (date == 1) {
+                        query34 = 'CAMPAIGN_TYPE in ' + "(" + type + ")" + ' and CAMPAIGN_STATUS in' + "(" + status + ")" + ' and START_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'mm/yyyy\') and END_DATE<= LAST_DAY(TO_DATE(' + "'" + endDate + "'" + ',\'mm/yyyy\'))';
+                        query = 'CAMPAIGN_TYPE in ' + "(" + type + ")" + ' and CAMPAIGN_STATUS in' + "(" + status + ")" + 'and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'mm/yyyy\') and REPORTED_DATE<= LAST_DAY(TO_DATE(' + "'" + endDate + "'" + ',\'mm/yyyy\'))';
+                    }
+                    console.log("query:", query);
+                    $("#all").show();
+                    if (size == 1) {
+                        $("#all").hide();
+                        $("#one").show();
+                    }
+                    if (type == 1) {
+                        $("#all").show();
+                        $("#one").hide();
+                        $("#oneCampaignEve").show();
+                        $("#oneCampaignFre").hide();
+                        $("#allCampaign").hide();
+                        $("#allSMS").show();
+                        $("#oddSMS").hide();
+                        reportCampaignType(query, query34, date)
+                    } else if (type == 2) {
+                        $("#all").show();
+                        $("#one").hide();
+                        $("#oneCampaignFre").show();
+                        $("#oneCampaignEve").hide();
+                        $("#allCampaign").hide();
+                        $("#allSMS").show();
+                        $("#oddSMS").hide();
+                        reportCampaignType(query, query34, date)
+                    } else {
+                        $("#all").show();
+                        $("#one").hide();
+                        $("#oneCampaign").hide();
+                        $("#allCampaign").show();
+                        $("#allSMS").show();
+                        $("#oddSMS").hide();
+                        reportAll(query, query34, date);
+                    }
+                } else {
+                    if (date == 1) {
+                        query = 'CAMPAIGN_TYPE in ' + "(" + type + ")" + ' and CAMPAIGN_NAME =' + "'" + name + "'" + ' and CAMPAIGN_STATUS in' + "(" + status + ")" + ' and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'mm/yyyy\') and REPORTED_DATE<= LAST_DAY(TO_DATE(' + "'" + endDate + "'" + ',\'mm/yyyy\'))';
+                    }
+                    if (date == 0) {
+                        query = 'CAMPAIGN_TYPE in ' + "(" + type + ")" + ' and CAMPAIGN_NAME =' + "'" + name + "'" + ' and CAMPAIGN_STATUS in' + "(" + status + ")" + ' and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'dd/mm/yyyy\') and REPORTED_DATE<= TO_DATE(' + "'" + endDate + "'" + ',\'dd/mm/yyyy\')';
+                    }
+                    $("#all").hide();
+                    $("#one").show();
+                    console.log("query:", query);
+                    reportOne(query, date)
+                }
+                changeCampaign();
+                $('#campaign-name').selectpicker('refresh');
+            }
+        }
+    }
+
+    function reportAll(query, query34, date) {
+        let slice_30 = document.getElementById("slice_30");
+        slice_30_url = supersetUrl + `superset/explore/?form_data={"slice_id":30,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_30.src = slice_30_url;
+        console.log("slice_30_url:", slice_30_url);
+        let slice_31 = document.getElementById("slice_31");
+        slice_31_url = supersetUrl + `superset/explore/?form_data={"slice_id":31,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_31.src = slice_31_url;
+
+        // let slice_32 = document.getElementById("slice_32");
+        // slice_32_url = supersetUrl + `superset/explore/?form_data={"slice_id":32,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        // slice_32.src = slice_32_url;
+
+        let slice_33 = document.getElementById("slice_33");
+        if (date == 0) {
+            slice_33_url = supersetUrl + `superset/explore/?form_data={"slice_id":33,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        } else {
+            slice_33_url = supersetUrl + `superset/explore/?form_data={"slice_id":33,"time_grain_sqla":"P1M","x_axis_format":"%m/%Y","adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        }
+        slice_33.src = slice_33_url;
+
+        let slice_34 = document.getElementById("slice_34");
+        slice_34_url = supersetUrl + `superset/explore/?form_data={"slice_id":34,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query34}","subject":null}]}&standalone=1`
+        slice_34.src = slice_34_url;
+        console.log("slice_34_url:", slice_34_url);
+
+        let slice_35 = document.getElementById("slice_35");
+        slice_35_url = supersetUrl + `superset/explore/?form_data={"slice_id":35,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_35.src = slice_35_url;
+
+        let slice_36 = document.getElementById("slice_36");
+        slice_36_url = supersetUrl + `superset/explore/?form_data={"slice_id":36,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_36.src = slice_36_url;
+
+
+    }
+
+    function reportCampaignOne(query,date) {
+        let slice_48 = document.getElementById("slice_48");
+        if (date == 0) {
+            slice_48_url = supersetUrl + `superset/explore/?form_data={"slice_id":43,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        } else {
+            slice_48_url = supersetUrl + `superset/explore/?form_data={"slice_id":43,"time_grain_sqla":"P1M","x_axis_format":"%m/%Y","adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        }
+        slice_48.src = slice_48_url;
+
+        let slice_49 = document.getElementById("slice_49");
+        if (date == 0) {
+            slice_49_url = supersetUrl + `superset/explore/?form_data={"slice_id":44,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        } else {
+            slice_49_url = supersetUrl + `superset/explore/?form_data={"slice_id":44,"time_grain_sqla":"P1M","x_axis_format":"%m/%Y","adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        }
+        slice_49.src = slice_49_url;
+        console.log("slice_49_url:", slice_49_url);
+
+        let slice_50 = document.getElementById("slice_50");
+        slice_50_url = supersetUrl + `superset/explore/?form_data={"slice_id":41,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_50.src = slice_50_url;
+
+        let slice_47 = document.getElementById("slice_47");
+        slice_47_url = supersetUrl + `superset/explore/?form_data={"slice_id":42,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_47.src = slice_47_url;
+    }
+
+    function reportCampaignType(query, query34,date) {
+        let slice_46 = document.getElementById("slice_46");
+        slice_46_url = supersetUrl + `superset/explore/?form_data={"slice_id":46,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query34}","subject":null}]}&standalone=1`
+        slice_46.src = slice_46_url;
+
+        let slice_57 = document.getElementById("slice_57");
+        slice_57_url = supersetUrl + `superset/explore/?form_data={"slice_id":57,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query34}","subject":null}]}&standalone=1`
+        slice_57.src = slice_57_url;
+        console.log("slice_57_url:", slice_57_url);
+
+        let slice_30 = document.getElementById("slice_30");
+        slice_30_url = supersetUrl + `superset/explore/?form_data={"slice_id":30,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_30.src = slice_30_url;
+
+        let slice_31 = document.getElementById("slice_31");
+        slice_31_url = supersetUrl + `superset/explore/?form_data={"slice_id":31,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_31.src = slice_31_url;
+
+        // let slice_32 = document.getElementById("slice_32");
+        // slice_32_url = supersetUrl + `superset/explore/?form_data={"slice_id":32,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        // slice_32.src = slice_32_url;
+
+        let slice_33 = document.getElementById("slice_33");
+        if (date == 0) {
+            slice_33_url = supersetUrl + `superset/explore/?form_data={"slice_id":33,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        } else {
+            slice_33_url = supersetUrl + `superset/explore/?form_data={"slice_id":33,"time_grain_sqla":"P1M","x_axis_format":"%m/%Y","adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        }
+        slice_33.src = slice_33_url;
+
+        let slice_34 = document.getElementById("slice_34");
+        slice_34_url = supersetUrl + `superset/explore/?form_data={"slice_id":34,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query34}","subject":null}]}&standalone=1`
+        slice_34.src = slice_34_url;
+
+        let slice_35 = document.getElementById("slice_35");
+        slice_35_url = supersetUrl + `superset/explore/?form_data={"slice_id":35,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_35.src = slice_35_url;
+
+        let slice_36 = document.getElementById("slice_36");
+        slice_36_url = supersetUrl + `superset/explore/?form_data={"slice_id":36,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_36.src = slice_36_url;
+    }
+
+    function reportOne(query,date) {
+        let slice_41 = document.getElementById("slice_41");
+        slice_41_url = supersetUrl + `superset/explore/?form_data={"slice_id":41,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_41.src = slice_41_url;
+        console.log("slice_41_url:", slice_41_url);
+
+        let slice_42 = document.getElementById("slice_42");
+        slice_42_url = supersetUrl + `superset/explore/?form_data={"slice_id":42,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        slice_42.src = slice_42_url;
+
+        let slice_43 = document.getElementById("slice_43");
+        if (date == 0) {
+            slice_43_url = supersetUrl + `superset/explore/?form_data={"slice_id":43,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        } else {
+            slice_43_url = supersetUrl + `superset/explore/?form_data={"slice_id":43,"time_grain_sqla":"P1M","x_axis_format":"%m/%Y","adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        }
+        slice_43.src = slice_43_url;
+
+        let slice_44 = document.getElementById("slice_44");
+        if (date == 0) {
+            slice_44_url = supersetUrl + `superset/explore/?form_data={"slice_id":44,"adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        } else {
+            slice_44_url = supersetUrl + `superset/explore/?form_data={"slice_id":44,"time_grain_sqla":"P1M","x_axis_format":"%m/%Y","adhoc_filters":[{"clause":"WHERE","comparator":null,"expressionType":"SQL","filterOptionName":"filter_6hk54asfcff_2izo1p7r8lh","isExtra":false,"isNew":false,"operator":null,"sqlExpression":"${query}","subject":null}]}&standalone=1`
+        }
+        slice_44.src = slice_44_url;
+        console.log("slice_44_url:", slice_44_url);
+    }
+
+    function changeCampaign() {
+        var type = $("#type").val();
+        var status = $("#status").val();
+        var name = $("#campaignName").val();
+        var startDate = $("#startDate").val();
+        var endDate = $("#endDate").val();
+        $.ajax({
+            type: 'GET',
+            url: '/ReportController/findAll?type=' + type + '&campaignName=' + name + '&startDate=' + startDate + '&endDate=' + endDate + '&status=' + status,
+            traditional: true,
+            cache: true,
+            async: false,
+            success: function (response) {
+                console.log("response:", response);
+                $('#changeCampaignName').html(response);
+            },
+            error: function (e) {
+                console.log(e);
+            },
+        });
+    }
+
+    function changeCampaign2() {
+        var type = $("#type").val();
+        var status = $("#status").val();
+        $.ajax({
+            type: 'GET',
+            url: '/ReportController/changeCampaign?type=' + type + '&status=' + status,
+            traditional: true,
+            cache: true,
+            async: false,
+            success: function (response) {
+                console.log("response:", response);
+                $('#changeCampaignName2').html(response);
+                $("#campaignName").selectpicker('refresh');
+            },
+            error: function (e) {
+                console.log(e);
+            },
+        });
+    }
+
+    function changeOneCampaign() {
+        var campaignName = $("#campaign-name").val();
+        var type = $("#type").val();
+        var status = $("#status").val();
+        var date = $("#date").val();
+        if (type == 0) {
+            type = new Array(1, 2);
+        }
+        if (status == 10) {
+            status = new Array(0, 4, 6);
+        }
+        if (date == 0) {
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+
+        } else if (date == 1) {
+            startDate = $("#startDateMonth").val();
+            endDate = $("#endDateMonth").val();
+
+        }
+        if (date == 1) {
+            query = 'CAMPAIGN_TYPE in ' + "(" + type + ")" + ' and CAMPAIGN_NAME =' + "'" + campaignName + "'" + ' and CAMPAIGN_STATUS in' + "(" + status + ")" + ' and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'mm/yyyy\') and REPORTED_DATE<= LAST_DAY(TO_DATE(' + "'" + endDate + "'" + ',\'mm/yyyy\'))';
+            if (campaignName == "") {
+                query = 'CAMPAIGN_TYPE in ' + "(" + type + ")" + ' and CAMPAIGN_STATUS in' + "(" + status + ")" + ' and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'mm/yyyy\') and REPORTED_DATE<= LAST_DAY(TO_DATE(' + "'" + endDate + "'" + ',\'mm/yyyy\'))';
+                $("#allSMS").show();
+                $("#oddSMS").hide();
+            } else {
+                $("#allSMS").hide();
+                $("#oddSMS").show();
+            }
+        }
+        if (date == 0) {
+            query = 'CAMPAIGN_TYPE in ' + "(" + type + ")" + ' and CAMPAIGN_NAME =' + "'" + campaignName + "'" + ' and CAMPAIGN_STATUS in' + "(" + status + ")" + ' and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'dd/mm/yyyy\') and REPORTED_DATE<= TO_DATE(' + "'" + endDate + "'" + ',\'dd/mm/yyyy\')';
+            if (campaignName == "") {
+                query = 'CAMPAIGN_TYPE in ' + "(" + type + ")" + ' and CAMPAIGN_STATUS in' + "(" + status + ")" + ' and REPORTED_DATE >= TO_DATE(' + "'" + startDate + "'" + ',\'dd/mm/yyyy\') and REPORTED_DATE<= TO_DATE(' + "'" + endDate + "'" + ',\'dd/mm/yyyy\')';
+                $("#allSMS").show();
+                $("#oddSMS").hide();
+            } else {
+                $("#allSMS").hide();
+                $("#oddSMS").show();
+            }
+        }
+
+        $("#campaign-name").selectpicker('refresh');
+        reportCampaignOne(query, date);
+    }
+
+    function exportReport() {
+        Swal.fire({
+            position: 'top',
+            type: 'info',
+            title: 'Thông báo',
+            text: "Hệ thống đang xử lý dữ liệu. Vui lòng chờ trong ít phút.",
+            showConfirmButton: false,
+            timer: 5000
+        })
+        var type = $("#type").val();
+        var status = $("#status").val();
+        var name = $("#campaignName").val();
+        var startDate = $("#startDate").val();
+        var endDate = $("#endDate").val();
+        var date = $("#date").val();
+        var size = $("#size").val();
+        if (date == 0) {
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+        } else if (date == 1) {
+            startDate = $("#startDateMonth").val();
+            endDate = $("#endDateMonth").val();
+        }
+        let token = $("#common-csrf").val();
+        let queryString = window.location.search;
+        let d = new Date();
+        let month = d.getMonth() + 1;
+        let today = d.getFullYear() + "" + month + d.getDate();
+        let h = d.getHours();
+        let m = d.getMinutes();
+        let s = d.getSeconds();
+        let time = h + "" + m + s;
+        let fileName = null;
+        if (name == "" || size > 1) {
+            fileName = "Bao_cao_tong_quan" + "_" + today + "_" + time + ".xlsx";
+        } else {
+            fileName = "Bao_cao_chien_dich_" + name + "_" + today + "_" + time + ".xlsx";
+        }
+        fetch(contextPath + 'ReportController/exportReport?type=' + type + '&status=' + status + '&name=' + name + '&startDate=' + startDate + '&endDate=' + endDate)
+            .then(resp => resp.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // the filename you want
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(err => console.log(err));
+    }
+
+    function exportReportOneCampaign() {
+        Swal.fire({
+            position: 'top',
+            type: 'info',
+            title: 'Thông báo',
+            text: "Hệ thống đang xử lý dữ liệu. Vui lòng chờ trong ít phút.",
+            showConfirmButton: false,
+            timer: 5000
+        })
+        var type = $("#type").val();
+        var status = $("#status").val();
+        var date = $("#date").val();
+        var name = $("#campaignName").val();
+        var startDate = $("#startDate").val();
+        var endDate = $("#endDate").val();
+        if (date == 0) {
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+        } else if (date == 1) {
+            startDate = $("#startDateMonth").val();
+            endDate = $("#endDateMonth").val();
+        }
+        let token = $("#common-csrf").val();
+        let queryString = window.location.search;
+        let d = new Date();
+        let month = d.getMonth() + 1;
+        let today = d.getFullYear() + "" + month + d.getDate();
+        let h = d.getHours();
+        let m = d.getMinutes();
+        let s = d.getSeconds();
+        let time = h + "" + m + s;
+        let fileName = "Bao_cao_chien_dich_" + name + "_" + today + "_" + time + ".xlsx";
+        fetch(contextPath + 'ReportController/exportReport?type=' + type + '&status=' + status + '&name=' + name + '&startDate=' + startDate + '&endDate=' + endDate)
+            .then(resp => resp.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // the filename you want
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(err => console.log(err));
+    }
+</script>
+
+</html>
+

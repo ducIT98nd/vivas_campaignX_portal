@@ -1,0 +1,105 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div class="add_cp_pages m-t-10 step-component" style="display: none">
+
+    <div class="row p-t-20">
+        <div class="col-md-12">
+            <label class="control-label">Loại sự kiện<span class="red-clr">*</span></label>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group type_event">
+                        <div class="dropdown tieu_chi">
+                            <button style="text-align: left;  white-space:normal !important; word-wrap:break-word;"
+                                    class="form-control btn-success-1 btn-circle-lg dropdown-toggle "
+                                    id="button-event-pick" type="button" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false" th:text="${eventDataDTO.eventName}">
+                                <i style="float: right" class="fa fa-angle-down"></i>
+                            </button>
+                            <ul id="menu" class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                                <li class="dropdown-item" onclick="pickEvent(1)">Nạp tiền</li>
+                                <li class="dropdown-item" onclick="pickEvent(2)">Tài khoản chính xuống dưới ngưỡng</li>
+                                <li class="dropdown-item" onclick="pickEvent(3)">Hết dung lượng gói</li>
+                                <li class="dropdown-item" onclick="pickEvent(4)">Bấm mã USSD</li>
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" tabindex="-1">Gói cục bộ trả trước</a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item" onclick="pickEvent(5)" tabindex="-1">Đăng ký</li>
+                                        <li class="dropdown-item" onclick="pickEvent(6)" tabindex="-1">Gia hạn</li>
+                                        <li class="dropdown-item" onclick="pickEvent(7)" tabindex="-1">Hủy</li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item" tabindex="-1">Gói cục bộ trả sau</a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item" onclick="pickEvent(8)" tabindex="-1">Đăng ký</li>
+                                        <li class="dropdown-item" onclick="pickEvent(9)" tabindex="-1">Gia hạn</li>
+                                        <li class="dropdown-item" onclick="pickEvent(10)" tabindex="-1">Hủy</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${lowBalanceAmount} == null" class="col-md-3" id="div-low-balance-amount" style="display: none" disabled>
+                    <select class="form-control custom-select selectpicker" id="low-balance-amount"
+                            data-dropup-auto="false"
+                            data-live-search="true" data-size="6" data-width="75%">
+                        <option value="1000">1000</option>
+                        <option value="5000">5000</option>
+                    </select>
+                    <span>VNĐ</span>
+                </div>
+                <div th:if="${lowBalanceAmount} != null" class="col-md-3" id="div-low-balance-amount" disabled>
+                    <select class="form-control custom-select selectpicker" id="low-balance-amount"
+                            data-dropup-auto="false"
+                            data-live-search="true" data-size="6" data-width="75%">
+                        <option th:selected="(${lowBalanceAmount} == 1000)" value="1000">1000</option>
+                        <option th:selected="(${lowBalanceAmount} == 5000)" value="5000">5000</option>
+                    </select>
+                    <span>VNĐ</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="col-md-12 stg_crit_bg">
+            <div class="row">
+                <h4 class="col-lg-6 card-title">Thiết lập sự kiện</h4>
+                <div class="col-lg-6 cdt_slc">
+                    <div class="form-group">
+                        <select class="form-control custom-select" id="event-condition-rule" name="event-condition-rule"
+                                tabindex="1">
+                            <option value="0" th:selected="${eventCampaign.eventConditionRule} == 0">Không sử dụng điều kiện</option>
+                            <option value="2" th:selected="${eventCampaign.eventConditionRule} == 1">Thỏa mãn tất cả điều kiện</option>
+                            <option value="1" th:selected="${eventCampaign.eventConditionRule} == 2">Thỏa mãn một trong số các điều kiện</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ctn_rowcrit" id="condition-container">
+                <div th:each="data,loop : ${eventConditionToViews}" >
+                    <div th:utext="${data}"></div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="event-id" name="event-id" th:value="${eventCampaign.eventId}">
+        <input type="hidden" id="event-queue-name" name="event-queue-name" th:value="${eventCampaign.eventQueueName}">
+        <input type="hidden" id="event-condition" name="event-condition" th:value="${eventCampaign.eventCondition}">
+    </div>
+
+    <div class="btn_main_act">
+        <div class="btn-group">
+            <button type="button" class="btn btn-rounded btn-primary" id="step2-next">Tiếp tục</button>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-rounded btn-danger cancel-create-campagin">Hủy</button>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-rounded btn-secondary" id="step2-prev">Quay lại</button>
+        </div>
+    </div>
+</div>
+
+</html>
